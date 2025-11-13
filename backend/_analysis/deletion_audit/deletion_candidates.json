@@ -1,0 +1,176 @@
+{
+  "metadata": {
+    "generated_at": "2025-01-27T00:00:00Z",
+    "version": "1.0.0",
+    "analysis_method": "static_and_dynamic",
+    "total_candidates": 7,
+    "safe_to_delete": 4,
+    "safe_to_archive": 3
+  },
+  "candidates": [
+    {
+      "path": "backend/dist",
+      "type": "build",
+      "reason": "مجلد البناء - يتم إنشاؤه من src/ عبر tsc",
+      "static_proof": [
+        "مستبعد في .gitignore (سطر 16)",
+        "مستبعد في .dockerignore (سطر 24)",
+        "مستبعد في tsconfig.json (سطر 36)",
+        "لا يوجد استيراد في src/**/*.ts",
+        "Dockerfile يبني المجلد داخل الحاوية"
+      ],
+      "dynamic_proof": [
+        "pnpm build ينشئ المجلد من src/",
+        "package.json scripts لا تعتمد على وجود dist/ مسبقاً",
+        "Dockerfile يبني dist/ داخل الحاوية"
+      ],
+      "risk": "A",
+      "decision": "delete",
+      "prerequisites": [],
+      "rollback": "pnpm build لإعادة الإنشاء",
+      "owner": null,
+      "linked_tickets": []
+    },
+    {
+      "path": "backend/db-performance-analysis",
+      "type": "tooling",
+      "reason": "أدوات تحليل أداء قاعدة البيانات - مستخدمة في سكريبتات package.json فقط",
+      "static_proof": [
+        "مستخدم في package.json scripts (أسطر 20-25): perf:setup, perf:seed, perf:baseline, perf:apply-indexes, perf:post-optimization, perf:compare",
+        "لا يوجد استيراد في src/**/*.ts",
+        "لا يوجد مرجع في server.ts",
+        "لا يوجد مرجع في Dockerfile"
+      ],
+      "dynamic_proof": [
+        "سكريبتات perf:* تعمل بشكل منفصل",
+        "لا تؤثر على بناء التطبيق (pnpm build)",
+        "لا تؤثر على الاختبارات (pnpm test)",
+        "لا تؤثر على التشغيل (pnpm start)"
+      ],
+      "risk": "B",
+      "decision": "archive",
+      "prerequisites": [
+        "إزالة سكريبتات perf:* من package.json",
+        "أو الاحتفاظ بالمجلد في مكان منفصل"
+      ],
+      "rollback": "استعادة المجلد من الأرشيف",
+      "owner": "Database Performance Team",
+      "linked_tickets": []
+    },
+    {
+      "path": "backend/test-cache.js",
+      "type": "tooling",
+      "reason": "ملف اختبار قديم - فارغ تماماً",
+      "static_proof": [
+        "الملف فارغ (0 bytes)",
+        "لا يوجد استيراد في src/**/*.ts",
+        "لا يوجد مرجع في package.json",
+        "لا يوجد مرجع في vitest.config.ts"
+      ],
+      "dynamic_proof": [
+        "لا يؤثر على الاختبارات (pnpm test)",
+        "لا يؤثر على البناء (pnpm build)"
+      ],
+      "risk": "A",
+      "decision": "delete",
+      "prerequisites": [],
+      "rollback": "N/A (ملف فارغ)",
+      "owner": null,
+      "linked_tickets": []
+    },
+    {
+      "path": "backend/test-db.js",
+      "type": "tooling",
+      "reason": "ملف اختبار قديم - يستخدم better-sqlite3 بينما المشروع يستخدم PostgreSQL",
+      "static_proof": [
+        "يستخدم better-sqlite3 (غير موجود في package.json)",
+        "لا يوجد استيراد في src/**/*.ts",
+        "لا يوجد مرجع في package.json",
+        "لا يوجد مرجع في vitest.config.ts",
+        "المشروع يستخدم @neondatabase/serverless (PostgreSQL)"
+      ],
+      "dynamic_proof": [
+        "لا يؤثر على الاختبارات (pnpm test)",
+        "لا يؤثر على البناء (pnpm build)",
+        "better-sqlite3 غير مثبت في node_modules"
+      ],
+      "risk": "A",
+      "decision": "delete",
+      "prerequisites": [],
+      "rollback": "N/A (ملف قديم غير مستخدم)",
+      "owner": null,
+      "linked_tickets": []
+    },
+    {
+      "path": "backend/database-baseline.sql",
+      "type": "tooling",
+      "reason": "ملف SQL قديم - لا يوجد مرجع في الكود",
+      "static_proof": [
+        "لا يوجد استيراد في src/**/*.ts",
+        "لا يوجد مرجع في package.json",
+        "لا يوجد مرجع في Dockerfile",
+        "لا يوجد مرجع في docker-compose.yml",
+        "لا يوجد مرجع في migrations"
+      ],
+      "dynamic_proof": [
+        "لا يؤثر على البناء (pnpm build)",
+        "لا يؤثر على الاختبارات (pnpm test)",
+        "لا يؤثر على التشغيل (pnpm start)"
+      ],
+      "risk": "A",
+      "decision": "delete",
+      "prerequisites": [],
+      "rollback": "N/A (ملف قديم)",
+      "owner": null,
+      "linked_tickets": []
+    },
+    {
+      "path": "backend/docs",
+      "type": "docs",
+      "reason": "وثائق - لا يتم استيرادها في الكود",
+      "static_proof": [
+        "لا يوجد استيراد في src/**/*.ts",
+        "مستبعد في .dockerignore (سطر 53)",
+        "ملفات Markdown فقط"
+      ],
+      "dynamic_proof": [
+        "لا يؤثر على البناء (pnpm build)",
+        "لا يؤثر على الاختبارات (pnpm test)",
+        "لا يؤثر على التشغيل (pnpm start)"
+      ],
+      "risk": "B",
+      "decision": "archive",
+      "prerequisites": [
+        "لا يوجد (اختياري: نقل إلى موقع منفصل)"
+      ],
+      "rollback": "استعادة المجلد من الأرشيف",
+      "owner": "Documentation Team",
+      "linked_tickets": []
+    },
+    {
+      "path": "backend/src/examples",
+      "type": "code",
+      "reason": "أمثلة استخدام - لا يتم استيرادها في الكود الفعلي",
+      "static_proof": [
+        "لا يوجد استيراد في server.ts",
+        "لا يوجد استيراد في src/**/*.ts (عدا الملف نفسه)",
+        "ملف realtime-usage.example.ts يحتوي على أمثلة فقط"
+      ],
+      "dynamic_proof": [
+        "لا يؤثر على البناء (pnpm build)",
+        "لا يؤثر على الاختبارات (pnpm test)",
+        "لا يؤثر على التشغيل (pnpm start)"
+      ],
+      "risk": "B",
+      "decision": "archive",
+      "prerequisites": [
+        "لا يوجد (اختياري: نقل إلى موقع منفصل)"
+      ],
+      "rollback": "استعادة المجلد من الأرشيف",
+      "owner": "Development Team",
+      "linked_tickets": []
+    }
+  ]
+}
+
+
