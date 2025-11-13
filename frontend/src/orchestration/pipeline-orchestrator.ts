@@ -175,5 +175,17 @@ export class SevenStationsOrchestrator {
   }
 }
 
+/**
+ * Run pipeline with interfaces
+ */
+export async function runPipelineWithInterfaces(
+  content: string,
+  options?: any
+): Promise<any> {
+  // TODO: Implement actual pipeline execution with interfaces
+  const orchestrator = new SevenStationsOrchestrator();
+  return orchestrator.executePipeline(content, options);
+}
+
 // Export singleton instance
 export const sevenStationsOrchestrator = new SevenStationsOrchestrator();
