@@ -2,7 +2,7 @@
 // Coordinates the execution of the Seven Stations AI analysis pipeline
 
 import { pipelineExecutor, type PipelineStep, type PipelineExecution } from './executor';
-import type { AnalysisType } from '@/types/enums';
+import { AnalysisType } from '@/types/enums';
 import { stations } from '@/lib/stations';
 
 export interface SevenStationsResult {

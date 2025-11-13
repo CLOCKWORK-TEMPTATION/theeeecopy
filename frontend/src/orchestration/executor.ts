@@ -3,7 +3,7 @@
 
 import { geminiService, type GeminiConfig } from '@/ai/gemini-service';
 import { cachedGeminiCall, generateGeminiCacheKey } from '@/lib/redis';
-import type { AnalysisType } from '@/types/enums';
+import { AnalysisType } from '@/types/enums';
 
 export interface PipelineStep {
   id: string;

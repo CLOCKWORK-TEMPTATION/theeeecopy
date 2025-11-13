@@ -199,6 +199,17 @@ export enum FeatureFlagEnum {
   ENTERPRISE_FEATURES = 'enterprise-features',
 }
 
+// Analysis types
+export enum AnalysisType {
+  CHARACTERS = 'characters',
+  THEMES = 'themes',
+  STRUCTURE = 'structure',
+  SCREENPLAY = 'screenplay',
+  QUICK = 'quick',
+  DETAILED = 'detailed',
+  FULL = 'full',
+}
+
 // Export all enums as const objects for better tree-shaking
 export const TaskCategory = TaskCategoryEnum;
 export const TaskType = TaskTypeEnum;
@@ -220,6 +231,7 @@ export const WebhookEvent = WebhookEventEnum;
 export const NotificationType = NotificationTypeEnum;
 export const SubscriptionStatus = SubscriptionStatusEnum;
 export const FeatureFlag = FeatureFlagEnum;
+export const AnalysisTypeConst = AnalysisType;
 
 // Export types
 export type TaskCategory = TaskCategoryEnum;
