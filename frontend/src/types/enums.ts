@@ -220,6 +220,18 @@ export const WebhookEvent = WebhookEventEnum;
 export const NotificationType = NotificationTypeEnum;
 export const SubscriptionStatus = SubscriptionStatusEnum;
 export const FeatureFlag = FeatureFlagEnum;
+export const AnalysisType = AnalysisTypeEnum;
+
+// Analysis types for screenplay analysis
+export enum AnalysisTypeEnum {
+  CHARACTERS = 'characters',
+  THEMES = 'themes',
+  STRUCTURE = 'structure',
+  SCREENPLAY = 'screenplay',
+  QUICK = 'quick',
+  DETAILED = 'detailed',
+  FULL = 'full',
+}
 
 // Export types
 export type TaskCategory = TaskCategoryEnum;
@@ -242,3 +254,4 @@ export type WebhookEvent = WebhookEventEnum;
 export type NotificationType = NotificationTypeEnum;
 export type SubscriptionStatus = SubscriptionStatusEnum;
 export type FeatureFlag = FeatureFlagEnum;
+export type AnalysisType = AnalysisTypeEnum;
