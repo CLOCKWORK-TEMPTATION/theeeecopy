@@ -15,6 +15,7 @@ import { projectsController } from '@/controllers/projects.controller';
 import { scenesController } from '@/controllers/scenes.controller';
 import { charactersController } from '@/controllers/characters.controller';
 import { shotsController } from '@/controllers/shots.controller';
+import { aiController } from '@/controllers/ai.controller';
 import { realtimeController } from '@/controllers/realtime.controller';
 import { authMiddleware } from '@/middleware/auth.middleware';
 import { logger } from '@/utils/logger';
