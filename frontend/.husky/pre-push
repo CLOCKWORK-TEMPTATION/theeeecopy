@@ -1,5 +1,0 @@
-echo "🔍 Running pre-push checks (warnings allowed)..."
-pnpm -C frontend lint || true
-pnpm -C frontend typecheck || true
-echo "✅ Pre-push checks complete!"
-exit 0

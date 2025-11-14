@@ -82,7 +82,7 @@ export const geminiCore = {
   // Chat with AI via Backend
   async chatWithAI(message: string, context?: Record<string, unknown>) {
     try {
-      const response = await chatWithAI(message, JSON.stringify(context));
+      const response = await chatWithAI(message, undefined, context);
       return response.data;
     } catch (error) {
       console.error('Failed to chat with AI:', error);
@@ -99,11 +99,12 @@ export async function streamFlash(
   // For now, use regular chat - streaming can be implemented later
   const response = await geminiCore.chatWithAI(prompt);
 
-  if (onChunk) {
-    onChunk(response.message || response.content || response);
+  if (response && onChunk) {
+    const text = response.message || response.content || '';
+    onChunk(text);
   }
 
-  return response.message || response.content || response;
+  return response?.message || response?.content || '';
 }
 
 export default geminiCore;

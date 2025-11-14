@@ -1,14 +1,12 @@
+import type { Project as ApiProject } from './api-types';
+
 /**
  * Project store for managing current project state
  */
 
-export interface Project {
-  id: string;
-  name: string;
+export interface Project extends ApiProject {
+  name?: string;
   description?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  [key: string]: any;
 }
 
 let currentProject: Project | null = null;

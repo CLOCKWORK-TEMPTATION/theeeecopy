@@ -87,8 +87,12 @@ const ShotPlanningCard = memo(function ShotPlanningCard({
         sceneId,
         shotType,
       });
-      if ("data" in result && result.data) {
-        setAiSuggestion(result.data);
+      if ("data" in result && result.data && result.data.suggestions?.[0]) {
+        const firstSuggestion = result.data.suggestions[0];
+        setAiSuggestion({
+          suggestion: firstSuggestion.description,
+          reasoning: firstSuggestion.reasoning || '',
+        });
       }
     } catch (error) {
       console.error("Failed to get suggestion:", error);

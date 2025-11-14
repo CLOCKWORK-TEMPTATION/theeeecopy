@@ -1,1 +1,0 @@
-make 6 seconds tine between API requests
