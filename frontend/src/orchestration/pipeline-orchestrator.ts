@@ -203,12 +203,24 @@ export class SevenStationsOrchestrator {
 
 /**
  * Run pipeline with interfaces
+ *
+ * PARTIAL IMPLEMENTATION: Basic orchestration exists
+ * TODO PRODUCTION: Add comprehensive interface support
+ *
+ * Missing production features:
+ * 1. Interface-based station communication protocol
+ * 2. State persistence between stations
+ * 3. Rollback/recovery mechanisms
+ * 4. Advanced error handling and retry logic
+ * 5. Progress tracking and monitoring
+ * 6. Resource cleanup on failure
  */
 export async function runPipelineWithInterfaces(
   content: string,
   options?: any
 ): Promise<any> {
-  // TODO: Implement actual pipeline execution with interfaces
+  // Current implementation: basic pipeline execution
+  // Production TODO: Add interface validation, state management, and monitoring
   const orchestrator = new SevenStationsOrchestrator();
   return orchestrator.runSevenStationsPipeline('default', content, options || {});
 }
