@@ -52,6 +52,28 @@ jobs:
         name: build-files
         path: frontend/.next/
 
+    - name: Backend Typecheck
+      run: |
+        cd backend
+        pnpm typecheck
+
+    - name: Backend Lint
+      run: |
+        cd backend
+        pnpm lint
+      continue-on-error: true
+
+    - name: Backend Tests
+      run: |
+        cd backend
+        pnpm test
+      continue-on-error: true
+
+    - name: Backend Build
+      run: |
+        cd backend
+        pnpm build
+
   security-scan:
     runs-on: ubuntu-latest
     needs: lint-and-test
