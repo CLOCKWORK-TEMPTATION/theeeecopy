@@ -28,12 +28,14 @@ vi.mock('@neondatabase/serverless', () => {
     webSocketConstructor: undefined as any,
   };
 
+  const MockPoolClass = vi.fn().mockImplementation((config: any) => ({
+    query: vi.fn().mockResolvedValue({ rows: [{ result: 1 }] }),
+    end: vi.fn().mockResolvedValue(undefined),
+    connectionString: config?.connectionString,
+  }));
+
   return {
-    Pool: vi.fn().mockImplementation((config: any) => ({
-      query: vi.fn().mockResolvedValue({ rows: [{ result: 1 }] }),
-      end: vi.fn().mockResolvedValue(undefined),
-      connectionString: config?.connectionString,
-    })),
+    Pool: MockPoolClass,
     neonConfig: mockNeonConfig,
   };
 });
