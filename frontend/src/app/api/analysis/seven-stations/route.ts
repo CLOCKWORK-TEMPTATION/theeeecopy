@@ -1,161 +1,37 @@
 /**
- * Seven Stations Analysis API Route
- *
- * Provides endpoint for running the complete seven stations pipeline
- * Uses new text-only interfaces from lib/ai/interfaces/stations.ts
- *
- * Enhanced with Redis caching for improved performance
+ * DEPRECATED: This route is replaced by backend API
+ * Redirect to: http://localhost:3001/api/analysis/seven-stations
+ * 
+ * This file is kept for backward compatibility only.
  */
 
-import { NextRequest, NextResponse } from "next/server";
-// TODO: Re-enable these imports once the modules are properly created
-// import { runSevenStations, StationOutput } from "@/lib/ai/stations";
-// import { runPipelineWithInterfaces } from "@/lib/ai/pipeline-orchestrator";
-// import { getCached, invalidateCache } from "@/lib/redis";
-import crypto from "crypto";
+import { NextRequest, NextResponse } from 'next/server';
 
-// Temporary placeholders
-interface StationOutput {
-  stationId: string;
-  stationName: string;
-  textOutput: string;
-  success: boolean;
-}
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-interface SevenStationsResult {
-  success: boolean;
-  outputs: StationOutput[];
-  fullReport?: string;
-  error?: string;
-}
-
-const runSevenStations = async (...args: any[]): Promise<SevenStationsResult> => ({
-  success: false,
-  outputs: [],
-  error: 'Not implemented'
-});
-const runPipelineWithInterfaces = async (...args: any[]) => ({});
-const getCached = async <T>(key: string, fn: () => Promise<T>, ttl?: number): Promise<T> => fn();
-const invalidateCache = async (...args: any[]) => {};
-
-export const runtime = "nodejs";
+export const runtime = 'nodejs';
 export const maxDuration = 300; // 5 minutes
-
-interface AnalysisRequest {
-  text: string;
-  metadata?: string;
-  useNewInterface?: boolean;
-}
 
 export async function POST(request: NextRequest) {
   try {
-    const body: AnalysisRequest = await request.json();
+    const body = await request.json();
+    
+    // Proxy to backend
+    const response = await fetch(`${BACKEND_URL}/api/analysis/seven-stations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
 
-    if (!body.text || body.text.trim().length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "النص مطلوب للتحليل",
-        },
-        { status: 400 }
-      );
+    if (!response.ok) {
+      throw new Error(`Backend request failed: ${response.statusText}`);
     }
 
-    // Check text length
-    if (body.text.length < 50) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "النص قصير جداً. يجب أن يكون النص على الأقل 50 حرفاً",
-        },
-        { status: 400 }
-      );
-    }
-
-    if (body.text.length > 100000) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "النص طويل جداً. الحد الأقصى 100,000 حرف",
-        },
-        { status: 400 }
-      );
-    }
-
-    const startTime = Date.now();
-
-    // Generate cache key from text content hash
-    const textHash = crypto
-      .createHash('md5')
-      .update(body.text)
-      .digest('hex');
-    const cacheKey = `seven-stations:${textHash}`;
-
-    // Use Redis cache with 1 hour TTL
-    const result = await getCached(
-      cacheKey,
-      async () => {
-        return await runSevenStations(body.text, body.metadata);
-      },
-      3600 // 1 hour
-    );
-
-    const executionTime = Date.now() - startTime;
-
-    if (!result) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "فشل في الحصول على نتائج التحليل",
-          executionTime,
-        },
-        { status: 500 }
-      );
-    }
-
-    if (result.success) {
-      return NextResponse.json({
-        success: true,
-        report: result.fullReport,
-        stations: result.outputs.map((output: StationOutput) => ({
-          id: output.stationId,
-          name: output.stationName,
-          summary: output.textOutput.substring(0, 200) + "...",
-          fullText: output.textOutput,
-          confidence: 0.85, // Default confidence
-          status: "completed",
-        })),
-        confidence: 0.85,
-        executionTime,
-        stationsCount: result.outputs.length,
-      });
-    } else {
-      return NextResponse.json(
-        {
-          success: false,
-          error: result.error || "فشل التحليل",
-          stations: result.outputs.map((output: StationOutput) => ({
-            id: output.stationId,
-            name: output.stationName,
-            summary: output.textOutput || "فشل في إكمال هذه المحطة",
-            status: output.success ? "completed" : "error",
-          })),
-          executionTime,
-        },
-        { status: 500 }
-      );
-    }
+    return NextResponse.json(await response.json());
   } catch (error) {
-    console.error("[Seven Stations API] Error:", error);
-
+    console.error('Seven Stations proxy error:', error);
     return NextResponse.json(
-      {
-        success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "حدث خطأ غير متوقع أثناء التحليل",
-      },
+      { error: 'Failed to process analysis request' },
       { status: 500 }
     );
   }
@@ -163,14 +39,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   return NextResponse.json({
-    service: "Seven Stations Analysis",
-    status: "active",
-    version: "2.0.0",
-    features: [
-      "Text-only protocol (no JSON)",
-      "Sequential pipeline (1→7)",
-      "Structured interfaces",
-      "Arabic text analysis",
-    ],
+    service: 'Seven Stations Analysis',
+    status: 'proxied to backend',
+    backend: BACKEND_URL,
   });
 }

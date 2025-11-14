@@ -155,6 +155,10 @@ app.put('/api/shots/:id', authMiddleware, shotsController.updateShot.bind(shotsC
 app.delete('/api/shots/:id', authMiddleware, shotsController.deleteShot.bind(shotsController));
 app.post('/api/shots/suggestion', authMiddleware, shotsController.generateShotSuggestion.bind(shotsController));
 
+// AI endpoints (protected)
+app.post('/api/ai/chat', authMiddleware, aiController.chat.bind(aiController));
+app.post('/api/ai/shot-suggestion', authMiddleware, aiController.getShotSuggestion.bind(aiController));
+
 // Queue Management endpoints (protected)
 app.get('/api/queue/jobs/:jobId', authMiddleware, queueController.getJobStatus.bind(queueController));
 app.get('/api/queue/stats', authMiddleware, queueController.getQueueStats.bind(queueController));

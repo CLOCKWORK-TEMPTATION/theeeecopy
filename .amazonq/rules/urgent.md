@@ -1,4 +1,4 @@
-ChatGPT said:
+
 أمر توجيهي للنموذج: سياسة عدم ترحيل المشكلات (No-Deferral, Root-Cause First)
 
 المبدأ الحاكم:

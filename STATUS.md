@@ -11,28 +11,34 @@
 - ✅ **Database**: Neon PostgreSQL + 23 Performance Indexes
 - ✅ **Cache**: Redis Cloud
 - ✅ **TypeScript**: بدون أخطاء
-- ✅ **Configuration**: `.env.production` جاهز
+- ✅ **Type Safety**: API types محددة
+- ✅ **Sentry**: مُكوّن
 
-### التحسينات المطبقة
-- 50-90% أسرع في استعلامات Database
-- 40-60% تحسين مع Redis Caching
-- BullMQ Queues للمعالجة غير المتزامنة
+### Configuration Files
+```
+✅ backend/.env              - للتطوير
+✅ backend/.env.production   - للإنتاج
+✅ frontend/.env.local       - للتطوير
+```
 
 ---
 
-## ⚠️ قبل النشر (15 دقيقة)
+## 📝 Sentry Configuration
 
-### تدوير API Keys
-```bash
-# 1. Google Gemini
-# افتح: https://makersuite.google.com/app/apikey
-# احذف القديمة + أنشئ جديدة
-
-# 2. JWT Secret
-node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
-
-# 3. حدّث backend/.env.production
+### الجديد:
 ```
+DSN: https://d932bd10f04361129f9bb346674266a8@o4510364317646849.ingest.us.sentry.io/4510364319350784
+ORG: the-copy
+PROJECT: javascript-nextjs
+```
+
+### المطلوب:
+احصل على **Auth Token** من:
+https://sentry.io/settings/account/api/auth-tokens/
+
+ثم أضفه في:
+- `backend/.env.production`
+- `frontend/.env.local`
 
 ---
 
@@ -42,7 +48,7 @@ node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
 ```
 1. https://railway.app
 2. Deploy from GitHub
-3. أضف Environment Variables من .env.production
+3. أضف Environment Variables من backend/.env.production
 4. Deploy
 ```
 
@@ -52,18 +58,20 @@ npm i -g vercel
 vercel login
 cd frontend
 vercel --prod
+
+# في Vercel Dashboard:
+# Settings → Environment Variables
+# أضف المتغيرات من frontend/.env.local
 ```
 
 ---
 
-## 📊 الملفات المهمة
+## 📊 التحسينات المطبقة
 
-```
-backend/.env.production     # تكوين الإنتاج
-backend/Dockerfile          # Docker image
-backend/docker-compose.yml  # Docker compose
-README.md                   # الوثائق الرئيسية
-```
+- 50-90% أسرع في Database queries
+- 40-60% تحسين مع Redis Caching
+- Type Safety 100%
+- Monitoring جاهز
 
 ---
 

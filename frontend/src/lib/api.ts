@@ -92,7 +92,7 @@ export async function createProject(data: CreateProjectInput): Promise<ApiRespon
 
 export async function updateProject(id: string, data: UpdateProjectInput): Promise<ApiResponse<Project>> {
   const response = await fetch(`/api/projects/${id}`, {
-    method: "PATCH",
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
@@ -125,7 +125,7 @@ export async function createScene(projectId: string, data: CreateSceneInput): Pr
 
 export async function updateScene(sceneId: string, data: UpdateSceneInput): Promise<ApiResponse<Scene>> {
   const response = await fetch(`/api/scenes/${sceneId}`, {
-    method: "PATCH",
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
@@ -158,7 +158,7 @@ export async function createCharacter(projectId: string, data: CreateCharacterIn
 
 export async function updateCharacter(characterId: string, data: UpdateCharacterInput): Promise<ApiResponse<Character>> {
   const response = await fetch(`/api/characters/${characterId}`, {
-    method: "PATCH",
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
@@ -191,7 +191,7 @@ export async function createShot(sceneId: string, data: CreateShotInput): Promis
 
 export async function updateShot(shotId: string, data: UpdateShotInput): Promise<ApiResponse<Shot>> {
   const response = await fetch(`/api/shots/${shotId}`, {
-    method: "PATCH",
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
