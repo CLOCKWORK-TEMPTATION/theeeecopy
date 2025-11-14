@@ -4,7 +4,11 @@
 
 ## 📖 نظرة عامة
 
-هذا الدليل يوثق كيفية التحكم في سلوك ونتائج الوكلاء الذكيين (AI Agents) في منصة "النسخة". تستخدم المنصة نظام وكلاء متعدد المستويات لتحليل النصوص الإبداعية باستخدام Google Gemini API.
+هذا الدليل يوثق كيفية التحكم في سلوك ونتائج الوكلاء الذكيين (AI Agents) # agent_RULES.md - Development Guidelines for Coding Agents
+
+<div dir="rtl">
+
+
 
 </div>
 
@@ -12,1370 +16,1663 @@
 
 ## Table of Contents
 
-1. [Agent Architecture](#agent-architecture)
-2. [Seven Stations Pipeline](#seven-stations-pipeline)
-3. [Agent Configuration](#agent-configuration)
-4. [Prompt Engineering](#prompt-engineering)
-5. [Response Control](#response-control)
-6. [Caching Strategies](#caching-strategies)
-7. [Performance Tuning](#performance-tuning)
-8. [Error Handling](#error-handling)
-9. [Cost Optimization](#cost-optimization)
-10. [Best Practices](#best-practices)
+1. [Project Architecture](#project-architecture)
+2. [Code Standards](#code-standards)
+3. [TypeScript Guidelines](#typescript-guidelines)
+4. [Git Workflow](#git-workflow)
+5. [Testing Requirements](#testing-requirements)
+6. [Security Rules](#security-rules)
+7. [Performance Guidelines](#performance-guidelines)
+8. [Documentation Standards](#documentation-standards)
+9. [Error Handling](#error-handling)
+10. [Code Review Checklist](#code-review-checklist)
 
 ---
 
-## Agent Architecture
+## Project Architecture
 
-### System Overview
+### Monorepo Structure
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Frontend Layer                        │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐  │
-│  │   UI/UX     │→→│  API Client  │→→│  State Store  │  │
-│  └─────────────┘  └──────────────┘  └───────────────┘  │
-└────────────────────────────┬────────────────────────────┘
-                             │ HTTP/WebSocket
-┌────────────────────────────▼────────────────────────────┐
-│                    Backend Layer                         │
-│  ┌──────────────┐  ┌───────────────┐  ┌──────────────┐ │
-│  │ Controllers  │→→│   Services    │→→│  Gemini API  │ │
-│  └──────────────┘  └───────────────┘  └──────────────┘ │
-│         ↓                  ↓                             │
-│  ┌──────────────┐  ┌───────────────┐                   │
-│  │ Redis Cache  │  │  BullMQ Queue │                   │
-│  └──────────────┘  └───────────────┘                   │
-└─────────────────────────────────────────────────────────┘
+theeeecopy/
+├── frontend/          # Next.js 15 application
+│   ├── src/
+│   │   ├── app/      # App Router pages
+│   │   ├── components/
+│   │   ├── lib/      # Utilities and helpers
+│   │   ├── hooks/    # Custom React hooks
+│   │   └── types/    # TypeScript types
+│   └── public/
+├── backend/          # Express.js API
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── middleware/
+│   │   ├── routes/
+│   │   ├── models/
+│   │   └── types/
+│   └── tests/
+├── docs/             # Documentation
+└── scripts/          # Build and utility scripts
 ```
 
-### Agent Types
+### Technology Stack
 
-#### 1. **Analysis Agents** (المحطات السبع)
-Seven specialized agents for comprehensive dramatic analysis:
+**Frontend**:
+- Next.js 15.4.7 (App Router)
+- React 18.3.1
+- TypeScript 5.7.2
+- Tailwind CSS 4.1.16
+- Radix UI components
+- Tanstack Query 5.90.6
+- Zod 3.25.76 (validation)
 
-- **Station 1**: Character Analysis Agent
-- **Station 2**: Conceptual Analysis Agent
-- **Station 3**: Conflict Network Agent
-- **Station 4**: Effectiveness Metrics Agent
-- **Station 5**: Dynamics & Symbolism Agent
-- **Station 6**: Red Team Critic Agent
-- **Station 7**: Final Report Agent
-
-#### 2. **Utility Agents**
-- **Shot Suggestion Agent**: Generates camera angles and shot recommendations
-- **Chat Agent**: Interactive AI assistant for creative guidance
-- **Script Analyzer**: Extracts scenes, characters, and structure
+**Backend**:
+- Node.js 20+
+- Express.js 4.18.2
+- TypeScript 5.0+
+- Drizzle ORM 0.44.7
+- PostgreSQL (Neon Serverless)
+- Redis 5.9.0
+- BullMQ 5.63.0
+- Google Gemini AI
 
 ---
 
-## Seven Stations Pipeline
+## Code Standards
 
-<div dir="rtl">
+### 1. General Principles
 
-### المحطة 1: تحليل الشخصيات
+#### CRITICAL RULES ⚠️
 
-**الوظيفة**: استخراج الشخصيات وتحليل العلاقات بينها
+**NEVER**:
+- ❌ Use `any` type without explicit justification
+- ❌ Disable TypeScript errors with `@ts-ignore` or `@ts-nocheck`
+- ❌ Commit commented-out code
+- ❌ Push directly to `main` or `master` branch
+- ❌ Merge PRs without passing CI/CD
+- ❌ Skip writing tests for new features
+- ❌ Hard-code sensitive credentials
+- ❌ Use `var` (use `const` or `let`)
+- ❌ Mutate function parameters
+- ❌ Create circular dependencies
 
-</div>
+**ALWAYS**:
+- ✅ Write self-documenting code
+- ✅ Follow DRY (Don't Repeat Yourself)
+- ✅ Use meaningful variable names
+- ✅ Add JSDoc comments for public APIs
+- ✅ Handle errors explicitly
+- ✅ Validate user input
+- ✅ Write tests for critical paths
+- ✅ Run linter before committing
+- ✅ Update documentation
+
+### 2. Naming Conventions
+
+#### Variables and Functions
 
 ```typescript
-// Location: backend/src/services/analysis/stations/station-1.ts
-interface Station1Output {
-  stationNumber: 1;
-  stationName: "تحليل الشخصيات";
-  status: "success" | "failed";
-  characters: Array<{
-    name: string;
-    role: "main" | "supporting" | "minor";
-    description: string;
-    traits: string[];
-  }>;
-  relationships: Array<{
-    character1: string;
-    character2: string;
-    type: string;
-    description: string;
-  }>;
+// ✅ GOOD
+const userProfile = getUserProfile();
+const isAuthenticated = checkAuth();
+const hasPermission = verifyPermission();
+
+async function fetchProjectData(projectId: string): Promise<Project> {
+  // Implementation
+}
+
+// ❌ BAD
+const data = get();
+const check = verify();
+const x = doSomething();
+
+function process(id) {
+  // Implementation
 }
 ```
 
-**Control Parameters**:
+#### Components (React)
+
 ```typescript
-{
-  temperature: 0.7,        // Creativity level (0-1)
-  maxTokens: 2000,        // Response length limit
-  topP: 0.9,              // Nucleus sampling
-  topK: 40                // Top-k sampling
+// ✅ GOOD - PascalCase for components
+export function ProjectCard({ project }: ProjectCardProps) {
+  return <div>...</div>;
 }
+
+export const UserAvatar: React.FC<UserAvatarProps> = ({ user }) => {
+  return <img src={user.avatar} alt={user.name} />;
+};
+
+// ❌ BAD
+export function projectCard() { }
+export const user_avatar = () => { };
 ```
 
----
+#### Files and Directories
 
-<div dir="rtl">
+```
+✅ GOOD:
+- UserProfile.tsx (components)
+- useAuth.ts (hooks)
+- api-client.ts (utilities)
+- project.types.ts (types)
+- user.controller.ts (controllers)
+- gemini.service.ts (services)
 
-### المحطة 2: التحليل المفاهيمي
-
-**الوظيفة**: استخراج المواضيع والأفكار الرئيسية
-
-</div>
-
-```typescript
-interface Station2Output {
-  stationNumber: 2;
-  stationName: "التحليل المفاهيمي";
-  themes: string[];
-  mainIdeas: string[];
-  philosophicalDimensions: string[];
-}
+❌ BAD:
+- userprofile.tsx
+- UseAuth.ts
+- APIClient.ts
+- ProjectTypes.ts
 ```
 
-**Control Parameters**:
+#### Constants
+
 ```typescript
-{
-  temperature: 0.8,        // Higher for conceptual thinking
-  analysisDepth: "shallow" | "medium" | "deep",
-  focusAreas: ["themes", "symbols", "ideas"]
-}
+// ✅ GOOD - SCREAMING_SNAKE_CASE for constants
+export const MAX_FILE_SIZE = 10_000_000; // 10MB
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const CACHE_TTL_SECONDS = 3600;
+
+const TASK_CATEGORIES = {
+  CHARACTER: 'character',
+  THEME: 'theme',
+  CONFLICT: 'conflict',
+} as const;
+
+// ❌ BAD
+const maxFileSize = 10000000;
+const apiUrl = '...';
 ```
 
----
-
-<div dir="rtl">
-
-### المحطة 3: شبكة الصراعات
-
-**الوظيفة**: تحليل الصراعات والتوترات الدرامية
-
-</div>
+#### Types and Interfaces
 
 ```typescript
-interface Station3Output {
-  stationNumber: 3;
-  stationName: "شبكة الصراعات";
-  conflicts: Array<{
-    type: "internal" | "external" | "societal";
-    parties: string[];
-    intensity: number; // 1-10
-    resolution?: string;
-  }>;
+// ✅ GOOD - PascalCase, descriptive names
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
 }
-```
 
----
+type ProjectStatus = 'draft' | 'published' | 'archived';
 
-<div dir="rtl">
-
-### المحطة 4: مقاييس الفعالية
-
-**الوظيفة**: قياس جودة النص الدرامي
-
-</div>
-
-```typescript
-interface Station4Output {
-  stationNumber: 4;
-  stationName: "مقاييس الفعالية";
-  metrics: {
-    pacing: number;           // 1-10
-    characterDepth: number;   // 1-10
-    dialogueQuality: number;  // 1-10
-    plotCoherence: number;    // 1-10
-    overallScore: number;     // 1-10
+interface ApiResponse<T> {
+  data: T;
+  error?: string;
+  meta: {
+    timestamp: number;
+    requestId: string;
   };
-  recommendations: string[];
 }
+
+// ❌ BAD
+interface user { }
+type status = string;
+interface IResponse { } // Don't use "I" prefix
 ```
 
----
+### 3. Code Formatting
 
-<div dir="rtl">
+**Use Prettier** with the following configuration:
 
-### المحطة 5: الديناميكية والرمزية
-
-**الوظيفة**: تحليل الرموز والدوافع النفسية
-
-</div>
-
-```typescript
-interface Station5Output {
-  stationNumber: 5;
-  stationName: "الديناميكية والرمزية";
-  symbols: Array<{
-    symbol: string;
-    meaning: string;
-    occurrences: number;
-  }>;
-  psychologicalMotifs: string[];
-}
-```
-
----
-
-<div dir="rtl">
-
-### المحطة 6: الفريق الأحمر
-
-**الوظيفة**: التحليل النقدي واكتشاف نقاط الضعف
-
-</div>
-
-```typescript
-interface Station6Output {
-  stationNumber: 6;
-  stationName: "الفريق الأحمر";
-  critiques: Array<{
-    area: string;
-    severity: "low" | "medium" | "high";
-    description: string;
-    suggestion: string;
-  }>;
-}
-```
-
-**Control Parameters**:
-```typescript
+```json
 {
-  criticismLevel: "gentle" | "moderate" | "harsh",
-  focusAreas: ["plot", "characters", "dialogue", "pacing"],
-  provideSolutions: boolean
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "arrowParens": "always"
 }
 ```
 
----
+**ESLint Rules** (enforced):
 
-<div dir="rtl">
+```json
+{
+  "rules": {
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-unused-vars": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-arrow-callback": "error",
+    "no-implicit-coercion": "error",
+    "eqeqeq": ["error", "always"],
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/no-unused-vars": "error",
+    "import/no-cycle": "error"
+  }
+}
+```
 
-### المحطة 7: التقرير النهائي
-
-**الوظيفة**: تلخيص شامل ونتائج متكاملة
-
-</div>
+### 4. Import Organization
 
 ```typescript
-interface Station7Output {
-  stationNumber: 7;
-  stationName: "التقرير النهائي";
-  summary: string;
-  strengths: string[];
-  weaknesses: string[];
-  recommendations: string[];
-  overallAssessment: string;
+// ✅ GOOD - Organized imports
+// 1. React and Next.js
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+// 2. Third-party libraries
+import { z } from 'zod';
+import { useQuery } from '@tanstack/react-query';
+
+// 3. Internal modules (absolute imports)
+import { ProjectCard } from '@/components/ProjectCard';
+import { useAuth } from '@/hooks/useAuth';
+import { apiClient } from '@/lib/api';
+
+// 4. Types
+import type { Project, User } from '@/types';
+
+// 5. Styles (if any)
+import styles from './Component.module.css';
+
+// ❌ BAD - Mixed and relative imports
+import { ProjectCard } from '../../components/ProjectCard';
+import { z } from 'zod';
+import { useState } from 'react';
+import type { Project } from '../../../types/project';
+```
+
+**Path Aliases** (configured in tsconfig.json):
+
+```typescript
+// Frontend
+import { ... } from '@/components/...';
+import { ... } from '@/lib/...';
+import { ... } from '@/hooks/...';
+import { ... } from '@/types/...';
+
+// Backend
+import { ... } from '@/controllers/...';
+import { ... } from '@/services/...';
+import { ... } from '@/middleware/...';
+import { ... } from '@/types/...';
+```
+
+---
+
+## TypeScript Guidelines
+
+### 1. Strict Mode Configuration
+
+**tsconfig.json** must include:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  }
+}
+```
+
+### 2. Type Definitions
+
+#### Prefer Interfaces for Objects
+
+```typescript
+// ✅ GOOD - Use interface for object shapes
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// ✅ GOOD - Use type for unions, primitives
+type ProjectStatus = 'draft' | 'published' | 'archived';
+type ID = string | number;
+
+// ❌ BAD - Don't use type for simple objects
+type Project = {
+  id: string;
+  title: string;
+};
+```
+
+#### Explicit Return Types
+
+```typescript
+// ✅ GOOD - Explicit return type
+function calculateTotal(items: CartItem[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+
+async function fetchUser(userId: string): Promise<User | null> {
+  const response = await apiClient.get(`/users/${userId}`);
+  return response.data;
+}
+
+// ❌ BAD - Implicit return type
+function calculateTotal(items) {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+```
+
+#### Generic Types
+
+```typescript
+// ✅ GOOD - Well-defined generics
+interface ApiResponse<T> {
+  data: T;
+  error?: string;
+  meta: ResponseMeta;
+}
+
+function makeRequest<T>(url: string): Promise<ApiResponse<T>> {
+  return fetch(url).then(res => res.json());
+}
+
+// Usage
+const response = await makeRequest<Project[]>('/api/projects');
+
+// ❌ BAD - Over-generic
+function makeRequest<T>(url: string): Promise<T> {
+  return fetch(url).then(res => res.json());
+}
+```
+
+#### Utility Types
+
+```typescript
+// ✅ GOOD - Use built-in utility types
+type PartialProject = Partial<Project>;
+type RequiredProject = Required<Project>;
+type ProjectPreview = Pick<Project, 'id' | 'title' | 'createdAt'>;
+type ProjectWithoutId = Omit<Project, 'id'>;
+type ReadonlyProject = Readonly<Project>;
+
+// Function parameter types
+type ProjectUpdateData = Partial<Omit<Project, 'id' | 'createdAt'>>;
+
+function updateProject(
+  projectId: string,
+  updates: ProjectUpdateData
+): Promise<Project> {
+  // Implementation
+}
+```
+
+### 3. Null Safety
+
+```typescript
+// ✅ GOOD - Explicit null handling
+function getUserEmail(user: User | null): string | null {
+  return user?.email ?? null;
+}
+
+function processProject(project: Project | undefined): void {
+  if (!project) {
+    console.warn('No project provided');
+    return;
+  }
+
+  // Safe to use project here
+  console.log(project.title);
+}
+
+// ❌ BAD - Unsafe access
+function getUserEmail(user) {
+  return user.email; // May throw if user is null
+}
+
+function processProject(project) {
+  console.log(project.title); // May throw if undefined
+}
+```
+
+### 4. Type Guards
+
+```typescript
+// ✅ GOOD - Custom type guards
+function isProject(value: unknown): value is Project {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    'title' in value &&
+    typeof (value as Project).id === 'string' &&
+    typeof (value as Project).title === 'string'
+  );
+}
+
+function processData(data: unknown): void {
+  if (isProject(data)) {
+    // TypeScript knows data is Project here
+    console.log(data.title);
+  }
+}
+
+// ✅ GOOD - Discriminated unions
+type Result<T> =
+  | { success: true; data: T }
+  | { success: false; error: string };
+
+function handleResult<T>(result: Result<T>): T | null {
+  if (result.success) {
+    return result.data;
+  } else {
+    console.error(result.error);
+    return null;
+  }
+}
+```
+
+### 5. Enums vs Union Types
+
+```typescript
+// ✅ PREFERRED - Use const objects with 'as const'
+export const ProjectStatus = {
+  DRAFT: 'draft',
+  PUBLISHED: 'published',
+  ARCHIVED: 'archived',
+} as const;
+
+export type ProjectStatus = typeof ProjectStatus[keyof typeof ProjectStatus];
+
+// ✅ ACCEPTABLE - String literal unions
+export type TaskCategory = 'character' | 'theme' | 'conflict' | 'plot';
+
+// ⚠️ USE SPARINGLY - Enums (only for backwards compatibility)
+export enum HttpStatus {
+  OK = 200,
+  CREATED = 201,
+  BAD_REQUEST = 400,
+  UNAUTHORIZED = 401,
 }
 ```
 
 ---
 
-## Agent Configuration
+## Git Workflow
 
-### Environment Variables
-
-Configure agent behavior through environment variables:
+### 1. Branch Naming Convention
 
 ```bash
-# Backend .env
-GEMINI_API_KEY=your_api_key_here
-GEMINI_MODEL=gemini-1.5-pro
-GEMINI_TEMPERATURE=0.7
-GEMINI_MAX_TOKENS=4096
-GEMINI_TIMEOUT_MS=30000
+# Feature branches
+feature/user-authentication
+feature/project-export
+feature/seven-stations-analysis
 
-# Rate Limiting
-GEMINI_MAX_REQUESTS_PER_MINUTE=60
-GEMINI_MAX_REQUESTS_PER_DAY=1000
+# Bug fixes
+fix/login-redirect-issue
+fix/type-error-in-shots-page
+fix/redis-connection-timeout
 
-# Cost Control
-GEMINI_COST_WARNING_THRESHOLD=0.80
-GEMINI_COST_LIMIT_DAILY=100.00
+# Hotfixes
+hotfix/security-vulnerability
+hotfix/critical-api-error
 
-# Caching
-REDIS_URL=redis://localhost:6379
-CACHE_TTL_DEFAULT=3600
-CACHE_TTL_ANALYSIS=7200
-CACHE_TTL_SHOTS=1800
+# Chores and maintenance
+chore/update-dependencies
+chore/cleanup-unused-imports
+chore/refactor-gemini-service
+
+# Documentation
+docs/update-readme
+docs/add-api-documentation
+docs/improve-setup-guide
+
+# CI/CD and configuration
+ci/add-typescript-checks
+ci/improve-test-coverage
+config/update-eslint-rules
 ```
 
-### Service Configuration
+### 2. Commit Message Format
 
-```typescript
-// backend/src/config/gemini.config.ts
-export const geminiConfig = {
-  model: process.env.GEMINI_MODEL || 'gemini-1.5-pro',
+Follow **Conventional Commits** specification:
 
-  defaultParams: {
-    temperature: 0.7,
-    topP: 0.9,
-    topK: 40,
-    maxOutputTokens: 4096,
-  },
+```bash
+# Format
+<type>(<scope>): <subject>
 
-  stationParams: {
-    1: { temperature: 0.7, maxTokens: 2000 },  // Character Analysis
-    2: { temperature: 0.8, maxTokens: 2500 },  // Conceptual
-    3: { temperature: 0.7, maxTokens: 2000 },  // Conflicts
-    4: { temperature: 0.6, maxTokens: 1500 },  // Metrics
-    5: { temperature: 0.8, maxTokens: 2000 },  // Symbolism
-    6: { temperature: 0.7, maxTokens: 2500 },  // Red Team
-    7: { temperature: 0.7, maxTokens: 3000 },  // Final Report
-  },
+[optional body]
 
-  timeouts: {
-    default: 30000,
-    analysis: 60000,
-    longRunning: 120000,
-  },
-
-  retryPolicy: {
-    maxRetries: 3,
-    initialDelay: 1000,
-    maxDelay: 10000,
-    backoffMultiplier: 2,
-  },
-};
+[optional footer]
 ```
+
+**Types**:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code formatting (no logic changes)
+- `refactor`: Code refactoring
+- `perf`: Performance improvements
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+- `ci`: CI/CD changes
+- `build`: Build system changes
+- `revert`: Revert a previous commit
+
+**Examples**:
+
+```bash
+# ✅ GOOD
+feat(auth): add JWT token refresh mechanism
+
+Implement automatic token refresh using refresh tokens.
+Tokens expire after 1 hour and are refreshed silently
+in the background.
+
+Closes #123
+
+# ✅ GOOD
+fix(api): resolve race condition in project creation
+
+The createProject endpoint was creating duplicate entries
+when called simultaneously. Added transaction locks to
+prevent this issue.
+
+# ✅ GOOD
+perf(cache): implement stale-while-revalidate caching
+
+Reduce API calls by 60% using adaptive TTL and background
+refresh for stale cache entries.
+
+# ❌ BAD
+fixed stuff
+updated files
+changes
+WIP
+```
+
+### 3. Pull Request Guidelines
+
+#### PR Title Format
+
+```
+[Type] Brief description (max 72 characters)
+
+Examples:
+[Feature] Add user authentication with JWT
+[Fix] Resolve TypeScript errors in directors-studio pages
+[Refactor] Improve Gemini service error handling
+[Docs] Update installation instructions
+```
+
+#### PR Description Template
+
+```markdown
+## Summary
+Brief description of what this PR does (1-3 sentences).
+
+## Changes
+- List of main changes
+- Another change
+- And another
+
+## Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests pass
+- [ ] E2E tests pass
+- [ ] Manual testing completed
+
+## Screenshots (if applicable)
+[Add screenshots for UI changes]
+
+## Related Issues
+Closes #123
+Related to #456
+
+## Checklist
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] Comments added for complex logic
+- [ ] Documentation updated
+- [ ] No TypeScript errors
+- [ ] All tests passing
+- [ ] No new security vulnerabilities
+```
+
+### 4. Code Review Process
+
+**Before Requesting Review**:
+1. ✅ Run `pnpm typecheck` (no errors)
+2. ✅ Run `pnpm lint` (no warnings)
+3. ✅ Run `pnpm test` (all passing)
+4. ✅ Run `pnpm build` (successful)
+5. ✅ Self-review your changes
+6. ✅ Update documentation
+7. ✅ Add meaningful commit messages
+
+**Reviewers Must Check**:
+1. Code quality and readability
+2. TypeScript strict mode compliance
+3. Test coverage
+4. Security vulnerabilities
+5. Performance implications
+6. Breaking changes
+7. Documentation accuracy
+
+**Review Response Time**:
+- Critical fixes: 4 hours
+- Regular PRs: 24 hours
+- Large features: 48 hours
 
 ---
 
-## Prompt Engineering
+## Testing Requirements
 
-### Prompt Structure
+### 1. Test Coverage Targets
 
-All prompts follow a consistent structure:
+```
+Overall Coverage: >= 80%
+Critical Paths: >= 95%
+Services: >= 90%
+Controllers: >= 85%
+Components: >= 75%
+```
+
+### 2. Testing Stack
+
+**Frontend**:
+- **Unit/Integration**: Vitest + Testing Library
+- **E2E**: Playwright
+- **Component**: React Testing Library
+
+**Backend**:
+- **Unit/Integration**: Vitest
+- **API**: Supertest
+- **Load**: Custom scripts
+
+### 3. Test Structure
 
 ```typescript
-interface PromptTemplate {
-  systemInstruction: string;  // Agent role and behavior
-  context: string;            // Task context
-  input: string;              // User input/script
-  constraints: string[];      // Output constraints
-  examples?: string;          // Few-shot examples
-  format: string;             // Expected output format
-}
-```
+// ✅ GOOD - AAA Pattern (Arrange, Act, Assert)
+describe('ProjectService', () => {
+  describe('createProject', () => {
+    it('should create a project with valid data', async () => {
+      // Arrange
+      const projectData = {
+        title: 'Test Project',
+        description: 'Test Description',
+      };
+      const userId = 'user-123';
 
-### Customizing Prompts
+      // Act
+      const result = await projectService.createProject(userId, projectData);
 
-#### Location
-```
-backend/src/services/gemini/prompts/
-├── analysis/
-│   ├── station-1-characters.prompt.ts
-│   ├── station-2-concepts.prompt.ts
-│   ├── station-3-conflicts.prompt.ts
-│   ├── station-4-metrics.prompt.ts
-│   ├── station-5-symbolism.prompt.ts
-│   ├── station-6-redteam.prompt.ts
-│   └── station-7-summary.prompt.ts
-├── shots/
-│   └── shot-suggestion.prompt.ts
-└── chat/
-    └── creative-assistant.prompt.ts
-```
+      // Assert
+      expect(result).toBeDefined();
+      expect(result.title).toBe('Test Project');
+      expect(result.userId).toBe(userId);
+    });
 
-#### Example: Customizing Station 1 Prompt
+    it('should throw error when title is missing', async () => {
+      // Arrange
+      const invalidData = { description: 'No title' };
 
-```typescript
-// backend/src/services/gemini/prompts/analysis/station-1-characters.prompt.ts
-
-export const buildStation1Prompt = (scriptText: string, options?: {
-  focusLevel?: 'main' | 'all';
-  includeSubtext?: boolean;
-  language?: 'ar' | 'en';
-}) => {
-  const focusInstruction = options?.focusLevel === 'main'
-    ? 'ركز على الشخصيات الرئيسية فقط'
-    : 'قم بتحليل جميع الشخصيات بما فيها الثانوية';
-
-  const subtextInstruction = options?.includeSubtext
-    ? 'قم بتحليل النص الضمني والدوافع الخفية'
-    : '';
-
-  return `
-أنت محلل درامي متخصص في تحليل الشخصيات.
-
-**المهمة**: تحليل الشخصيات في النص التالي واستخراج:
-1. أسماء الشخصيات وأدوارها
-2. الصفات المميزة لكل شخصية
-3. العلاقات بين الشخصيات
-4. التطور الدرامي للشخصيات
-
-**التعليمات**:
-- ${focusInstruction}
-- ${subtextInstruction}
-- استخدم اللغة العربية الفصحى
-- كن دقيقاً ومحدداً في التحليل
-
-**النص المطلوب تحليله**:
-${scriptText}
-
-**التنسيق المطلوب**: JSON
-`;
-};
-```
-
----
-
-## Response Control
-
-### Output Formatting
-
-Control response format through structured prompts:
-
-```typescript
-// Structured JSON Output
-export const enforceJSONOutput = (prompt: string) => {
-  return `${prompt}
-
-**مهم جداً**: يجب أن يكون الناتج بصيغة JSON صالحة فقط، بدون أي نص إضافي قبل أو بعد JSON.
-
-مثال للتنسيق المطلوب:
-{
-  "characters": [...],
-  "relationships": [...]
-}
-`;
-};
-
-// Markdown Output
-export const enforceMarkdownOutput = (prompt: string) => {
-  return `${prompt}
-
-**التنسيق المطلوب**: استخدم Markdown مع:
-- عناوين واضحة (##، ###)
-- قوائم نقطية (-)
-- جداول عند الحاجة
-- تنسيق غامق للنقاط المهمة (**نص**)
-`;
-};
-```
-
-### Response Validation
-
-```typescript
-// backend/src/services/gemini/validators/response.validator.ts
-import { z } from 'zod';
-
-export const validateStation1Response = z.object({
-  characters: z.array(z.object({
-    name: z.string(),
-    role: z.enum(['main', 'supporting', 'minor']),
-    description: z.string(),
-    traits: z.array(z.string()),
-  })),
-  relationships: z.array(z.object({
-    character1: z.string(),
-    character2: z.string(),
-    type: z.string(),
-    description: z.string(),
-  })),
+      // Act & Assert
+      await expect(
+        projectService.createProject('user-123', invalidData)
+      ).rejects.toThrow('Title is required');
+    });
+  });
 });
 
-// Usage
-const validateAndParse = (response: string) => {
-  try {
-    const parsed = JSON.parse(response);
-    return validateStation1Response.parse(parsed);
-  } catch (error) {
-    throw new Error('Invalid response format from Gemini');
-  }
-};
+// ❌ BAD
+test('test project', () => {
+  const p = create({ t: 'test' });
+  expect(p).toBeTruthy();
+});
 ```
 
-### Fallback Strategies
+### 4. Testing Best Practices
 
 ```typescript
-// backend/src/services/gemini/fallback.strategy.ts
+// ✅ GOOD - Mock external dependencies
+import { vi } from 'vitest';
+import { geminiService } from '@/services/gemini.service';
 
-export class FallbackStrategy {
-  async executeWithFallback<T>(
-    primaryFn: () => Promise<T>,
-    fallbackFn?: () => Promise<T>,
-    defaultValue?: T
-  ): Promise<T> {
-    try {
-      return await primaryFn();
-    } catch (error) {
-      console.warn('Primary execution failed, trying fallback', error);
+vi.mock('@/services/gemini.service', () => ({
+  geminiService: {
+    analyze: vi.fn(),
+  },
+}));
 
-      if (fallbackFn) {
-        try {
-          return await fallbackFn();
-        } catch (fallbackError) {
-          console.error('Fallback also failed', fallbackError);
-        }
-      }
+describe('AnalysisController', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-      if (defaultValue !== undefined) {
-        return defaultValue;
-      }
+  it('should analyze script using gemini service', async () => {
+    // Arrange
+    const mockResult = { characters: [], themes: [] };
+    vi.mocked(geminiService.analyze).mockResolvedValue(mockResult);
 
-      throw error;
+    // Act
+    const result = await analysisController.analyzeScript(scriptText);
+
+    // Assert
+    expect(geminiService.analyze).toHaveBeenCalledWith(scriptText);
+    expect(result).toEqual(mockResult);
+  });
+});
+
+// ❌ BAD - Direct external calls in tests
+it('should analyze script', async () => {
+  const result = await analysisController.analyzeScript(scriptText);
+  // This makes real API calls!
+  expect(result).toBeDefined();
+});
+```
+
+### 5. Test Naming
+
+```typescript
+// ✅ GOOD - Descriptive test names
+describe('UserService', () => {
+  it('should create user with hashed password', async () => { });
+  it('should throw error when email already exists', async () => { });
+  it('should return null when user not found', async () => { });
+});
+
+// ❌ BAD
+describe('UserService', () => {
+  it('test 1', () => { });
+  it('works', () => { });
+  it('should work correctly', () => { });
+});
+```
+
+### 6. E2E Testing
+
+```typescript
+// tests/e2e/project-workflow.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Project Creation Workflow', () => {
+  test('should create, edit, and delete project', async ({ page }) => {
+    // Navigate to app
+    await page.goto('http://localhost:3000');
+
+    // Login
+    await page.fill('[data-testid="email-input"]', 'test@example.com');
+    await page.fill('[data-testid="password-input"]', 'password123');
+    await page.click('[data-testid="login-button"]');
+
+    // Wait for dashboard
+    await expect(page).toHaveURL('/directors-studio');
+
+    // Create project
+    await page.click('[data-testid="create-project-button"]');
+    await page.fill('[data-testid="project-title"]', 'My Test Project');
+    await page.fill('[data-testid="project-description"]', 'Test description');
+    await page.click('[data-testid="submit-button"]');
+
+    // Verify project created
+    await expect(page.locator('text=My Test Project')).toBeVisible();
+
+    // Cleanup
+    await page.click('[data-testid="delete-project"]');
+    await page.click('[data-testid="confirm-delete"]');
+  });
+});
+```
+
+---
+
+## Security Rules
+
+### 1. Authentication & Authorization
+
+```typescript
+// ✅ GOOD - Verify user authentication
+import { verifyToken } from '@/middleware/auth.middleware';
+
+router.get('/projects', verifyToken, async (req, res) => {
+  const userId = req.user.id; // From verified JWT
+  const projects = await projectService.getUserProjects(userId);
+  res.json(projects);
+});
+
+// ❌ BAD - Trust client-provided user ID
+router.get('/projects', async (req, res) => {
+  const userId = req.query.userId; // Dangerous!
+  const projects = await projectService.getUserProjects(userId);
+  res.json(projects);
+});
+```
+
+### 2. Input Validation
+
+```typescript
+// ✅ GOOD - Validate with Zod
+import { z } from 'zod';
+
+const createProjectSchema = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(2000).optional(),
+  status: z.enum(['draft', 'published', 'archived']).default('draft'),
+});
+
+router.post('/projects', verifyToken, async (req, res) => {
+  try {
+    const validatedData = createProjectSchema.parse(req.body);
+    const project = await projectService.createProject(
+      req.user.id,
+      validatedData
+    );
+    res.status(201).json(project);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ errors: error.errors });
     }
+    throw error;
   }
+});
+
+// ❌ BAD - No validation
+router.post('/projects', async (req, res) => {
+  const project = await projectService.createProject(req.body);
+  res.json(project);
+});
+```
+
+### 3. SQL Injection Prevention
+
+```typescript
+// ✅ GOOD - Use parameterized queries (Drizzle ORM)
+import { db } from '@/db';
+import { projects } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+
+async function getProject(projectId: string) {
+  const project = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.id, projectId))
+    .limit(1);
+
+  return project[0];
 }
 
-// Usage
-const result = await fallbackStrategy.executeWithFallback(
-  () => geminiService.analyze(text, { station: 1 }),
-  () => geminiService.analyze(text, { station: 1, temperature: 0.5 }),
-  { characters: [], relationships: [] }
+// ❌ BAD - String concatenation
+async function getProject(projectId: string) {
+  const query = `SELECT * FROM projects WHERE id = '${projectId}'`;
+  return await db.execute(query); // SQL injection risk!
+}
+```
+
+### 4. XSS Prevention
+
+```typescript
+// ✅ GOOD - Sanitize user input
+import DOMPurify from 'dompurify';
+
+function renderUserContent(content: string): string {
+  return DOMPurify.sanitize(content, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li'],
+    ALLOWED_ATTR: [],
+  });
+}
+
+// ✅ GOOD - Use proper escaping in React
+function ProjectCard({ project }: { project: Project }) {
+  return (
+    <div>
+      {/* React automatically escapes */}
+      <h2>{project.title}</h2>
+      <p>{project.description}</p>
+    </div>
+  );
+}
+
+// ❌ BAD - dangerouslySetInnerHTML without sanitization
+function ProjectCard({ project }) {
+  return (
+    <div dangerouslySetInnerHTML={{ __html: project.description }} />
+  );
+}
+```
+
+### 5. Environment Variables
+
+```typescript
+// ✅ GOOD - Validate environment variables
+import { z } from 'zod';
+
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'production', 'test']),
+  DATABASE_URL: z.string().url(),
+  GEMINI_API_KEY: z.string().min(1),
+  REDIS_URL: z.string().url(),
+  JWT_SECRET: z.string().min(32),
+});
+
+export const env = envSchema.parse(process.env);
+
+// ❌ BAD - Direct access without validation
+const apiKey = process.env.GEMINI_API_KEY;
+const dbUrl = process.env.DATABASE_URL;
+```
+
+### 6. Secrets Management
+
+```bash
+# ✅ GOOD - Use .env files (never commit!)
+# .env.local
+GEMINI_API_KEY=your_api_key_here
+DATABASE_URL=postgresql://...
+JWT_SECRET=your_very_long_random_secret_here
+
+# .env.example (commit this)
+GEMINI_API_KEY=your_gemini_api_key
+DATABASE_URL=postgresql://user:password@host:5432/database
+JWT_SECRET=generate_a_secure_random_string_at_least_32_chars
+
+# ❌ BAD - Hard-coded secrets
+const apiKey = 'AIzaSyDxxxxxxxxxxxxxxxxxxxxxxx';
+const dbPassword = 'mypassword123';
+```
+
+### 7. Rate Limiting
+
+```typescript
+// ✅ GOOD - Implement rate limiting
+import rateLimit from 'express-rate-limit';
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, // More strict for auth endpoints
+  message: 'Too many login attempts',
+});
+
+app.use('/api/', apiLimiter);
+app.use('/api/auth/', authLimiter);
+```
+
+---
+
+## Performance Guidelines
+
+### 1. Database Optimization
+
+```typescript
+// ✅ GOOD - Use indexes and JOIN queries
+import { db } from '@/db';
+import { projects, scenes, characters } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+
+async function getProjectWithDetails(projectId: string) {
+  const result = await db
+    .select({
+      project: projects,
+      scenes: scenes,
+      characters: characters,
+    })
+    .from(projects)
+    .leftJoin(scenes, eq(scenes.projectId, projects.id))
+    .leftJoin(characters, eq(characters.projectId, projects.id))
+    .where(eq(projects.id, projectId));
+
+  return result;
+}
+
+// ❌ BAD - N+1 queries
+async function getProjectWithDetails(projectId: string) {
+  const project = await db.select().from(projects).where(eq(projects.id, projectId));
+
+  // N+1 problem: separate query for each relationship
+  const scenes = await db.select().from(scenes).where(eq(scenes.projectId, projectId));
+  const characters = await db.select().from(characters).where(eq(characters.projectId, projectId));
+
+  return { project, scenes, characters };
+}
+```
+
+### 2. Caching Strategy
+
+```typescript
+// ✅ GOOD - Cache expensive operations
+import { redis } from '@/lib/redis';
+
+async function getProjectAnalysis(projectId: string): Promise<Analysis> {
+  const cacheKey = `analysis:project:${projectId}`;
+
+  // Try cache first
+  const cached = await redis.get(cacheKey);
+  if (cached) {
+    return JSON.parse(cached);
+  }
+
+  // Compute if not cached
+  const analysis = await analysisService.analyzeProject(projectId);
+
+  // Store in cache (1 hour TTL)
+  await redis.setex(cacheKey, 3600, JSON.stringify(analysis));
+
+  return analysis;
+}
+
+// Invalidate cache when project changes
+async function updateProject(projectId: string, updates: Partial<Project>) {
+  const updated = await db
+    .update(projects)
+    .set(updates)
+    .where(eq(projects.id, projectId));
+
+  // Invalidate related caches
+  await redis.del(`analysis:project:${projectId}`);
+  await redis.del(`project:${projectId}`);
+
+  return updated;
+}
+```
+
+### 3. React Performance
+
+```typescript
+// ✅ GOOD - Memoize expensive computations
+import { useMemo, useCallback } from 'react';
+
+function ProjectDashboard({ projects }: { projects: Project[] }) {
+  // Memoize expensive calculations
+  const statistics = useMemo(() => {
+    return {
+      total: projects.length,
+      published: projects.filter(p => p.status === 'published').length,
+      draft: projects.filter(p => p.status === 'draft').length,
+    };
+  }, [projects]);
+
+  // Memoize callbacks
+  const handleProjectClick = useCallback((projectId: string) => {
+    router.push(`/projects/${projectId}`);
+  }, [router]);
+
+  return (
+    <div>
+      <Stats data={statistics} />
+      <ProjectList projects={projects} onProjectClick={handleProjectClick} />
+    </div>
+  );
+}
+
+// ✅ GOOD - Use React.memo for expensive components
+import { memo } from 'react';
+
+export const ProjectCard = memo(function ProjectCard({ project }: Props) {
+  return <div>...</div>;
+});
+```
+
+### 4. Code Splitting
+
+```typescript
+// ✅ GOOD - Dynamic imports for heavy components
+import dynamic from 'next/dynamic';
+
+const ParticleBackground = dynamic(
+  () => import('@/components/ParticleBackground'),
+  {
+    ssr: false,
+    loading: () => <div>Loading...</div>,
+  }
+);
+
+const AnalysisReport = dynamic(
+  () => import('@/components/AnalysisReport'),
+  {
+    loading: () => <Skeleton />,
+  }
 );
 ```
 
----
-
-## Caching Strategies
-
-### Cache Architecture
+### 5. Image Optimization
 
 ```typescript
-// backend/src/services/cache/cache.strategy.ts
+// ✅ GOOD - Use Next.js Image component
+import Image from 'next/image';
 
-export class CacheStrategy {
-  constructor(
-    private redis: RedisClient,
-    private config: CacheConfig
-  ) {}
+function UserAvatar({ user }: { user: User }) {
+  return (
+    <Image
+      src={user.avatar}
+      alt={user.name}
+      width={48}
+      height={48}
+      priority={false}
+      placeholder="blur"
+      blurDataURL="/placeholder.jpg"
+    />
+  );
+}
 
-  // Adaptive TTL based on content type
-  getTTL(type: CacheType): number {
-    const ttls = {
-      'analysis': 7200,      // 2 hours
-      'shot-suggestion': 1800, // 30 minutes
-      'chat': 600,           // 10 minutes
-      'characters': 3600,    // 1 hour
-    };
-    return ttls[type] || this.config.defaultTTL;
-  }
-
-  // Generate cache key
-  generateKey(prefix: string, params: Record<string, any>): string {
-    const sortedParams = Object.keys(params)
-      .sort()
-      .map(key => `${key}:${JSON.stringify(params[key])}`)
-      .join('|');
-
-    return `${prefix}:${hashString(sortedParams)}`;
-  }
-
-  // Stale-while-revalidate pattern
-  async getWithRevalidation<T>(
-    key: string,
-    fetchFn: () => Promise<T>,
-    ttl: number
-  ): Promise<T> {
-    const cached = await this.redis.get(key);
-
-    if (cached) {
-      const { value, timestamp } = JSON.parse(cached);
-      const age = Date.now() - timestamp;
-
-      // If stale, trigger background refresh
-      if (age > ttl * 0.8) {
-        this.refreshInBackground(key, fetchFn, ttl);
-      }
-
-      return value;
-    }
-
-    // No cache, fetch and store
-    const value = await fetchFn();
-    await this.set(key, value, ttl);
-    return value;
-  }
-
-  private async refreshInBackground<T>(
-    key: string,
-    fetchFn: () => Promise<T>,
-    ttl: number
-  ): Promise<void> {
-    try {
-      const value = await fetchFn();
-      await this.set(key, value, ttl);
-    } catch (error) {
-      console.error('Background refresh failed', error);
-    }
-  }
+// ❌ BAD - Regular img tag
+function UserAvatar({ user }) {
+  return <img src={user.avatar} alt={user.name} />;
 }
 ```
 
-### Cache Invalidation
+### 6. Bundle Size Optimization
 
 ```typescript
-// backend/src/services/cache/invalidation.strategy.ts
+// ✅ GOOD - Import only what you need
+import { formatDistance } from 'date-fns';
+import { debounce } from 'lodash-es';
 
-export class CacheInvalidation {
-  // Invalidate specific patterns
-  async invalidatePattern(pattern: string): Promise<void> {
-    const keys = await this.redis.keys(pattern);
-    if (keys.length > 0) {
-      await this.redis.del(...keys);
-    }
-  }
-
-  // Invalidate related caches
-  async invalidateRelated(entity: string, id: string): Promise<void> {
-    const patterns = [
-      `analysis:${entity}:${id}:*`,
-      `shot-suggestion:${entity}:${id}:*`,
-      `characters:${entity}:${id}:*`,
-    ];
-
-    await Promise.all(
-      patterns.map(pattern => this.invalidatePattern(pattern))
-    );
-  }
-
-  // Time-based invalidation
-  async invalidateOlderThan(seconds: number): Promise<void> {
-    const cutoff = Date.now() - (seconds * 1000);
-    const keys = await this.redis.keys('*');
-
-    for (const key of keys) {
-      const cached = await this.redis.get(key);
-      if (cached) {
-        const { timestamp } = JSON.parse(cached);
-        if (timestamp < cutoff) {
-          await this.redis.del(key);
-        }
-      }
-    }
-  }
-}
+// ❌ BAD - Import entire library
+import _ from 'lodash';
+import * as dateFns from 'date-fns';
 ```
 
 ---
 
-## Performance Tuning
+## Documentation Standards
 
-### Request Batching
+### 1. Code Comments
 
 ```typescript
-// backend/src/services/gemini/batch.processor.ts
+// ✅ GOOD - JSDoc for public APIs
+/**
+ * Analyzes a script using the Seven Stations pipeline
+ *
+ * @param scriptText - The script text to analyze
+ * @param options - Analysis options
+ * @param options.stations - Specific stations to run (default: all)
+ * @param options.async - Run analysis asynchronously via queue
+ * @returns Analysis results or job ID if async
+ *
+ * @example
+ * ```typescript
+ * const result = await analyzeScript('Script text here', {
+ *   stations: [1, 2, 3],
+ *   async: false
+ * });
+ * ```
+ *
+ * @throws {ValidationError} If script text is empty
+ * @throws {RateLimitError} If API rate limit exceeded
+ */
+export async function analyzeScript(
+  scriptText: string,
+  options?: AnalysisOptions
+): Promise<AnalysisResult | { jobId: string }> {
+  // Implementation
+}
 
-export class BatchProcessor {
-  private queue: Array<{
-    id: string;
-    prompt: string;
-    resolve: (value: any) => void;
-    reject: (error: any) => void;
-  }> = [];
+// ✅ GOOD - Inline comments for complex logic
+function calculateDramaScore(analysis: Analysis): number {
+  // Weight factors based on narrative impact research
+  const weights = {
+    characterDepth: 0.3,    // 30% - Character development is crucial
+    plotCoherence: 0.25,    // 25% - Story structure matters
+    dialogueQuality: 0.2,   // 20% - Dialogue drives scenes
+    pacing: 0.15,           // 15% - Rhythm and flow
+    themes: 0.1,            // 10% - Thematic depth
+  };
 
-  private batchSize = 5;
-  private batchTimeout = 1000; // ms
+  // Normalize scores to 0-10 range
+  const normalized = normalizeScores(analysis.metrics);
 
-  async process(prompt: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.queue.push({
-        id: generateId(),
-        prompt,
-        resolve,
-        reject,
-      });
+  // Calculate weighted average
+  return Object.entries(weights).reduce((score, [key, weight]) => {
+    return score + (normalized[key] * weight);
+  }, 0);
+}
 
-      if (this.queue.length >= this.batchSize) {
-        this.flush();
-      } else {
-        this.scheduleFlush();
-      }
-    });
-  }
+// ❌ BAD - Obvious or redundant comments
+// Increment counter by 1
+counter++;
 
-  private async flush(): Promise<void> {
-    if (this.queue.length === 0) return;
+// Get user
+const user = getUser();
 
-    const batch = this.queue.splice(0, this.batchSize);
-
-    try {
-      const results = await Promise.all(
-        batch.map(item =>
-          this.geminiService.generate(item.prompt)
-        )
-      );
-
-      batch.forEach((item, index) => {
-        item.resolve(results[index]);
-      });
-    } catch (error) {
-      batch.forEach(item => item.reject(error));
-    }
-  }
-
-  private scheduleFlush(): void {
-    setTimeout(() => this.flush(), this.batchTimeout);
-  }
+// Loop through projects
+for (const project of projects) {
+  // ...
 }
 ```
 
-### Async Processing with BullMQ
+### 2. README Files
 
-```typescript
-// backend/src/queues/analysis.queue.ts
+Each major module should have a README:
 
-import { Queue, Worker } from 'bullmq';
+```markdown
+# Module Name
 
-export class AnalysisQueue {
-  private queue: Queue;
-  private worker: Worker;
+Brief description of what this module does.
 
-  constructor(redis: RedisOptions) {
-    this.queue = new Queue('analysis', { connection: redis });
+## Usage
 
-    this.worker = new Worker(
-      'analysis',
-      async (job) => {
-        const { scriptId, scriptText } = job.data;
+\`\`\`typescript
+import { functionName } from '@/module';
 
-        // Update progress
-        await job.updateProgress(0);
+const result = functionName(params);
+\`\`\`
 
-        const results = [];
-        for (let station = 1; station <= 7; station++) {
-          const result = await this.analysisService.runStation(
-            station,
-            scriptText
-          );
-          results.push(result);
+## API Reference
 
-          // Update progress
-          await job.updateProgress((station / 7) * 100);
-        }
+### `functionName(param: Type): ReturnType`
 
-        return { scriptId, results };
-      },
-      { connection: redis }
-    );
-  }
+Description of what the function does.
 
-  async enqueue(scriptId: string, scriptText: string): Promise<string> {
-    const job = await this.queue.add(
-      'analyze-script',
-      { scriptId, scriptText },
-      {
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 5000,
-        },
-      }
-    );
+**Parameters:**
+- `param` (Type): Description
 
-    return job.id;
-  }
+**Returns:** Description of return value
 
-  async getStatus(jobId: string) {
-    const job = await this.queue.getJob(jobId);
-    if (!job) return null;
+**Example:**
+\`\`\`typescript
+const result = functionName('example');
+\`\`\`
 
-    const state = await job.getState();
-    const progress = job.progress;
+## Architecture
 
-    return { state, progress };
-  }
-}
+Explain the design decisions and architecture.
+
+## Testing
+
+How to run tests for this module.
+
+\`\`\`bash
+pnpm test src/module
+\`\`\`
+
+## Contributing
+
+Guidelines for contributing to this module.
 ```
 
-### Streaming Responses
+### 3. API Documentation
 
 ```typescript
-// backend/src/services/gemini/streaming.service.ts
-
-export class StreamingService {
-  async streamAnalysis(
-    scriptText: string,
-    onChunk: (chunk: PartialAnalysisResult) => void
-  ): Promise<void> {
-    const stream = await this.geminiService.generateContentStream({
-      prompt: this.buildPrompt(scriptText),
-    });
-
-    for await (const chunk of stream) {
-      const partialResult = this.parsePartialResponse(chunk);
-      onChunk(partialResult);
-    }
-  }
-}
-
-// Usage in Controller
-export class AnalysisController {
-  async streamAnalysis(req: Request, res: Response) {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-
-    const { scriptText } = req.body;
-
-    await this.streamingService.streamAnalysis(
-      scriptText,
-      (chunk) => {
-        res.write(`data: ${JSON.stringify(chunk)}\n\n`);
-      }
-    );
-
-    res.end();
-  }
-}
+// Use OpenAPI/Swagger comments
+/**
+ * @swagger
+ * /api/projects:
+ *   post:
+ *     summary: Create a new project
+ *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 minLength: 1
+ *                 maxLength: 200
+ *               description:
+ *                 type: string
+ *                 maxLength: 2000
+ *     responses:
+ *       201:
+ *         description: Project created successfully
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/projects', verifyToken, createProject);
 ```
 
 ---
 
 ## Error Handling
 
-### Error Types
+### 1. Error Types
 
 ```typescript
-// backend/src/errors/gemini.errors.ts
-
-export class GeminiError extends Error {
+// Define custom error classes
+export class AppError extends Error {
   constructor(
     message: string,
-    public code: string,
-    public retryable: boolean = false
+    public statusCode: number = 500,
+    public code: string = 'INTERNAL_ERROR',
+    public details?: unknown
   ) {
     super(message);
-    this.name = 'GeminiError';
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
   }
 }
 
-export class RateLimitError extends GeminiError {
-  constructor(retryAfter?: number) {
-    super(
-      `Rate limit exceeded${retryAfter ? `, retry after ${retryAfter}s` : ''}`,
-      'RATE_LIMIT_EXCEEDED',
-      true
-    );
-    this.retryAfter = retryAfter;
+export class ValidationError extends AppError {
+  constructor(message: string, details?: unknown) {
+    super(message, 400, 'VALIDATION_ERROR', details);
   }
-
-  retryAfter?: number;
 }
 
-export class InvalidResponseError extends GeminiError {
-  constructor(response: string) {
-    super('Invalid response format from Gemini', 'INVALID_RESPONSE', false);
-    this.response = response;
+export class NotFoundError extends AppError {
+  constructor(resource: string, id: string) {
+    super(`${resource} with id ${id} not found`, 404, 'NOT_FOUND');
   }
-
-  response: string;
 }
 
-export class TimeoutError extends GeminiError {
-  constructor(timeoutMs: number) {
-    super(`Request timed out after ${timeoutMs}ms`, 'TIMEOUT', true);
+export class UnauthorizedError extends AppError {
+  constructor(message: string = 'Unauthorized') {
+    super(message, 401, 'UNAUTHORIZED');
   }
 }
 ```
 
-### Error Recovery
+### 2. Error Handling Patterns
 
 ```typescript
-// backend/src/services/gemini/error-recovery.service.ts
+// ✅ GOOD - Explicit error handling
+async function getProject(projectId: string): Promise<Project> {
+  try {
+    const project = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.id, projectId))
+      .limit(1);
 
-export class ErrorRecoveryService {
-  async executeWithRetry<T>(
-    fn: () => Promise<T>,
-    options: RetryOptions = {}
-  ): Promise<T> {
-    const {
-      maxRetries = 3,
-      initialDelay = 1000,
-      maxDelay = 10000,
-      backoffMultiplier = 2,
-    } = options;
-
-    let lastError: Error;
-    let delay = initialDelay;
-
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      try {
-        return await fn();
-      } catch (error) {
-        lastError = error as Error;
-
-        // Don't retry non-retryable errors
-        if (error instanceof GeminiError && !error.retryable) {
-          throw error;
-        }
-
-        // Last attempt, throw error
-        if (attempt === maxRetries) {
-          throw error;
-        }
-
-        // Wait before retry
-        await this.sleep(Math.min(delay, maxDelay));
-        delay *= backoffMultiplier;
-
-        console.warn(`Retry attempt ${attempt + 1}/${maxRetries}`, error);
-      }
+    if (!project[0]) {
+      throw new NotFoundError('Project', projectId);
     }
 
-    throw lastError!;
-  }
-
-  private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-}
-```
-
-### Circuit Breaker
-
-```typescript
-// backend/src/services/gemini/circuit-breaker.ts
-
-export class CircuitBreaker {
-  private failures = 0;
-  private lastFailureTime?: number;
-  private state: 'closed' | 'open' | 'half-open' = 'closed';
-
-  constructor(
-    private threshold: number = 5,
-    private timeout: number = 60000 // 1 minute
-  ) {}
-
-  async execute<T>(fn: () => Promise<T>): Promise<T> {
-    if (this.state === 'open') {
-      if (Date.now() - this.lastFailureTime! > this.timeout) {
-        this.state = 'half-open';
-      } else {
-        throw new Error('Circuit breaker is open');
-      }
-    }
-
-    try {
-      const result = await fn();
-      this.onSuccess();
-      return result;
-    } catch (error) {
-      this.onFailure();
+    return project[0];
+  } catch (error) {
+    if (error instanceof AppError) {
       throw error;
     }
+
+    // Log unexpected errors
+    console.error('Unexpected error in getProject:', error);
+    Sentry.captureException(error);
+
+    throw new AppError('Failed to retrieve project');
   }
+}
 
-  private onSuccess(): void {
-    this.failures = 0;
-    this.state = 'closed';
-  }
-
-  private onFailure(): void {
-    this.failures++;
-    this.lastFailureTime = Date.now();
-
-    if (this.failures >= this.threshold) {
-      this.state = 'open';
-      console.error('Circuit breaker opened due to multiple failures');
-    }
+// ❌ BAD - Silent failures
+async function getProject(projectId: string) {
+  try {
+    const project = await db.select()...;
+    return project[0] || null; // Silent failure
+  } catch (error) {
+    return null; // Swallowing errors
   }
 }
 ```
 
----
-
-## Cost Optimization
-
-### Token Counting
+### 3. Global Error Handler (Express)
 
 ```typescript
-// backend/src/services/gemini/token-counter.ts
+// backend/src/middleware/error.middleware.ts
+import { Request, Response, NextFunction } from 'express';
+import { AppError } from '@/errors';
+import * as Sentry from '@sentry/node';
 
-export class TokenCounter {
-  // Approximate token count (1 token ≈ 4 characters for English, 2-3 for Arabic)
-  estimateTokens(text: string, language: 'ar' | 'en' = 'ar'): number {
-    const charsPerToken = language === 'ar' ? 2.5 : 4;
-    return Math.ceil(text.length / charsPerToken);
+export function errorHandler(
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  // Log error
+  console.error('Error:', error);
+
+  // Send to Sentry
+  if (process.env.NODE_ENV === 'production') {
+    Sentry.captureException(error);
   }
 
-  // Calculate cost
-  calculateCost(inputTokens: number, outputTokens: number): number {
-    // Gemini pricing (example)
-    const inputCostPer1k = 0.00025;  // $0.00025 per 1k input tokens
-    const outputCostPer1k = 0.0005;   // $0.0005 per 1k output tokens
-
-    const inputCost = (inputTokens / 1000) * inputCostPer1k;
-    const outputCost = (outputTokens / 1000) * outputCostPer1k;
-
-    return inputCost + outputCost;
-  }
-}
-```
-
-### Cost Monitoring
-
-```typescript
-// backend/src/services/monitoring/cost-monitor.ts
-
-export class CostMonitor {
-  private dailyCost = 0;
-  private dailyLimit: number;
-  private warningThreshold: number;
-
-  constructor() {
-    this.dailyLimit = parseFloat(process.env.GEMINI_COST_LIMIT_DAILY || '100');
-    this.warningThreshold = parseFloat(process.env.GEMINI_COST_WARNING_THRESHOLD || '0.8');
-  }
-
-  async trackRequest(
-    inputTokens: number,
-    outputTokens: number
-  ): Promise<void> {
-    const cost = this.tokenCounter.calculateCost(inputTokens, outputTokens);
-    this.dailyCost += cost;
-
-    // Store in Redis for persistence
-    await this.redis.incrByFloat('gemini:daily-cost', cost);
-
-    // Check thresholds
-    if (this.dailyCost >= this.dailyLimit) {
-      throw new Error('Daily cost limit exceeded');
-    }
-
-    if (this.dailyCost >= this.dailyLimit * this.warningThreshold) {
-      console.warn(`Cost warning: ${this.dailyCost}/${this.dailyLimit}`);
-      this.sendCostAlert('warning');
-    }
-
-    // Log metrics
-    await this.metricsService.recordMetric('gemini_cost', cost, {
-      type: 'incremental',
-      timestamp: Date.now(),
+  // Handle known errors
+  if (error instanceof AppError) {
+    return res.status(error.statusCode).json({
+      error: {
+        message: error.message,
+        code: error.code,
+        ...(process.env.NODE_ENV === 'development' && {
+          details: error.details,
+          stack: error.stack,
+        }),
+      },
     });
   }
 
-  async resetDailyCost(): Promise<void> {
-    this.dailyCost = 0;
-    await this.redis.set('gemini:daily-cost', 0);
-  }
-
-  // Run this daily via cron
-  async getDailyReport(): Promise<CostReport> {
-    const totalCost = await this.redis.get('gemini:daily-cost');
-    const requestCount = await this.redis.get('gemini:daily-requests');
-
-    return {
-      date: new Date().toISOString().split('T')[0],
-      totalCost: parseFloat(totalCost || '0'),
-      requestCount: parseInt(requestCount || '0'),
-      averageCostPerRequest: parseFloat(totalCost || '0') / parseInt(requestCount || '1'),
-    };
-  }
+  // Handle unknown errors
+  return res.status(500).json({
+    error: {
+      message: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && {
+        details: error.message,
+        stack: error.stack,
+      }),
+    },
+  });
 }
 ```
 
-### Smart Prompt Optimization
+### 4. React Error Boundaries
 
 ```typescript
-// backend/src/services/gemini/prompt-optimizer.ts
+// frontend/src/components/ErrorBoundary.tsx
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+import * as Sentry from '@sentry/react';
 
-export class PromptOptimizer {
-  // Reduce prompt size while maintaining quality
-  optimizePrompt(prompt: string, maxTokens: number): string {
-    const currentTokens = this.tokenCounter.estimateTokens(prompt);
+interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
+}
 
-    if (currentTokens <= maxTokens) {
-      return prompt;
-    }
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
 
-    // Remove examples if needed
-    let optimized = this.removeExamples(prompt);
-
-    if (this.tokenCounter.estimateTokens(optimized) <= maxTokens) {
-      return optimized;
-    }
-
-    // Shorten instructions
-    optimized = this.shortenInstructions(optimized);
-
-    if (this.tokenCounter.estimateTokens(optimized) <= maxTokens) {
-      return optimized;
-    }
-
-    // Truncate input text (last resort)
-    return this.truncateInput(optimized, maxTokens);
+export class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
   }
 
-  private removeExamples(prompt: string): string {
-    return prompt.replace(/\*\*أمثلة\*\*:[\s\S]*?(?=\*\*|$)/g, '');
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
   }
 
-  private shortenInstructions(prompt: string): string {
-    // Implement instruction shortening logic
-    return prompt;
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error('Error caught by boundary:', error, errorInfo);
+    Sentry.captureException(error, { contexts: { react: errorInfo } });
   }
 
-  private truncateInput(prompt: string, maxTokens: number): string {
-    const sections = this.splitPrompt(prompt);
-    const targetLength = Math.floor(maxTokens * 2.5); // Convert tokens to chars
+  override render(): ReactNode {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="error-boundary">
+          <h2>Something went wrong</h2>
+          <p>{this.state.error?.message}</p>
+        </div>
+      );
+    }
 
-    sections.input = sections.input.substring(0, targetLength);
-
-    return this.joinPromptSections(sections);
+    return this.props.children;
   }
 }
 ```
 
 ---
 
-## Best Practices
+## Code Review Checklist
 
-### 1. **Prompt Design**
+### Before Submitting PR
 
-✅ **DO**:
-- Use clear, specific instructions in Arabic
-- Provide examples for complex tasks
-- Specify output format explicitly (JSON/Markdown)
-- Include constraints (length, style, tone)
-- Use system instructions to define agent personality
+- [ ] Code compiles without errors (`pnpm typecheck`)
+- [ ] No linting warnings (`pnpm lint`)
+- [ ] All tests pass (`pnpm test`)
+- [ ] Build succeeds (`pnpm build`)
+- [ ] No console.log statements (use proper logging)
+- [ ] No commented-out code
+- [ ] No hardcoded secrets or credentials
+- [ ] Environment variables documented in .env.example
+- [ ] README updated if needed
+- [ ] Migration scripts added if DB schema changed
+- [ ] Self-review completed
 
-❌ **DON'T**:
-- Use ambiguous or vague instructions
-- Mix multiple unrelated tasks in one prompt
-- Assume the model knows your specific domain
-- Forget to specify the language (Arabic/English)
+### Reviewer Checklist
 
-### 2. **Performance**
+#### Code Quality
+- [ ] Code is readable and self-documenting
+- [ ] Functions are small and single-purpose
+- [ ] No code duplication (DRY principle)
+- [ ] Naming is clear and consistent
+- [ ] Comments explain "why", not "what"
 
-✅ **DO**:
-- Cache frequent requests
-- Use async processing for long tasks
-- Implement request batching
-- Stream responses for better UX
-- Monitor token usage and costs
+#### TypeScript
+- [ ] No use of `any` without justification
+- [ ] No `@ts-ignore` or `@ts-nocheck`
+- [ ] Proper types for all function parameters and returns
+- [ ] Interfaces used appropriately
+- [ ] No type assertions unless necessary
 
-❌ **DON'T**:
-- Make synchronous calls for long analyses
-- Ignore cache invalidation
-- Process all stations sequentially if parallel is possible
-- Forget timeout handling
+#### Testing
+- [ ] New features have tests
+- [ ] Bug fixes have regression tests
+- [ ] Test coverage meets requirements
+- [ ] Tests are meaningful (not just for coverage)
+- [ ] Mock external dependencies
 
-### 3. **Error Handling**
+#### Security
+- [ ] User input is validated
+- [ ] SQL injection prevention (parameterized queries)
+- [ ] XSS prevention (proper escaping)
+- [ ] Authentication/authorization checks
+- [ ] No sensitive data in logs
+- [ ] Rate limiting implemented where needed
 
-✅ **DO**:
-- Implement retry logic with exponential backoff
-- Use circuit breakers for external services
-- Provide fallback responses
-- Log errors with context
-- Validate responses before returning
+#### Performance
+- [ ] No N+1 query problems
+- [ ] Expensive operations are cached
+- [ ] Large components use code splitting
+- [ ] Images are optimized
+- [ ] No unnecessary re-renders
 
-❌ **DON'T**:
-- Retry non-retryable errors
-- Expose internal errors to users
-- Ignore rate limits
-- Skip response validation
-
-### 4. **Cost Management**
-
-✅ **DO**:
-- Set daily/monthly budgets
-- Monitor costs in real-time
-- Optimize prompts for token efficiency
-- Use appropriate model sizes
-- Implement rate limiting
-
-❌ **DON'T**:
-- Allow unlimited API calls
-- Ignore token counts
-- Use expensive models for simple tasks
-- Skip cost alerts
-
-### 5. **Testing**
-
-✅ **DO**:
-- Test prompts with various inputs
-- Validate response formats
-- Mock Gemini responses in tests
-- Test error scenarios
-- Monitor response quality
-
-❌ **DON'T**:
-- Skip integration tests
-- Ignore edge cases
-- Test only happy paths
-- Forget to test timeouts
+#### Documentation
+- [ ] Public APIs have JSDoc comments
+- [ ] Complex logic is explained
+- [ ] README updated if needed
+- [ ] Breaking changes documented
+- [ ] Migration guide for breaking changes
 
 ---
 
-## Configuration Examples
+## Quick Reference
 
-### Development Environment
+### Essential Commands
 
 ```bash
-# backend/.env.development
-GEMINI_MODEL=gemini-1.5-flash
-GEMINI_TEMPERATURE=0.7
-GEMINI_MAX_TOKENS=2048
-GEMINI_TIMEOUT_MS=15000
-CACHE_TTL_DEFAULT=300
-CACHE_ENABLED=true
-QUEUE_ENABLED=false
+# Frontend
+cd frontend
+pnpm dev              # Start dev server
+pnpm build            # Build for production
+pnpm typecheck        # Check TypeScript
+pnpm lint             # Run linter
+pnpm test             # Run tests
+pnpm test:e2e         # Run E2E tests
+
+# Backend
+cd backend
+pnpm dev              # Start dev server
+pnpm build            # Build TypeScript
+pnpm typecheck        # Check types
+pnpm lint             # Run linter
+pnpm test             # Run tests
+pnpm db:push          # Push schema to DB
+pnpm db:studio        # Open Drizzle Studio
+
+# Root
+pnpm lint             # Lint entire project
+pnpm typecheck        # Typecheck all packages
+pnpm test             # Run all tests
+pnpm ci               # Full CI pipeline
 ```
 
-### Production Environment
-
-```bash
-# backend/.env.production
-GEMINI_MODEL=gemini-1.5-pro
-GEMINI_TEMPERATURE=0.7
-GEMINI_MAX_TOKENS=4096
-GEMINI_TIMEOUT_MS=30000
-CACHE_TTL_DEFAULT=3600
-CACHE_ENABLED=true
-QUEUE_ENABLED=true
-GEMINI_MAX_REQUESTS_PER_MINUTE=60
-GEMINI_COST_LIMIT_DAILY=100.00
-RATE_LIMIT_ENABLED=true
-```
-
-### Testing Environment
-
-```bash
-# backend/.env.test
-GEMINI_MODEL=gemini-1.5-flash
-GEMINI_MOCK_ENABLED=true
-CACHE_ENABLED=false
-QUEUE_ENABLED=false
-RATE_LIMIT_ENABLED=false
-```
-
----
-
-## Monitoring & Metrics
-
-### Key Metrics to Track
+### Common Patterns
 
 ```typescript
-// backend/src/services/monitoring/metrics.service.ts
-
-export class MetricsService {
-  async recordMetrics(operation: string, data: {
-    duration: number;
-    inputTokens: number;
-    outputTokens: number;
-    cacheHit: boolean;
-    cost: number;
-  }) {
-    // Prometheus metrics
-    this.prometheus.histogram('gemini_request_duration', data.duration, {
-      operation,
-    });
-
-    this.prometheus.counter('gemini_tokens_total', data.inputTokens + data.outputTokens, {
-      type: 'total',
-      operation,
-    });
-
-    this.prometheus.counter('gemini_cache_hits', data.cacheHit ? 1 : 0, {
-      operation,
-    });
-
-    this.prometheus.gauge('gemini_daily_cost', data.cost);
-
-    // Sentry performance tracking
-    Sentry.startSpan({
-      op: 'gemini.request',
-      name: operation,
-    }, async () => {
-      // Request tracking
-    });
+// API call with error handling
+async function fetchData<T>(url: string): Promise<T> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch error:', error);
+    throw error;
   }
 }
+
+// React hook with TypeScript
+function useProject(projectId: string) {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['project', projectId],
+    queryFn: () => apiClient.getProject(projectId),
+    staleTime: 60000,
+  });
+
+  return { project: data, isLoading, error };
+}
+
+// Zod schema validation
+const projectSchema = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(2000).optional(),
+  status: z.enum(['draft', 'published', 'archived']),
+});
+
+type Project = z.infer<typeof projectSchema>;
 ```
-
-### Dashboard Queries
-
-```promql
-# Average response time
-rate(gemini_request_duration_sum[5m]) / rate(gemini_request_duration_count[5m])
-
-# Cache hit rate
-rate(gemini_cache_hits[5m]) / rate(gemini_requests_total[5m])
-
-# Daily cost
-sum(increase(gemini_daily_cost[1d]))
-
-# Error rate
-rate(gemini_errors_total[5m]) / rate(gemini_requests_total[5m])
-```
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-#### 1. Rate Limiting
-
-**Symptom**: `429 Too Many Requests` errors
-
-**Solution**:
-```typescript
-// Implement exponential backoff
-await this.errorRecovery.executeWithRetry(
-  () => geminiService.generate(prompt),
-  {
-    maxRetries: 5,
-    initialDelay: 2000,
-    maxDelay: 30000,
-  }
-);
-```
-
-#### 2. Timeout Errors
-
-**Symptom**: Requests hanging or timing out
-
-**Solution**:
-```typescript
-// Use queue for long-running tasks
-const jobId = await this.analysisQueue.enqueue(scriptId, scriptText);
-
-// Return job ID immediately, poll for results
-return { jobId, status: 'processing' };
-```
-
-#### 3. Invalid Response Format
-
-**Symptom**: JSON parsing errors
-
-**Solution**:
-```typescript
-// Add response validation and cleanup
-const cleanResponse = response
-  .replace(/```json\n/g, '')
-  .replace(/```\n/g, '')
-  .trim();
-
-const validated = validateStation1Response.parse(JSON.parse(cleanResponse));
-```
-
-#### 4. High Costs
-
-**Symptom**: Unexpected high API costs
-
-**Solution**:
-- Enable aggressive caching
-- Reduce max_tokens
-- Use flash model for non-critical tasks
-- Implement request quotas per user
 
 ---
 
 ## Resources
 
 ### Documentation
-- [Google Gemini API Docs](https://ai.google.dev/docs)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://react.dev)
+- [Drizzle ORM Documentation](https://orm.drizzle.team)
+
+### Tools
+- [ESLint](https://eslint.org/)
+- [Prettier](https://prettier.io/)
+- [Vitest](https://vitest.dev/)
+- [Playwright](https://playwright.dev/)
+
+### Project Docs
+- [README](./README.md)
+- [AGENTS.md](./AGENTS.md) - AI Agent behavior
 - [Backend Documentation](./backend/BACKEND_DOCUMENTATION.md)
 - [Performance Optimization](./docs/performance-optimization/README.md)
-
-### Code Locations
-- **Services**: `backend/src/services/gemini/`
-- **Controllers**: `backend/src/controllers/`
-- **Types**: `backend/src/types/gemini.types.ts`
-- **Config**: `backend/src/config/gemini.config.ts`
-
-### Support
-- GitHub Issues: [Report a bug](https://github.com/your-username/the-copy/issues)
-- Documentation: [/docs](/docs)
 
 ---
 
@@ -1383,20 +1680,15 @@ const validated = validateStation1Response.parse(JSON.parse(cleanResponse));
 
 ## الخلاصة
 
-هذا الدليل يوفر إطاراً شاملاً للتحكم في سلوك ونتائج الوكلاء الذكيين في منصة "النسخة". باتباع أفضل الممارسات المذكورة، يمكنك:
+هذا الدليل يوفر إطاراً شاملاً لتطوير تطبيق "النسخة" بجودة عالية. الالتزام بهذه القواعد يضمن:
 
-- ✅ تحسين جودة التحليلات الدرامية
-- ✅ تقليل التكاليف التشغيلية
-- ✅ تحسين الأداء والاستجابة
-- ✅ ضمان الموثوقية والاستقرار
-- ✅ توفير تجربة مستخدم متميزة
+- ✅ كود نظيف وقابل للصيانة
+- ✅ أمان قوي
+- ✅ أداء محسّن
+- ✅ اختبارات شاملة
+- ✅ توثيق واضح
+- ✅ تعاون فعّال بين الفريق
 
-للمزيد من المعلومات أو المساعدة، راجع الوثائق التقنية أو تواصل مع فريق التطوير.
+للأسئلة أو الاقتراحات، افتح issue على GitHub أو راجع الوثائق التقنية.
 
 </div>
-
----
-
-**Version**: 1.0.0
-**Last Updated**: 2025-11-14
-**Maintainer**: The Copy Team
