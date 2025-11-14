@@ -1,4 +1,4 @@
-# Cagent_RULES.md - Development Guidelines for Coding Agents
+# agent_RULES.md - Development Guidelines for Coding Agents
 
 <div dir="rtl">
 
