@@ -20,7 +20,7 @@ vi.mock('ioredis', () => {
   };
 });
 
-// Mock logger
+// Mock logger - must match the actual logger export structure
 vi.mock('@/utils/logger', () => ({
   logger: {
     info: vi.fn(),

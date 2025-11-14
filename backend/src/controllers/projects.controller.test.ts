@@ -6,21 +6,25 @@ import { z } from 'zod';
 // Mock dependencies
 vi.mock('@/db', () => ({
   db: {
-    select: vi.fn().mockReturnThis(),
-    from: vi.fn().mockReturnThis(),
-    where: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockReturnThis(),
-    update: vi.fn().mockReturnThis(),
-    delete: vi.fn().mockReturnThis(),
-    values: vi.fn().mockReturnThis(),
-    returning: vi.fn().mockReturnThis(),
-    orderBy: vi.fn().mockReturnThis(),
-    and: vi.fn().mockReturnThis(),
+    select: vi.fn(),
+    from: vi.fn(),
+    where: vi.fn(),
+    insert: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+    values: vi.fn(),
+    returning: vi.fn(),
+    orderBy: vi.fn(),
+    set: vi.fn(),
   },
 }));
 
 vi.mock('@/db/schema', () => ({
-  projects: { id: 'projects.id', userId: 'projects.userId' },
+  projects: { 
+    id: 'projects.id', 
+    userId: 'projects.userId',
+    updatedAt: 'projects.updatedAt'
+  },
 }));
 
 vi.mock('@/services/analysis.service', () => ({
@@ -33,6 +37,8 @@ vi.mock('@/utils/logger', () => ({
   logger: {
     info: vi.fn(),
     error: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
   },
 }));
 
@@ -63,6 +69,18 @@ describe('ProjectsController', () => {
     mockDb = dbModule.db;
 
     vi.clearAllMocks();
+    
+    // Reset all mock implementations to return this for chaining
+    mockDb.select.mockReturnValue(mockDb);
+    mockDb.from.mockReturnValue(mockDb);
+    mockDb.where.mockReturnValue(mockDb);
+    mockDb.insert.mockReturnValue(mockDb);
+    mockDb.update.mockReturnValue(mockDb);
+    mockDb.delete.mockReturnValue(mockDb);
+    mockDb.values.mockReturnValue(mockDb);
+    mockDb.returning.mockReturnValue(mockDb);
+    mockDb.orderBy.mockReturnValue(mockDb);
+    mockDb.set.mockReturnValue(mockDb);
   });
 
   describe('getProjects', () => {
@@ -72,13 +90,7 @@ describe('ProjectsController', () => {
         { id: 'project-2', title: 'Project 2', userId: 'user-123' },
       ];
 
-      mockDb.select.mockReturnValueOnce({
-        from: vi.fn().mockReturnValueOnce({
-          where: vi.fn().mockReturnValueOnce({
-            orderBy: vi.fn().mockReturnValueOnce(mockProjects),
-          }),
-        }),
-      });
+      mockDb.orderBy.mockResolvedValueOnce(mockProjects);
 
       await projectsController.getProjects(
         mockRequest as any,
