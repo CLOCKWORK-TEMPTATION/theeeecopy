@@ -211,3 +211,84 @@ jobs:
         name: performance-budget-report
         path: frontend/performance-budget-report.md
         retention-days: 30
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+
+    - name: Install pnpm
+      run: npm install -g pnpm
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Install Playwright Browsers
+      run: |
+        cd frontend
+        npx playwright install --with-deps chromium
+
+    - name: Build Frontend
+      run: pnpm --filter frontend build
+      env:
+        SKIP_SENTRY: true
+
+    - name: Build Backend
+      run: pnpm --filter backend build
+
+    - name: Start Backend Server
+      run: |
+        cd backend
+        pnpm start &
+        sleep 5
+      env:
+        NODE_ENV: test
+        PORT: 3001
+
+    - name: Start Frontend Server
+      run: |
+        cd frontend
+        pnpm start &
+        sleep 10
+      env:
+        NODE_ENV: production
+        PORT: 3000
+        NEXT_PUBLIC_API_URL: http://localhost:3001
+
+    - name: Wait for servers
+      run: |
+        npx wait-on http://localhost:3000 http://localhost:3001/api/health -t 60000
+
+    - name: Run E2E Tests
+      run: |
+        cd frontend
+        npx playwright test --project=chromium
+      env:
+        CI: true
+
+    - name: Upload E2E Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: e2e-test-results
+        path: |
+          frontend/reports/e2e/
+          frontend/test-results/
+        retention-days: 30
+
+    - name: Upload E2E Screenshots
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: e2e-screenshots
+        path: frontend/test-results/
+        retention-days: 7
