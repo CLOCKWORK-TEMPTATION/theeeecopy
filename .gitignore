@@ -20,6 +20,8 @@
 **/.eggs/
 **/lib/
 **/lib64/
+# Exception for frontend src lib directories (TypeScript code)
+!frontend/src/**/lib/
 **/parts/
 **/sdist/
 **/var/
