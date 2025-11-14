@@ -122,13 +122,37 @@ class WebSocketService {
 
   /**
    * Handle client authentication
+   *
+   * ⚠️ SECURITY WARNING: DEV STUB - NO AUTHENTICATION
+   * Current implementation accepts userId without verification
+   *
+   * 🚨 CRITICAL TODO PRODUCTION: Implement JWT verification
+   *
+   * Production implementation MUST:
+   * 1. Verify JWT token signature using secret key
+   * 2. Check token expiration
+   * 3. Validate token claims (issuer, audience, etc.)
+   * 4. Rate limit authentication attempts
+   * 5. Log authentication failures for security monitoring
+   *
+   * Example production implementation:
+   * ```
+   * import jwt from 'jsonwebtoken';
+   * const decoded = jwt.verify(data.token, process.env.JWT_SECRET);
+   * socket.userId = decoded.userId;
+   * ```
    */
   private handleAuthentication(
     socket: AuthenticatedSocket,
     data: { token?: string; userId?: string }
   ): void {
-    // TODO: Implement proper JWT verification here
-    // For now, we'll accept userId directly
+    // 🚨 DEV MODE ONLY: Accepting userId without verification
+    // This is UNSAFE for production and must be replaced
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('[DEV STUB] WebSocket authentication: bypassing JWT verification');
+    }
+
+    // TODO PRODUCTION: Replace with actual JWT verification
     if (data.userId) {
       socket.userId = data.userId;
       socket.authenticated = true;

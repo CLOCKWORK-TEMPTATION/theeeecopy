@@ -81,6 +81,7 @@
     "_analysis/**",
     "**/__tests__/**",
     "**/__mocks__/**",
-    "src/workers/**"
+    "src/workers/**",
+    "src/app/(main)/development/**"
   ]
 }

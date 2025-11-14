@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Film, Users, Camera, CheckCircle } from "lucide-react";
 
@@ -47,7 +48,7 @@ export default function ProjectStats({
   completedScenes
 }: ProjectStatsProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4" data-testid="project-stats">
       <StatCard
         title="إجمالي المشاهد"
         value={totalScenes}

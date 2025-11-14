@@ -215,9 +215,28 @@ export class PipelineOrchestrator {
 
 /**
  * Submit a task to the executor
+ *
+ * DEV STUB: Currently returns mock submission response
+ * TODO PRODUCTION: Implement actual task queue integration
+ *
+ * Production implementation should:
+ * 1. Validate taskRequest structure
+ * 2. Submit to task queue (Redis Queue, BullMQ, etc.)
+ * 3. Return actual task ID from queue
+ * 4. Track task state in database
  */
 export async function submitTask(taskRequest: any): Promise<any> {
-  // TODO: Implement actual task submission logic
+  // Development mode: return mock response
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn('[DEV STUB] submitTask: returning mock response');
+  }
+
+  // TODO PRODUCTION: Implement actual task submission
+  // Example:
+  // const taskId = await taskQueue.add('analysis', taskRequest);
+  // await db.tasks.create({ id: taskId, status: 'queued', data: taskRequest });
+  // return { success: true, taskId, status: 'queued' };
+
   return {
     success: true,
     taskId: `task_${Date.now()}`,
