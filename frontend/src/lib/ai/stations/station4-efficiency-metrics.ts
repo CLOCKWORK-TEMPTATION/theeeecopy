@@ -647,6 +647,18 @@ export class Station4EfficiencyMetrics extends BaseStation<
     );
   }
 
+  /**
+   * Check constitutional compliance of analysis
+   *
+   * DEV STUB: Always returns compliant
+   * TODO PRODUCTION: Implement actual constitutional AI validation
+   *
+   * Production implementation should:
+   * 1. Validate analysis against constitutional AI principles
+   * 2. Check for bias, fairness, and ethical considerations
+   * 3. Apply corrections if needed
+   * 4. Calculate improvement score
+   */
   private async checkConstitutionalCompliance(
     analysis: string,
     originalText: string
@@ -656,8 +668,8 @@ export class Station4EfficiencyMetrics extends BaseStation<
     improvementScore: number;
   }> {
     try {
-      // Constitutional AI check - placeholder implementation
-      // TODO: Implement constitutional AI check
+      // DEV MODE: Placeholder - always returns compliant
+      // TODO PRODUCTION: Implement constitutional AI check
       return {
         compliant: true,
         correctedAnalysis: analysis,
@@ -673,13 +685,25 @@ export class Station4EfficiencyMetrics extends BaseStation<
     }
   }
 
+  /**
+   * Quantify uncertainty in analysis results
+   *
+   * DEV STUB: Returns fixed confidence score
+   * TODO PRODUCTION: Implement statistical uncertainty quantification
+   *
+   * Production implementation should:
+   * 1. Calculate epistemic and aleatoric uncertainties
+   * 2. Measure confidence intervals for metrics
+   * 3. Identify areas with insufficient data
+   * 4. Provide statistical backing for confidence scores
+   */
   private async quantifyUncertainty(
     analysis: string,
     originalText: string
   ): Promise<UncertaintyReport> {
     try {
-      // Uncertainty quantification - placeholder implementation
-      // TODO: Implement proper uncertainty quantification
+      // DEV MODE: Placeholder - returns fixed confidence
+      // TODO PRODUCTION: Implement proper uncertainty quantification
       return {
         overallConfidence: 0.8,
         uncertainties: [
