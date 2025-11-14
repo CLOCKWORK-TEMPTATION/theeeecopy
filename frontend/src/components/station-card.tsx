@@ -12,7 +12,7 @@ import {
 import { useState, memo, useMemo, useCallback } from "react";
 
 import { cn } from "@/lib/utils";
-import { toText } from "@/lib/ai/gemini-core";
+import { toText } from "@/ai/gemini-core";
 import { Badge } from "./ui/badge";
 import {
   Card,

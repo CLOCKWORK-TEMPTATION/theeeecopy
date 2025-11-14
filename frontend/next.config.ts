@@ -238,6 +238,31 @@ const nextConfig = {
   images: {
     remotePatterns: remoteImagePatterns,
   },
+
+  // Webpack configuration for handling Node.js built-in modules
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Don't resolve Node.js modules on client side
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        dns: false,
+        http2: false,
+        child_process: false,
+        stream: false,
+        crypto: false,
+        path: false,
+        os: false,
+        dgram: false,
+        async_hooks: false,
+        'node:async_hooks': false,
+        'graceful-fs': false,
+      };
+    }
+    return config;
+  },
 };
 
 // Sentry configuration
