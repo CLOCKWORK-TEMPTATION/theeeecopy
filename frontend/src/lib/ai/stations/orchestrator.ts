@@ -140,14 +140,13 @@ export class StationsOrchestrator {
           "Text Analysis",
           async () => {
             const station1 = new Station1TextAnalysis(
-              this.createStationConfig(1, "Text Analysis"),
               this.geminiService
             );
-            const result = await station1.execute({
-              fullText,
+            const result = await station1.run({
+              text: fullText,
               projectName,
             });
-            return result.output;
+            return result.result as Station1Output;
           }
         );
         if (station1Output) {
@@ -169,14 +168,13 @@ export class StationsOrchestrator {
               throw new Error("Station 1 output is required for Station 2");
             }
             const station2 = new Station2ConceptualAnalysis(
-              this.createStationConfig(2, "Conceptual Analysis"),
               this.geminiService
             );
-            const result = await station2.execute({
+            const result = await station2.run({
+              text: fullText,
               station1Output: stationOutputs.station1,
-              fullText,
-            });
-            return result.output;
+            } as any);
+            return result.result as Station2Output;
           }
         );
         if (station2Output) {
@@ -200,15 +198,14 @@ export class StationsOrchestrator {
               );
             }
             const station3 = new Station3NetworkBuilder(
-              this.createStationConfig(3, "Network Builder"),
               this.geminiService
             );
-            const result = await station3.execute({
+            const result = await station3.run({
+              text: fullText,
               station1Output: stationOutputs.station1,
               station2Output: stationOutputs.station2,
-              fullText,
-            });
-            return result.output;
+            } as any);
+            return result.result as Station3Output;
           }
         );
         if (station3Output) {
@@ -230,7 +227,15 @@ export class StationsOrchestrator {
               throw new Error("Station 3 output is required for Station 4");
             }
             const station4 = new Station4EfficiencyMetrics(
-              this.createStationConfig(4, "Efficiency Metrics"),
+              {
+                stationId: "station4",
+                name: "Efficiency Metrics",
+                description: "Efficiency Metrics",
+                cacheEnabled: this.enableCaching,
+                performanceTracking: true,
+                inputValidation: (input) => !!input,
+                outputValidation: (output) => !!output,
+              },
               this.geminiService
             );
             const result = await station4.execute({
@@ -261,10 +266,15 @@ export class StationsOrchestrator {
               );
             }
             const station5 = new Station5DynamicSymbolicStylistic(
-              this.createStationConfig(
-                5,
-                "Dynamic/Symbolic/Stylistic Analysis"
-              ),
+              {
+                stationId: "station5",
+                name: "Dynamic/Symbolic/Stylistic Analysis",
+                description: "Dynamic/Symbolic/Stylistic Analysis",
+                cacheEnabled: this.enableCaching,
+                performanceTracking: true,
+                inputValidation: (input) => !!input,
+                outputValidation: (output) => !!output,
+              },
               this.geminiService
             );
             const result = await station5.execute({
@@ -290,20 +300,26 @@ export class StationsOrchestrator {
           6,
           "Diagnostics & Treatment",
           async () => {
-            if (!stationOutputs.station3 || !stationOutputs.station5) {
+            if (
+              !stationOutputs.station1 ||
+              !stationOutputs.station2 ||
+              !stationOutputs.station3 ||
+              !stationOutputs.station4 ||
+              !stationOutputs.station5
+            ) {
               throw new Error(
-                "Station 3 and 5 outputs are required for Station 6"
+                "All previous station outputs are required for Station 6"
               );
             }
-            const station6 = new Station6Diagnostics(
-              this.createStationConfig(6, "Diagnostics & Treatment"),
-              this.geminiService
-            );
-            const result = await station6.execute({
-              conflictNetwork: stationOutputs.station3.conflictNetwork,
-              station5Output: stationOutputs.station5,
+            const station6 = new Station6Diagnostics(this.geminiService);
+            const result = await station6.execute(fullText, {
+              station1: stationOutputs.station1,
+              station2: stationOutputs.station2,
+              station3: stationOutputs.station3,
+              station4: stationOutputs.station4,
+              station5: stationOutputs.station5,
             });
-            return result.output;
+            return result;
           }
         );
         if (station6Output) {
@@ -327,7 +343,15 @@ export class StationsOrchestrator {
               );
             }
             const station7 = new Station7Finalization(
-              this.createStationConfig(7, "Finalization & Visualization"),
+              {
+                stationId: "station7",
+                name: "Finalization & Visualization",
+                description: "Finalization & Visualization",
+                cacheEnabled: this.enableCaching,
+                performanceTracking: true,
+                inputValidation: (input) => !!input,
+                outputValidation: (output) => !!output,
+              },
               this.geminiService,
               this.outputDirectory
             );
@@ -487,20 +511,6 @@ export class StationsOrchestrator {
     return null;
   }
 
-  private createStationConfig(
-    stationNumber: number,
-    stationName: string
-  ): StationConfig<any, any> {
-    return {
-      stationId: `station${stationNumber}`,
-      name: stationName,
-      description: stationName,
-      cacheEnabled: this.enableCaching,
-      performanceTracking: true,
-      inputValidation: (input) => !!input,
-      outputValidation: (output) => !!output,
-    };
-  }
 
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));

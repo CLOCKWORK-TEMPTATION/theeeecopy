@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getCached, invalidateCache } from '@/lib/redis';
+import { getCached, setCached, invalidateCache } from '@/lib/redis';
 
 export interface CacheOptions {
   /** Cache key prefix */
@@ -55,29 +55,33 @@ export function withCache<T = any>(
 
     try {
       // Try to get from cache
-      const cached = await getCached<T>(
-        cacheKey,
-        async () => {
-          // If not in cache, execute handler
-          const response = await handler(request);
+      const cached = await getCached<T>(cacheKey);
 
-          // Only cache successful responses
-          if (response.status >= 200 && response.status < 300) {
-            return await response.json();
-          }
+      if (cached) {
+        return NextResponse.json(cached, {
+          headers: {
+            'X-Cache': 'HIT',
+            'Cache-Control': `public, s-maxage=${ttl}, stale-while-revalidate=${ttl * 2}`,
+          },
+        }) as NextResponse<T>;
+      }
 
-          throw new Error('Non-cacheable response');
-        },
-        ttl
-      );
+      // If not in cache, execute handler
+      const response = await handler(request);
 
-      // Return cached response
-      return NextResponse.json(cached || null, {
-        headers: {
-          'X-Cache': 'HIT',
-          'Cache-Control': `public, s-maxage=${ttl}, stale-while-revalidate=${ttl * 2}`,
-        },
-      }) as NextResponse<T>;
+      // Only cache successful responses
+      if (response.status >= 200 && response.status < 300) {
+        const data = await response.json();
+        await setCached(cacheKey, data, { ttl });
+        return NextResponse.json(data, {
+          headers: {
+            'X-Cache': 'MISS',
+            'Cache-Control': `public, s-maxage=${ttl}, stale-while-revalidate=${ttl * 2}`,
+          },
+        }) as NextResponse<T>;
+      }
+
+      return response as NextResponse<T>;
     } catch (error) {
       // If caching fails, execute handler normally
       const response = await handler(request);

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { geminiService as getGeminiService, GEMINI_MODELS as GeminiModel } from '@/ai/gemini-service';
+import { GeminiService } from '@/ai/gemini-service';
 
 /**
  * POST /api/cineai/generate-shots
@@ -24,12 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Initialize Gemini service
-    const geminiService = getGeminiService({
-      apiKey,
-      defaultModel: GeminiModel.FLASH,
-      maxRetries: 3,
-      timeout: 30000,
-    });
+    const geminiService = new GeminiService(apiKey);
 
     // Generate shot list using AI
     const systemInstruction = `أنت خبير في التصوير السينمائي وتخطيط اللقطات. قم بتحليل النص المقدم واقترح قائمة لقطات احترافية.
@@ -50,18 +45,18 @@ Return the response as a JSON array of shot objects with the following structure
 
 Provide 5-8 shots that cover the key moments in the script.`;
 
-    const prompt = `النص السينمائي / Script:
+    const prompt = `${systemInstruction}
+
+النص السينمائي / Script:
 
 ${script}
 
 قم بإنشاء قائمة لقطات احترافية لهذا النص، مع مراعاة التدفق السردي والانتقالات البصرية.
 Generate a professional shot list for this script, considering narrative flow and visual transitions.`;
 
-    const response = await geminiService.generateContent(prompt, {
-      systemInstruction,
-      temperature: 0.7,
-      maxTokens: 4096,
-    });
+    const model = geminiService.getModel('gemini-1.5-flash', 'creative');
+    const result = await model.generateContent(prompt);
+    const response = result.response.text();
 
     // Parse the AI response
     let shots;

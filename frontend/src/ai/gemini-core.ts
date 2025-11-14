@@ -4,6 +4,11 @@
 import { analyzeScript, getShotSuggestion, chatWithAI } from '@/lib/api';
 
 /**
+ * Model identifier type
+ */
+export type ModelId = 'gemini-1.5-flash' | 'gemini-1.5-pro' | 'gemini-pro' | 'gemini-flash';
+
+/**
  * Convert Gemini response to plain text
  */
 export function toText(response: any): string {
@@ -11,6 +16,35 @@ export function toText(response: any): string {
   if (response?.text) return response.text;
   if (response?.response?.text) return response.response.text();
   return JSON.stringify(response);
+}
+
+/**
+ * Safe string substitution helper
+ */
+export function safeSub(template: string, values: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (match, key) => {
+    return values[key] !== undefined ? values[key] : match;
+  });
+}
+
+/**
+ * Call Gemini with text prompt
+ */
+export async function callGeminiText(
+  prompt: string,
+  options?: {
+    model?: ModelId;
+    temperature?: number;
+    maxTokens?: number;
+  }
+): Promise<string> {
+  try {
+    const response = await geminiCore.chatWithAI(prompt);
+    return toText(response);
+  } catch (error) {
+    console.error('Failed to call Gemini:', error);
+    throw error;
+  }
 }
 
 // Core Gemini functions that call Backend API
@@ -48,7 +82,7 @@ export const geminiCore = {
   // Chat with AI via Backend
   async chatWithAI(message: string, context?: Record<string, unknown>) {
     try {
-      const response = await chatWithAI(message, context);
+      const response = await chatWithAI(message, JSON.stringify(context));
       return response.data;
     } catch (error) {
       console.error('Failed to chat with AI:', error);
@@ -70,19 +104,6 @@ export async function streamFlash(
   }
 
   return response.message || response.content || response;
-}
-
-/**
- * Convert AI response to text
- */
-export function toText(response: any): string {
-  if (typeof response === 'string') {
-    return response;
-  }
-  if (response && typeof response === 'object') {
-    return response.content || response.message || response.text || JSON.stringify(response);
-  }
-  return String(response);
 }
 
 export default geminiCore;

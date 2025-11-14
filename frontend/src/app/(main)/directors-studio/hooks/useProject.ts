@@ -177,7 +177,7 @@ export function useSceneShots(
   return useQuery({
     queryKey: ["/api/scenes", sceneId, "shots"],
     queryFn: () => api.getSceneShots(sceneId!),
-    enabled: !!projectId && !!sceneId,
+    enabled: !!sceneId,
   });
 }
 

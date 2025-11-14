@@ -101,9 +101,9 @@ export class PipelineOrchestrator {
     const startTime = Date.now();
 
     try {
-      const cacheKey = `analysis:${step.id}:${step.type}`;
+      const cacheKey = generateGeminiCacheKey(`analysis:${step.id}:${step.type}`, 'gemini-1.5-flash', inputData);
 
-      const result = await getCached(
+      const result = await cachedGeminiCall(
         cacheKey,
         async () => {
           const model = geminiService.getModel('gemini-1.5-flash', 'analysis');
@@ -114,7 +114,7 @@ export class PipelineOrchestrator {
           const response = await model.generateContent(prompt);
           return response.response.text();
         },
-        1800 // 30 minutes TTL
+        { ttl: 1800 } // 30 minutes TTL
       );
 
       return {

@@ -73,6 +73,59 @@ interface AutoRefreshConfig {
   interval: number; // in milliseconds
 }
 
+interface HealthStatusType {
+  status: "healthy" | "degraded" | "critical";
+}
+
+interface DashboardDataType {
+  overview: {
+    totalRequests: number;
+    errorRate: number;
+    avgResponseTime: number;
+    cacheHitRatio: number;
+  };
+  queue: {
+    active: number;
+    completed: number;
+    failed: number;
+    total: number;
+  };
+  resources: {
+    concurrentRequests: number;
+    cpu: {
+      usage: number;
+    };
+    memory: {
+      used: number;
+      total: number;
+      percent: number;
+    };
+  };
+  database: {
+    totalQueries: number;
+    avgDuration: number;
+    slowQueries: number;
+  };
+  gemini: {
+    totalRequests: number;
+    cacheHitRatio: number;
+  };
+  redis: {
+    memoryUsage: number;
+  };
+}
+
+interface ReportDataType {
+  alerts?: Array<{
+    message: string;
+    metric: string;
+    value: number;
+    threshold: number;
+    severity: "critical" | "warning" | "info";
+  }>;
+  recommendations?: string[];
+}
+
 export default function SystemMetricsDashboard() {
   const [autoRefresh, setAutoRefresh] = useState<AutoRefreshConfig>({
     enabled: true,
@@ -90,19 +143,33 @@ export default function SystemMetricsDashboard() {
     dataUpdatedAt,
   } = useDashboardSummary(
     autoRefresh.enabled ? autoRefresh.interval : undefined
-  );
+  ) as {
+    data: DashboardDataType | undefined;
+    isLoading: boolean;
+    error: Error | null;
+    refetch: () => void;
+    dataUpdatedAt: number | undefined;
+  };
 
   const {
     data: healthData,
     isLoading: isHealthLoading,
     refetch: refetchHealth,
-  } = useHealthStatus(autoRefresh.enabled ? 15000 : undefined);
+  } = useHealthStatus(autoRefresh.enabled ? 15000 : undefined) as {
+    data: HealthStatusType | undefined;
+    isLoading: boolean;
+    refetch: () => void;
+  };
 
   const {
     data: reportData,
     isLoading: isReportLoading,
     refetch: refetchReport,
-  } = usePerformanceReport();
+  } = usePerformanceReport() as {
+    data: ReportDataType | undefined;
+    isLoading: boolean;
+    refetch: () => void;
+  };
 
   const isLoading = isDashboardLoading || isHealthLoading || isReportLoading;
 
@@ -501,7 +568,7 @@ export default function SystemMetricsDashboard() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, value }) => `${name}: ${value}`}
+                    label={({ name, value }: { name: string; value: number }) => `${name}: ${value}`}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"

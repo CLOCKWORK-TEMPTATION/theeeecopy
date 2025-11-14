@@ -433,11 +433,11 @@ export class NetworkDiagnostics {
 
   private suggestConnectionsForCharacter(characterId: string): string[] {
     const suggestions: string[] = [];
-    const character = this.network.characters[characterId];
+    const character = this.network.characters.get(characterId);
 
     if (character) {
       // Find characters with similar traits or roles
-      for (const [otherCharId, otherChar] of Object.entries(this.network.characters)) {
+      for (const [otherCharId, otherChar] of this.network.characters.entries()) {
         if (otherCharId !== characterId) {
           suggestions.push(`ربط مع الشخصية: ${otherChar.name}`);
           if (suggestions.length >= 3) break;

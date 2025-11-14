@@ -1,4 +1,4 @@
-import { TaskType } from "@core/enums";
+import { TaskType } from "@core/types";
 import { BaseAgent } from "../shared/BaseAgent";
 import {
   StandardAgentInput,
@@ -18,7 +18,7 @@ export class CompletionAgent extends BaseAgent {
     super(
       "NarrativeContinuum AI",
       TaskType.COMPLETION,
-      COMPLETION_AGENT_CONFIG.systemPrompt
+      COMPLETION_AGENT_CONFIG.systemPrompt || ""
     );
 
     // Set agent-specific confidence floor

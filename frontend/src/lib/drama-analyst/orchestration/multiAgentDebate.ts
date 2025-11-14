@@ -191,8 +191,12 @@ ${JSON.stringify(context, null, 2).substring(0, 2000)}
     const similarities: number[] = [];
 
     for (let i = 0; i < texts.length - 1; i++) {
-      const words1 = new Set(texts[i].toLowerCase().split(/\s+/));
-      const words2 = new Set(texts[i + 1].toLowerCase().split(/\s+/));
+      const text1 = texts[i];
+      const text2 = texts[i + 1];
+      if (!text1 || !text2) continue;
+
+      const words1 = new Set(text1.toLowerCase().split(/\s+/));
+      const words2 = new Set(text2.toLowerCase().split(/\s+/));
 
       const intersection = new Set([...words1].filter((x) => words2.has(x)));
       const union = new Set([...words1, ...words2]);

@@ -2,20 +2,43 @@ import { BaseStation, type StationConfig } from "../core/pipeline/base-station";
 import {
   ConflictNetwork,
   Conflict,
-  ConflictPhase,
   NetworkSnapshot,
 } from "../core/models/base-entities";
 import { GeminiService, GeminiModel } from "./gemini-service";
 import { Station4Output } from "./station4-efficiency-metrics";
-import { toText, safeSub } from "../gemini-core";
+import { toText } from "../gemini-core";
 import {
-  ConstitutionalCheckResult,
-  checkConstitutionalCompliance,
-  UncertaintyMetrics,
-  uncertaintyQuantificationEngine,
   DebateResult,
+  getMultiAgentDebateSystem,
   MultiAgentDebateSystem,
-} from "../constitutional";
+} from "../constitutional/multi-agent-debate";
+import {
+  getUncertaintyQuantificationEngine,
+  UncertaintyQuantificationEngine,
+} from "../constitutional/uncertainty-quantification";
+import { checkConstitutionalCompliance } from "../constitutional/principles";
+
+// Define ConflictPhase enum for conflict progression tracking
+enum ConflictPhaseEnum {
+  LATENT = "latent",
+  EMERGING = "emerging",
+  ESCALATING = "escalating",
+  CLIMAX = "climax",
+  DEESCALATING = "deescalating",
+  RESOLUTION = "resolution",
+  AFTERMATH = "aftermath",
+}
+
+// Extend Conflict interface to include phase property
+interface ConflictWithPhase extends Conflict {
+  phase?: ConflictPhaseEnum | string;
+}
+
+// Safe substring helper
+const safeSub = (text: string, start: number, end: number): string => {
+  if (!text) return "";
+  return text.substring(start, Math.min(end, text.length));
+};
 
 const safeGet = <T>(array: T[], index: number): T | undefined => {
   if (index < 0 || index >= array.length) {
@@ -121,8 +144,8 @@ interface ConflictProgression {
   conflictName: string;
   phaseTransitions: Array<{
     timestamp: Date;
-    fromPhase: ConflictPhase;
-    toPhase: ConflictPhase;
+    fromPhase: ConflictPhaseEnum | string;
+    toPhase: ConflictPhaseEnum | string;
     catalyst: string;
   }>;
   intensityProgression: number[];
@@ -313,22 +336,24 @@ class DynamicAnalysisEngine {
     const events: TimelineEvent[] = [];
 
     // Process network snapshots
-    for (const snapshot of network.snapshots) {
+    const snapshots = network.snapshots || [];
+    for (const snapshot of snapshots) {
       events.push({
         timestamp: snapshot.timestamp,
         eventType: "network_snapshot",
-        description: snapshot.description,
+        description: `Network snapshot: ${snapshot.characters.length} characters, ${snapshot.relationships.length} relationships, ${snapshot.conflicts.length} conflicts`,
         involvedEntities: {},
         significance: 5,
         narrativePhase: this.inferNarrativePhase(
           snapshot.timestamp,
-          network.snapshots
+          snapshots
         ),
       });
     }
 
     // Process conflicts
-    for (const conflict of Array.from(network.conflicts.values())) {
+    const conflicts = network.conflicts || new Map();
+    for (const conflict of Array.from(conflicts.values())) {
       const legacyTimestamp = (
         conflict as Conflict & {
           timestamp?: Date | Date[];
@@ -352,13 +377,13 @@ class DynamicAnalysisEngine {
           eventType: "conflict_emerged",
           description: `Conflict emerged: ${conflict.name}`,
           involvedEntities: {
-            characters: conflict.involvedCharacters,
+            characters: conflict.involvedCharacters || [],
             conflicts: [conflict.id],
           },
-          significance: conflict.strength,
+          significance: conflict.strength || 5,
           narrativePhase: this.inferNarrativePhase(
             timestamp,
-            network.snapshots
+            snapshots
           ),
         });
       }
@@ -368,7 +393,7 @@ class DynamicAnalysisEngine {
     for (const [charId, character] of Array.from(
       network.characters.entries()
     )) {
-      const timestamp = character.introductionDate || new Date();
+      const timestamp = new Date();
 
       events.push({
         timestamp,
@@ -377,8 +402,8 @@ class DynamicAnalysisEngine {
         involvedEntities: {
           characters: [charId],
         },
-        significance: character.importance || 5,
-        narrativePhase: this.inferNarrativePhase(timestamp, network.snapshots),
+        significance: 5,
+        narrativePhase: this.inferNarrativePhase(timestamp, snapshots),
       });
     }
 
@@ -432,18 +457,12 @@ class DynamicAnalysisEngine {
       impactScore: number;
     }> = [];
 
-    for (const snapshot of network.snapshots) {
-      if (
-        !snapshot.networkState.characters ||
-        !snapshot.networkState.relationships ||
-        !snapshot.networkState.conflicts
-      ) {
-        continue;
-      }
-
-      const numChars = snapshot.networkState.characters.size;
-      const numRels = snapshot.networkState.relationships.size;
-      const numConflicts = snapshot.networkState.conflicts.size;
+    const snapshots = network.snapshots || [];
+    for (const snapshot of snapshots) {
+      // Use snapshot data
+      const numChars = snapshot.characters.length;
+      const numRels = snapshot.relationships.length;
+      const numConflicts = snapshot.conflicts.length;
 
       const complexity = numChars + numRels + numConflicts;
       complexityProgression.push(complexity);
@@ -456,7 +475,7 @@ class DynamicAnalysisEngine {
     for (let i = 1; i < complexityProgression.length; i++) {
       const current = complexityProgression[i];
       const previous = complexityProgression[i - 1];
-      const snapshot = network.snapshots[i];
+      const snapshot = snapshots[i];
 
       if (!current || !previous || !snapshot) continue;
 
@@ -465,7 +484,7 @@ class DynamicAnalysisEngine {
       if (change > 5) {
         transitionPoints.push({
           timestamp: snapshot.timestamp,
-          description: snapshot.description || "",
+          description: `Significant network change: ${snapshot.characters.length} characters, ${snapshot.relationships.length} relationships`,
           impactScore: change,
         });
       }
@@ -535,43 +554,31 @@ class DynamicAnalysisEngine {
       const developmentStages: CharacterEvolution["developmentStages"] = [];
       const keyMoments: CharacterEvolution["keyMoments"] = [];
 
-      for (const snapshot of network.snapshots) {
-        if (!snapshot.networkState.characters?.has(charId)) continue;
+      const snapshots = network.snapshots || [];
+      // Create a single development stage from current state
+      const relationships: string[] = [];
+      const characterConflicts: string[] = [];
 
-        const charState = snapshot.networkState.characters.get(charId);
-        if (!charState) continue;
-
-        const relationships: string[] = [];
-        const conflicts: string[] = [];
-
-        if (snapshot.networkState.relationships) {
-          for (const [relId, rel] of Array.from(
-            snapshot.networkState.relationships.entries()
-          )) {
-            if (rel.source === charId || rel.target === charId) {
-              relationships.push(relId);
-            }
-          }
+      for (const [relId, rel] of Array.from(network.relationships.entries())) {
+        if (rel.source === charId || rel.target === charId) {
+          relationships.push(relId);
         }
-
-        if (snapshot.networkState.conflicts) {
-          for (const [confId, conf] of Array.from(
-            snapshot.networkState.conflicts.entries()
-          )) {
-            if (conf.involvedCharacters.includes(charId)) {
-              conflicts.push(confId);
-            }
-          }
-        }
-
-        developmentStages.push({
-          timestamp: snapshot.timestamp,
-          stage: snapshot.description,
-          traits: charState.traits || [],
-          relationships,
-          conflicts,
-        });
       }
+
+      const conflicts = network.conflicts || new Map();
+      for (const [confId, conf] of Array.from(conflicts.entries())) {
+        if (conf.involvedCharacters && conf.involvedCharacters.includes(charId)) {
+          characterConflicts.push(confId);
+        }
+      }
+
+      developmentStages.push({
+        timestamp: new Date(),
+        stage: "Current state",
+        traits: [],
+        relationships,
+        conflicts: characterConflicts,
+      });
 
       for (const event of timeline) {
         if (event.involvedEntities.characters?.includes(charId)) {
@@ -658,38 +665,13 @@ class DynamicAnalysisEngine {
   ): Promise<Map<string, ConflictProgression>> {
     const progressionMap = new Map<string, ConflictProgression>();
 
-    for (const [confId, conflict] of Array.from(network.conflicts.entries())) {
+    const conflicts = network.conflicts || new Map();
+    for (const [confId, conflict] of Array.from(conflicts.entries())) {
       const phaseTransitions: ConflictProgression["phaseTransitions"] = [];
       const intensityProgression: number[] = [];
 
-      let previousPhase: ConflictPhase | null = null;
-
-      for (const snapshot of network.snapshots) {
-        if (!snapshot.networkState.conflicts?.has(confId)) continue;
-
-        const confState = snapshot.networkState.conflicts.get(confId);
-        if (!confState) continue;
-
-        intensityProgression.push(confState.strength);
-
-        if (previousPhase !== null && confState.phase !== previousPhase) {
-          const catalyst =
-            timeline.find(
-              (event) =>
-                event.timestamp.getTime() === snapshot.timestamp.getTime() &&
-                event.involvedEntities.conflicts?.includes(confId)
-            )?.description || "Unknown catalyst";
-
-          phaseTransitions.push({
-            timestamp: snapshot.timestamp,
-            fromPhase: previousPhase,
-            toPhase: confState.phase,
-            catalyst,
-          });
-        }
-
-        previousPhase = confState.phase;
-      }
+      // Use current conflict state
+      intensityProgression.push(conflict.strength || 5);
 
       const resolutionProbability = this.calculateResolutionProbability(
         conflict,
@@ -720,15 +702,16 @@ class DynamicAnalysisEngine {
   ): number {
     let probability = 0.5;
 
-    if (conflict.phase === ConflictPhase.RESOLUTION) {
+    const conflictWithPhase = conflict as ConflictWithPhase;
+    if (conflictWithPhase.phase === ConflictPhaseEnum.RESOLUTION || conflictWithPhase.phase === "resolution") {
       probability = 0.95;
-    } else if (conflict.phase === ConflictPhase.DEESCALATING) {
+    } else if (conflictWithPhase.phase === ConflictPhaseEnum.DEESCALATING || conflictWithPhase.phase === "deescalating") {
       probability = 0.75;
-    } else if (conflict.phase === ConflictPhase.AFTERMATH) {
+    } else if (conflictWithPhase.phase === ConflictPhaseEnum.AFTERMATH || conflictWithPhase.phase === "aftermath") {
       probability = 1.0;
-    } else if (conflict.phase === ConflictPhase.CLIMAX) {
+    } else if (conflictWithPhase.phase === ConflictPhaseEnum.CLIMAX || conflictWithPhase.phase === "climax") {
       probability = 0.6;
-    } else if (conflict.phase === ConflictPhase.LATENT) {
+    } else if (conflictWithPhase.phase === ConflictPhaseEnum.LATENT || conflictWithPhase.phase === "latent") {
       probability = 0.2;
     }
 
@@ -1252,6 +1235,7 @@ export class Station5DynamicSymbolicStylistic extends BaseStation<
   private dialogueEngine: AdvancedDialogueAnalysisEngine;
   private visualEngine: VisualCinematicAnalysisEngine;
   private debateSystem: MultiAgentDebateSystem;
+  private uncertaintyQuantificationEngine: UncertaintyQuantificationEngine;
 
   constructor(
     config: StationConfig<Station5Input, Station5Output>,
@@ -1264,7 +1248,8 @@ export class Station5DynamicSymbolicStylistic extends BaseStation<
     this.tensionEngine = new TensionAnalysisEngine(geminiService);
     this.dialogueEngine = new AdvancedDialogueAnalysisEngine(geminiService);
     this.visualEngine = new VisualCinematicAnalysisEngine(geminiService);
-    this.debateSystem = new MultiAgentDebateSystem(geminiService);
+    this.debateSystem = getMultiAgentDebateSystem(geminiService);
+    this.uncertaintyQuantificationEngine = getUncertaintyQuantificationEngine(geminiService);
   }
 
   protected async process(input: Station5Input): Promise<Station5Output> {
@@ -1349,7 +1334,7 @@ export class Station5DynamicSymbolicStylistic extends BaseStation<
         visualCinematicAnalysis,
       });
 
-      const uncertaintyMetrics = await uncertaintyQuantificationEngine.quantify(
+      const uncertaintyMetrics = await this.uncertaintyQuantificationEngine.quantify(
         analysisText,
         {
           originalText: input.fullText,
@@ -1419,6 +1404,22 @@ export class Station5DynamicSymbolicStylistic extends BaseStation<
 
     const analysisTime = Date.now() - startTime;
 
+    // Build metadata object conditionally
+    const metadata: StationMetadata = {
+      analysisTimestamp: new Date(),
+      status: "Success",
+      agentsUsed,
+      executionTime: analysisTime,
+    };
+
+    if (constitutionalViolations > 0) {
+      metadata.constitutionalViolations = constitutionalViolations;
+    }
+
+    if (debateResults) {
+      metadata.debateResults = debateResults;
+    }
+
     return {
       dynamicAnalysis,
       symbolicAnalysis,
@@ -1427,21 +1428,14 @@ export class Station5DynamicSymbolicStylistic extends BaseStation<
       advancedDialogueAnalysis,
       visualCinematicAnalysis,
       uncertaintyReport,
-      metadata: {
-        analysisTimestamp: new Date(),
-        status: "Success",
-        agentsUsed,
-        executionTime: analysisTime,
-        constitutionalViolations,
-        debateResults,
-      },
+      metadata,
     };
   }
 
   protected extractRequiredData(input: Station5Input): Record<string, unknown> {
     return {
       charactersCount: input.conflictNetwork.characters.size,
-      conflictsCount: input.conflictNetwork.conflicts.size,
+      conflictsCount: input.conflictNetwork.conflicts?.size || 0,
       station4Score:
         input.station4Output.efficiencyMetrics.overallEfficiencyScore,
       fullTextLength: input.fullText.length,

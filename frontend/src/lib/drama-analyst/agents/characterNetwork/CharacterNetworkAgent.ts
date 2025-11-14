@@ -1,4 +1,4 @@
-import { TaskType } from "@core/enums";
+import { TaskType } from "@core/types";
 import { BaseAgent } from "../shared/BaseAgent";
 import {
   StandardAgentInput,
@@ -16,7 +16,7 @@ import {
   getClosingInstructions,
 } from "./prompt-builder";
 
-interface CharacterNetworkContext {
+export interface CharacterNetworkContext {
   originalText?: string;
   analysisReport?: any;
   characters?: any[];

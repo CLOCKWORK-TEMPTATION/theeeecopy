@@ -10,4 +10,4 @@
  */
 
 // Export analysis actions
-export { runFullPipeline, type AnalysisResult } from "./analysis";
+export { runFullPipeline, type PipelineResult } from "./analysis";

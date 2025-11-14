@@ -58,7 +58,7 @@ You are an intelligent assistant specializing in film directing and production. 
 اجب باللغة العربية بشكل واضح ومهني، وقدم أمثلة عملية عند الحاجة.
 Answer in clear and professional Arabic, and provide practical examples when needed.`;
 
-    const fullPrompt = `${conversationContext}المستخدم / User: ${message}`;
+    const fullPrompt = `${systemInstruction}\n\n${conversationContext}المستخدم / User: ${message}`;
 
     // Create a ReadableStream for streaming the response
     const encoder = new TextEncoder();
@@ -66,16 +66,12 @@ Answer in clear and professional Arabic, and provide practical examples when nee
       async start(controller) {
         try {
           // Use the streaming function from gemini-core
-          const aiStream = streamFlash(fullPrompt, {
-            systemInstruction,
-            temperature: 0.7,
-          });
+          // streamFlash returns a Promise<string>, not an async iterator
+          const response = await streamFlash(fullPrompt);
 
-          // Stream chunks to the client as they arrive
-          for await (const chunk of aiStream) {
-            const data = JSON.stringify({ chunk }) + '\n';
-            controller.enqueue(encoder.encode(data));
-          }
+          // Send the complete response
+          const data = JSON.stringify({ chunk: response }) + '\n';
+          controller.enqueue(encoder.encode(data));
 
           // Send completion signal
           controller.enqueue(encoder.encode(JSON.stringify({ done: true }) + '\n'));

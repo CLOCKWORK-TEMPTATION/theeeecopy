@@ -1,4 +1,4 @@
-import { TaskCategory, TaskType } from "@core/enums";
+import { TaskCategory, TaskType } from "@core/types";
 import { AIAgentConfig } from "@core/types";
 
 export const INTEGRATED_AGENT_CONFIG: AIAgentConfig = {
@@ -20,8 +20,8 @@ export const INTEGRATED_AGENT_CONFIG: AIAgentConfig = {
     adaptiveLearning: true,
     complexityScore: 0.92,
     accuracyLevel: 0.9,
-    processingSpeed: "adaptive",
-    resourceIntensity: "variable",
+    processingSpeed: 0.5,
+    resourceIntensity: 0.5,
     languageModeling: true,
     patternRecognition: true,
     creativeGeneration: true,

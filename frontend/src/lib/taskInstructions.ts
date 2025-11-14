@@ -289,6 +289,7 @@ export function getAllTaskInstructions(): TaskInstruction[] {
 }
 
 // Default export
+// eslint-disable-next-line import/no-default-export, import/no-anonymous-default-export
 export default {
   taskInstructions,
   getTaskInstructions,

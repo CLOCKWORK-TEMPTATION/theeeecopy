@@ -1,4 +1,4 @@
-import { TaskCategory, TaskType } from "@core/enums";
+import { TaskCategory, TaskType } from "@core/types";
 import { AIAgentConfig } from "@core/types";
 
 export const THEMES_MESSAGES_ANALYZER_AGENT_CONFIG: AIAgentConfig = {
@@ -20,8 +20,8 @@ export const THEMES_MESSAGES_ANALYZER_AGENT_CONFIG: AIAgentConfig = {
     adaptiveLearning: true,
     complexityScore: 0.95,
     accuracyLevel: 0.85,
-    processingSpeed: "slow",
-    resourceIntensity: "high",
+    processingSpeed: 0.3,
+    resourceIntensity: 0.8,
     languageModeling: true,
     patternRecognition: true,
     creativeGeneration: false,

@@ -90,41 +90,156 @@ export interface AnalysisMetadata {
   processingTime: number;
 }
 
+// Station and System Metadata
+export interface StationMetadata {
+  stationName: string;
+  stationNumber: number;
+  status: "Success" | "Failed" | "Partial";
+  error?: string;
+  executionTime: number;
+  agentsUsed: string[];
+  tokensUsed: number;
+  options?: Record<string, unknown>;
+  ragInfo?: {
+    wasChunked: boolean;
+    chunksCount: number;
+    retrievalTime: number;
+  };
+}
+
+export interface SystemMetadata {
+  systemName: string;
+  systemType: string;
+  status: "Success" | "Failed" | "Partial";
+  error?: string;
+  executionTime: number;
+  agentsUsed: string[];
+  tokensUsed: number;
+  options?: Record<string, unknown>;
+  ragInfo?: {
+    wasChunked: boolean;
+    chunksCount: number;
+    retrievalTime: number;
+  };
+}
+
+// Analysis Types
+export interface CharacterAnalysis {
+  motivations: string[];
+  flaws: string[];
+  strengths: string[];
+  arc: string;
+  relationships: Record<string, string>;
+}
+
+export interface DialogueAnalysis {
+  naturalness: number;
+  characterVoiceConsistency: number;
+  subtextPresence: number;
+  pacing: string;
+  issues: string[];
+}
+
+export interface UncertaintyReport {
+  overallConfidence: number;
+  uncertaintyType: "epistemic" | "aleatoric";
+  sources: Array<{
+    aspect: string;
+    reason: string;
+    reducible: boolean;
+  }>;
+}
+
+// Thematic and Audience Types
+export interface Theme {
+  name: string;
+  description: string;
+  prominence: number;
+  evidence: string[];
+}
+
+export interface AudienceProfile {
+  primaryDemographic: string;
+  ageRange: string;
+  interests: string[];
+  culturalBackground: string;
+  expectedReception: string;
+}
+
+export interface ScoreMatrix {
+  narrative: number;
+  character: number;
+  structure: number;
+  theme: number;
+  technical: number;
+  commercial: number;
+  overall: number;
+}
+
+export interface Recommendation {
+  priority: "critical" | "high" | "medium" | "low";
+  category: string;
+  title: string;
+  description: string;
+  implementation: string;
+  expectedImpact: number;
+}
+
+export interface DebateResult {
+  participants: string[];
+  rounds: Array<{
+    speaker: string;
+    argument: string;
+    counterArguments: string[];
+  }>;
+  consensus: string;
+  disagreements: string[];
+  finalRecommendations: Recommendation[];
+}
+
 // Factory functions
 export function createCharacter(data: Partial<Character>): Character {
-  return {
+  const character: Character = {
     id: data.id || `char_${Date.now()}`,
     name: data.name || 'Unknown Character',
-    role: data.role,
-    traits: data.traits || [],
-    relationships: data.relationships || [],
-    arc: data.arc
   };
+
+  if (data.role !== undefined) character.role = data.role;
+  if (data.traits !== undefined) character.traits = data.traits;
+  if (data.relationships !== undefined) character.relationships = data.relationships;
+  if (data.arc !== undefined) character.arc = data.arc;
+
+  return character;
 }
 
 export function createConflict(data: Partial<Conflict>): Conflict {
-  return {
-    id: data.id || `conflict_${Date.now()}`,
-    name: data.name,
-    type: data.type,
-    subject: data.subject,
-    strength: data.strength || 0,
-    scope: data.scope,
-    involvedCharacters: data.involvedCharacters || [],
-    timestamps: data.timestamps || [],
-    description: data.description,
-    participants: data.participants || []
-  };
+  const conflict: Conflict = {};
+
+  if (data.id !== undefined) conflict.id = data.id;
+  if (data.name !== undefined) conflict.name = data.name;
+  if (data.type !== undefined) conflict.type = data.type;
+  if (data.subject !== undefined) conflict.subject = data.subject;
+  if (data.strength !== undefined) conflict.strength = data.strength;
+  if (data.scope !== undefined) conflict.scope = data.scope;
+  if (data.involvedCharacters !== undefined) conflict.involvedCharacters = data.involvedCharacters;
+  if (data.timestamps !== undefined) conflict.timestamps = data.timestamps;
+  if (data.description !== undefined) conflict.description = data.description;
+  if (data.participants !== undefined) conflict.participants = data.participants;
+
+  return conflict;
 }
 
 export function createRelationship(data: Partial<Relationship>): Relationship {
-  return {
-    id: data.id || `rel_${Date.now()}`,
+  const relationship: Relationship = {
     source: data.source || '',
     target: data.target || '',
-    type: data.type,
-    strength: data.strength || 0
   };
+
+  if (data.id !== undefined) relationship.id = data.id;
+  if (data.type !== undefined) relationship.type = data.type;
+  if (data.strength !== undefined) relationship.strength = data.strength;
+
+  return relationship;
 }
 
 export function createNetworkSnapshot(data: Partial<NetworkSnapshot>): NetworkSnapshot {

@@ -30,9 +30,9 @@ interface UserProperties {
 
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void;
-    dataLayer: any[];
-    ga: (...args: any[]) => void;
+    gtag?: (...args: unknown[]) => void;
+    dataLayer?: unknown[];
+    ga?: (...args: unknown[]) => void;
   }
 }
 
@@ -95,12 +95,12 @@ class AnalyticsService {
     // Initialize gtag
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () {
-      window.dataLayer.push(arguments);
+      window.dataLayer?.push(arguments);
     };
 
     // Configure GA4
-    window.gtag("js", new Date());
-    window.gtag("config", this.config.measurementId, {
+    window.gtag?.("js", new Date());
+    window.gtag?.("config", this.config.measurementId, {
       debug_mode: this.config.debug,
       send_page_view: false, // We'll handle this manually
       anonymize_ip: this.config.enablePrivacyMode,
@@ -113,7 +113,7 @@ class AnalyticsService {
   private setupDataLayer(): void {
     // Enhanced ecommerce setup
     if (this.config.enableEnhancedEcommerce) {
-      window.gtag("config", this.config.measurementId, {
+      window.gtag?.("config", this.config.measurementId, {
         custom_map: {
           custom_parameter_1: "file_type",
           custom_parameter_2: "analysis_type",
@@ -310,7 +310,7 @@ class AnalyticsService {
       log.debug(`📊 GA4 Event: ${eventName}`, parameters, "AnalyticsService");
     }
 
-    window.gtag("event", eventName, {
+    window.gtag?.("event", eventName, {
       ...parameters,
       ...this.userProperties,
     });
@@ -322,7 +322,7 @@ class AnalyticsService {
     this.userProperties = { ...this.userProperties, ...properties };
 
     if (this.config.enableUserProperties) {
-      window.gtag("config", this.config.measurementId, {
+      window.gtag?.("config", this.config.measurementId, {
         user_properties: this.userProperties,
       });
     }
@@ -334,7 +334,7 @@ class AnalyticsService {
     this.customDimensions = { ...this.customDimensions, ...dimensions };
 
     if (this.config.enableCustomDimensions) {
-      window.gtag("config", this.config.measurementId, {
+      window.gtag?.("config", this.config.measurementId, {
         custom_map: this.customDimensions,
       });
     }
@@ -473,7 +473,7 @@ class AnalyticsService {
   ): void {
     if (!this.isInitialized) return;
 
-    window.gtag("consent", "update", {
+    window.gtag?.("consent", "update", {
       [consentType]: consent ? "granted" : "denied",
     });
   }
@@ -483,7 +483,7 @@ class AnalyticsService {
 
     this.config.enablePrivacyMode = enabled;
 
-    window.gtag("config", this.config.measurementId, {
+    window.gtag?.("config", this.config.measurementId, {
       anonymize_ip: enabled,
       allow_google_signals: !enabled,
       allow_ad_personalization_signals: !enabled,
@@ -515,7 +515,7 @@ class AnalyticsService {
 
     // Clear global functions
     if (window.gtag) {
-      window.gtag = () => {};
+      delete (window as any).gtag;
     }
 
     this.isInitialized = false;

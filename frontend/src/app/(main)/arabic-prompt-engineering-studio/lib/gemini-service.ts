@@ -41,16 +41,10 @@ export function createPromptStudioGeminiService(
     );
   }
 
-  const geminiConfig: GeminiConfig = {
-    apiKey: apiKey || "", // Will be set from server in actual implementation
-    defaultModel: config?.model || GeminiModel.FLASH,
-    maxRetries: 3,
-    timeout: 30000,
-  };
+  // Create service with API key
+  const service = new GeminiService(apiKey);
 
-  // GeminiService class not found - returning mock for now
-  // return new (GeminiService as any)(geminiConfig);
-  return {} as any;
+  return service;
 }
 
 /**

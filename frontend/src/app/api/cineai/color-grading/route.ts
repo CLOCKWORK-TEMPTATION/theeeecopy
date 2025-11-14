@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { geminiService as getGeminiService, GEMINI_MODELS as GeminiModel } from '@/ai/gemini-service';
+import { GeminiService } from '@/ai/gemini-service';
 
 /**
  * POST /api/cineai/color-grading
@@ -24,12 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Initialize Gemini service
-    const geminiService = getGeminiService({
-      apiKey,
-      defaultModel: GeminiModel.FLASH,
-      maxRetries: 3,
-      timeout: 30000,
-    });
+    const geminiService = new GeminiService(apiKey);
 
     // Generate color palette using AI
     const systemInstruction = `أنت خبير في التدريج اللوني السينمائي (Color Grading) والإضاءة. قم بتحليل نوع المشهد المقدم واقترح لوحة ألوان احترافية.
@@ -52,16 +47,16 @@ Provide 5 harmonious colors that work well together for the specified scene.`;
     const moodInfo = mood ? ` with ${mood} mood` : '';
     const tempInfo = temperature ? ` (color temperature: ${temperature}K)` : '';
 
-    const prompt = `نوع المشهد / Scene Type: ${sceneType}${moodInfo}${tempInfo}
+    const prompt = `${systemInstruction}
+
+نوع المشهد / Scene Type: ${sceneType}${moodInfo}${tempInfo}
 
 قم بإنشاء لوحة ألوان احترافية للتدريج اللوني لهذا النوع من المشاهد، مع اقتراحات عملية للتطبيق.
 Generate a professional color grading palette for this scene type, with practical suggestions for implementation.`;
 
-    const response = await geminiService.generateContent(prompt, {
-      systemInstruction,
-      temperature: 0.6,
-      maxTokens: 2048,
-    });
+    const model = geminiService.getModel('gemini-1.5-flash', 'analysis');
+    const result = await model.generateContent(prompt);
+    const response = result.response.text();
 
     // Parse the AI response
     let aiData;

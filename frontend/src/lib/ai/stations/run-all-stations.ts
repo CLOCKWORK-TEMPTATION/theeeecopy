@@ -24,7 +24,8 @@ export type PipelineInput = ValidatedPipelineInput;
 export type PipelineRunResult = ValidatedPipelineRunResult;
 export type StationStatus = ValidatedStationStatus;
 
-export { PipelineInputSchema, validateAndNormalizePipelineInput };
+export type { PipelineInputSchema }
+export { validateAndNormalizePipelineInput };
 
 export interface AnalysisPipelineConfig {
   apiKey: string;
@@ -44,6 +45,8 @@ export interface AnalysisPipelineConfig {
 
 export interface EnhancedPipelineRunResult extends ValidatedPipelineRunResult {
   orchestrationResult?: OrchestrationResult;
+  stationOutputs?: OrchestrationResult["stationOutputs"];
+  metadata?: Record<string, unknown>;
   performanceMetrics?: {
     averageStationTime: number;
     slowestStation: { number: number; name: string; duration: number };
@@ -120,20 +123,19 @@ export class AnalysisPipeline {
   }
 
   async runFullAnalysis(input: unknown): Promise<EnhancedPipelineRunResult> {
-    const data: PipelineInput = PipelineInputSchema.parse(input);
+    const data: PipelineInput = validateAndNormalizePipelineInput(input);
 
     logger.info("[AnalysisPipeline] Starting full analysis", {
-      textLength: data.screenplayText.length,
-      language: data.language,
-      title: data.context?.title ?? "untitled",
+      textLength: data.text.length,
+      options: data.options,
     });
 
     const startedAt = Date.now();
 
     try {
       const orchestrationResult = await this.orchestrator.execute(
-        data.screenplayText,
-        data.context?.title ?? "untitled-project"
+        data.text,
+        (data.options?.title as string) ?? "untitled-project"
       );
 
       const finishedAt = Date.now();
@@ -144,8 +146,9 @@ export class AnalysisPipeline {
       await this.saveOrchestrationResult(orchestrationResult);
 
       const result: EnhancedPipelineRunResult = {
+        success: true,
         stationOutputs: orchestrationResult.stationOutputs,
-        pipelineMetadata: {
+        metadata: {
           stationsCompleted: orchestrationResult.metadata.stationsCompleted,
           totalExecutionTime: orchestrationResult.metadata.totalExecutionTime,
           startedAt: orchestrationResult.metadata.startedAt,
@@ -180,10 +183,10 @@ export class AnalysisPipeline {
       skipStations?: number[];
     }
   ): Promise<EnhancedPipelineRunResult> {
-    const data: PipelineInput = PipelineInputSchema.parse(input);
+    const data: PipelineInput = validateAndNormalizePipelineInput(input);
 
     logger.info("[AnalysisPipeline] Starting partial analysis", {
-      textLength: data.screenplayText.length,
+      textLength: data.text.length,
       startFromStation: options.startFromStation,
       endAtStation: options.endAtStation,
       skipStations: options.skipStations,
@@ -191,8 +194,8 @@ export class AnalysisPipeline {
 
     try {
       const orchestrationResult = await this.orchestrator.execute(
-        data.screenplayText,
-        data.context?.title ?? "untitled-project",
+        data.text,
+        (data.options?.title as string) ?? "untitled-project",
         options
       );
 
@@ -202,8 +205,9 @@ export class AnalysisPipeline {
       await this.saveOrchestrationResult(orchestrationResult);
 
       const result: EnhancedPipelineRunResult = {
+        success: true,
         stationOutputs: orchestrationResult.stationOutputs,
-        pipelineMetadata: {
+        metadata: {
           stationsCompleted: orchestrationResult.metadata.stationsCompleted,
           totalExecutionTime: orchestrationResult.metadata.totalExecutionTime,
           startedAt: orchestrationResult.metadata.startedAt,
@@ -439,7 +443,7 @@ export function createQuickPipeline(
 ): AnalysisPipeline {
   return new AnalysisPipeline({
     apiKey,
-    outputDir,
+    ...(outputDir !== undefined ? { outputDir } : {}),
     enableCaching: false,
     enableRetry: true,
     maxRetries: 2,
@@ -459,7 +463,7 @@ export function createRobustPipeline(
 ): AnalysisPipeline {
   return new AnalysisPipeline({
     apiKey,
-    outputDir,
+    ...(outputDir !== undefined ? { outputDir } : {}),
     enableCaching: true,
     enableRetry: true,
     maxRetries: 5,
