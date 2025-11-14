@@ -27,6 +27,10 @@ vi.mock('./schema', () => ({
 describe('Database Module', () => {
   const originalEnv = process.env.DATABASE_URL;
 
+  beforeAll(() => {
+    process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/testdb';
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
