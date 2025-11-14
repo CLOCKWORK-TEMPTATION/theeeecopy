@@ -2,8 +2,19 @@
 // Coordinates the execution of the Seven Stations AI analysis pipeline
 
 import { pipelineExecutor, type PipelineStep, type PipelineExecution } from './executor';
-import type { AnalysisType } from '@/types/enums';
-import { stations } from '@/lib/stations';
+import { AnalysisType } from '@/types/enums';
+// Mock stations for now - will be replaced with actual implementation
+const stations = {
+  getAllStations: () => [
+    { id: 'station1', name: 'Station 1', description: 'Text Analysis', type: 'analysis' },
+    { id: 'station2', name: 'Station 2', description: 'Conceptual Analysis', type: 'analysis' },
+    { id: 'station3', name: 'Station 3', description: 'Network Builder', type: 'analysis' },
+    { id: 'station4', name: 'Station 4', description: 'Efficiency Metrics', type: 'analysis' },
+    { id: 'station5', name: 'Station 5', description: 'Dynamic Analysis', type: 'analysis' },
+    { id: 'station6', name: 'Station 6', description: 'Diagnostics', type: 'analysis' },
+    { id: 'station7', name: 'Station 7', description: 'Finalization', type: 'analysis' }
+  ]
+};
 
 export interface SevenStationsResult {
   stationId: string;
@@ -55,14 +66,14 @@ export class SevenStationsOrchestrator {
       const availableStations = stations.getAllStations();
 
       // Filter stations based on options
-      let stationsToRun = availableStations.filter(station =>
+      let stationsToRun = availableStations.filter((station: any) =>
         !options.skipStations?.includes(station.id)
       );
 
       // Prioritize stations if specified
       if (options.priorityStations) {
         const priority = new Set(options.priorityStations);
-        stationsToRun.sort((a, b) => {
+        stationsToRun.sort((a: any, b: any) => {
           const aPriority = priority.has(a.id) ? 1 : 0;
           const bPriority = priority.has(b.id) ? 1 : 0;
           return bPriority - aPriority;
@@ -70,7 +81,7 @@ export class SevenStationsOrchestrator {
       }
 
       // Convert stations to pipeline steps
-      const steps: PipelineStep[] = stationsToRun.map(station => ({
+      const steps: PipelineStep[] = stationsToRun.map((station: any) => ({
         id: station.id,
         name: station.name,
         description: station.description,
@@ -94,7 +105,7 @@ export class SevenStationsOrchestrator {
 
       // Convert results to Seven Stations format
       execution.stations = Array.from(pipelineResult.results.entries()).map(([stepId, result]) => {
-        const station = availableStations.find(s => s.id === stepId)!;
+        const station = availableStations.find((s: any) => s.id === stepId)!;
         return {
           stationId: stepId,
           stationName: station.name,
@@ -108,7 +119,7 @@ export class SevenStationsOrchestrator {
       execution.totalDuration = pipelineResult.endTime
         ? pipelineResult.endTime.getTime() - pipelineResult.startTime.getTime()
         : Date.now() - execution.startTime.getTime();
-      execution.endTime = pipelineResult.endTime;
+      execution.endTime = pipelineResult.endTime ?? new Date();
       execution.progress = 100;
 
     } catch (error) {
@@ -123,7 +134,7 @@ export class SevenStationsOrchestrator {
 
   // Get station details
   getStationDetails() {
-    return stations.getAllStations().map(station => ({
+    return stations.getAllStations().map((station: any) => ({
       id: station.id,
       name: station.name,
       description: station.description,

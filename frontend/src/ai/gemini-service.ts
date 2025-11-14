@@ -1,7 +1,7 @@
 // Gemini Service Configuration and Utilities
 // Provides centralized access to Gemini AI capabilities
 
-import type { GoogleGenerativeAI } from '@genkit-ai/google-genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Model configurations
 export interface GeminiModel {
@@ -77,7 +77,7 @@ export class GeminiService {
       // Server-side or with explicit API key
       const key = apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
       if (key) {
-        const { GoogleGenerativeAI } = require('@genkit-ai/google-genai');
+        const { GoogleGenerativeAI } = require('@google/generative-ai');
         this.genAI = new GoogleGenerativeAI(key);
       }
     }

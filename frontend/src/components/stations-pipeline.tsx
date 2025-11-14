@@ -140,8 +140,6 @@ const StationsPipeline = () => {
         // setContextMap(chunkedData);
         // setIsLongText(chunkedData.chunks.length > 1);
 
-        let pipelineResult;
-
         // Process as single text (chunking disabled)
         const pipelineResult = await runFullPipeline({
           fullText: text,
@@ -149,19 +147,19 @@ const StationsPipeline = () => {
         });
 
         const formattedResults = {
-          station1: (pipelineResult as any).stationOutputs?.station1,
-          station2: (pipelineResult as any).stationOutputs?.station2,
-          station3: (pipelineResult as any).stationOutputs?.station3,
-          station4: (pipelineResult as any).stationOutputs?.station4,
-          station5: (pipelineResult as any).stationOutputs?.station5,
-          station6: (pipelineResult as any).stationOutputs?.station6,
-          station7: (pipelineResult as any).stationOutputs?.station7,
+          station1: pipelineResult?.stationOutputs?.station1,
+          station2: pipelineResult?.stationOutputs?.station2,
+          station3: pipelineResult?.stationOutputs?.station3,
+          station4: pipelineResult?.stationOutputs?.station4,
+          station5: pipelineResult?.stationOutputs?.station5,
+          station6: pipelineResult?.stationOutputs?.station6,
+          station7: pipelineResult?.stationOutputs?.station7,
         };
 
         // Save to session storage for development pipeline
         const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const analysisData = {
-          ...pipelineResult,
+          ...(pipelineResult || {}),
           contextMap,
           isLongText,
           originalTextLength: text.length,
