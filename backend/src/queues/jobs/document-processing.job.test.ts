@@ -12,6 +12,14 @@ import {
 } from './document-processing.job';
 import { queueManager, QueueName } from '@/queues/queue.config';
 
+vi.mock('redis', () => ({
+  createClient: () => ({
+    on: vi.fn(),
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  }),
+}));
+
 describe('Document Processing Job', () => {
   beforeEach(() => {
     vi.clearAllMocks();

@@ -35,19 +35,20 @@ describe('Environment Configuration', () => {
 
     it('should use default values when not provided', async () => {
       process.env.DATABASE_URL = 'postgresql://localhost:5432/db';
+      process.env.JWT_SECRET = 'a-test-secret';
       delete process.env.NODE_ENV;
       delete process.env.PORT;
-      delete process.env.JWT_SECRET;
 
       const { env } = await import('./env');
 
       expect(env.NODE_ENV).toBe('development');
       expect(env.PORT).toBe(3001);
-      expect(env.JWT_SECRET).toBe('dev-secret-change-in-production');
+      expect(env.JWT_SECRET).toBe('a-test-secret');
     });
 
     it('should validate NODE_ENV enum', async () => {
       process.env.DATABASE_URL = 'postgresql://localhost:5432/db';
+      process.env.JWT_SECRET = 'a-test-secret';
       process.env.NODE_ENV = 'production';
 
       const { env } = await import('./env');
@@ -92,6 +93,7 @@ describe('Environment Configuration', () => {
     it('should return true for development environment', async () => {
       process.env.DATABASE_URL = 'postgresql://localhost:5432/db';
       process.env.NODE_ENV = 'development';
+      process.env.JWT_SECRET = 'a-test-secret';
 
       const { isDevelopment } = await import('./env');
 
@@ -101,6 +103,7 @@ describe('Environment Configuration', () => {
     it('should return false for production environment', async () => {
       process.env.DATABASE_URL = 'postgresql://localhost:5432/db';
       process.env.NODE_ENV = 'production';
+      process.env.JWT_SECRET = 'a-test-secret';
 
       const { isDevelopment } = await import('./env');
 
