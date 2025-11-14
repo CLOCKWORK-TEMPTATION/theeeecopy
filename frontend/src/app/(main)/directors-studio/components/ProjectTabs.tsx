@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CharacterTracker from "@/app/(main)/directors-studio/components/CharacterTracker";
 import SceneCard from "@/app/(main)/directors-studio/components/SceneCard";
@@ -77,3 +78,5 @@ function CharactersTabContent({ characters }: CharactersTabContentProps) {
 
   return <CharacterTracker characters={characters} />;
 }
+
+export default ProjectTabs;
