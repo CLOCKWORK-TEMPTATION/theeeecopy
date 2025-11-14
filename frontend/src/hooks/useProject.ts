@@ -17,7 +17,7 @@ export function useProjects() {
   return useQuery({
     queryKey: ["/api/projects"],
     queryFn: async () => {
-      const response = await api.fetchProjects();
+      const response = await api.getProjects();
       return response.data;
     },
   });
@@ -27,7 +27,7 @@ export function useProject(id: string | undefined) {
   return useQuery({
     queryKey: ["/api/projects", id],
     queryFn: async () => {
-      const response = await api.fetchProject(id!);
+      const response = await api.getProject(id!);
       return response.data;
     },
     enabled: !!id,

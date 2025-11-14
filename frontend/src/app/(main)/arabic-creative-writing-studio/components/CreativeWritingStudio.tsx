@@ -13,7 +13,7 @@ import {
   CreativeGenre,
   WritingTechnique,
 } from '@/app/(main)/arabic-creative-writing-studio/types';
-import { GeminiService } from '@/app/(main)/arabic-creative-writing-studio/lib/gemini-service';
+import { GeminiService } from '@/ai/gemini-service';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';

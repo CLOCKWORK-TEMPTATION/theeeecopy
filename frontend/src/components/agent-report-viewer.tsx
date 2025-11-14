@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Download, Eye, FileText } from "lucide-react";
-import { toText } from "@/lib/ai/gemini-core";
+import { toText } from "@/ai/gemini-core";
 
 // =====================================================
 // Types

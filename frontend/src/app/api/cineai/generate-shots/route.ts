@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getGeminiService, GeminiModel } from '@/lib/ai/gemini-service';
+import { geminiService as getGeminiService, GEMINI_MODELS as GeminiModel } from '@/ai/gemini-service';
 
 /**
  * POST /api/cineai/generate-shots

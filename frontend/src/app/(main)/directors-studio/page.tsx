@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { PageLayout } from "@/app/(main)/directors-studio/components/PageLayout";
 import { LoadingSection } from "@/app/(main)/directors-studio/components/LoadingSection";
 import { useProjectScenes, useProjectCharacters } from "@/app/(main)/directors-studio/hooks/useProject";
-import { getCurrentProject } from "@/app/(main)/directors-studio/lib/projectStore";
+import { getCurrentProject } from "@/lib/projectStore";
 import {
   hasActiveProject,
   prepareCharacterList,
