@@ -38,22 +38,22 @@ export const DynamicChartContainer = dynamic(
 );
 
 export const DynamicChartTooltip = dynamic(
-  () => import("./chart").then((mod) => mod.ChartTooltip),
+  () => import("./chart").then((mod) => ({ default: mod.ChartTooltip })),
   { ssr: false }
 );
 
 export const DynamicChartTooltipContent = dynamic(
-  () => import("./chart").then((mod) => mod.ChartTooltipContent),
+  () => import("./chart").then((mod) => ({ default: mod.ChartTooltipContent })),
   { ssr: false }
 );
 
 export const DynamicChartLegend = dynamic(
-  () => import("./chart").then((mod) => mod.ChartLegend),
+  () => import("./chart").then((mod) => ({ default: mod.ChartLegend })),
   { ssr: false }
 );
 
 export const DynamicChartLegendContent = dynamic(
-  () => import("./chart").then((mod) => mod.ChartLegendContent),
+  () => import("./chart").then((mod) => ({ default: mod.ChartLegendContent })),
   { ssr: false }
 );
 

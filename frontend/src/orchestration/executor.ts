@@ -101,15 +101,10 @@ export class PipelineOrchestrator {
     const startTime = Date.now();
 
     try {
-      const cacheKey = generateGeminiCacheKey('analysis', {
-        entityId: step.id,
-        analysisType: step.type,
-        options: step.config
-      });
+      const cacheKey = `analysis:${step.id}:${step.type}`;
 
-      const result = await cachedGeminiCall(
+      const result = await getCached(
         cacheKey,
-        1800, // 30 minutes TTL
         async () => {
           const model = geminiService.getModel('gemini-1.5-flash', 'analysis');
 
@@ -119,10 +114,7 @@ export class PipelineOrchestrator {
           const response = await model.generateContent(prompt);
           return response.response.text();
         },
-        {
-          staleWhileRevalidate: true,
-          staleTTL: 3600 // 1 hour stale TTL
-        }
+        1800 // 30 minutes TTL
       );
 
       return {
@@ -189,14 +181,14 @@ export class PipelineOrchestrator {
 
   // Build prompt for step execution
   private buildStepPrompt(step: PipelineStep, inputData: Record<string, any>): string {
-    const basePrompts = {
-      characters: 'Analyze the characters in this screenplay. Identify main characters, their traits, relationships, and character arcs.',
-      themes: 'Extract and analyze the main themes and motifs in this screenplay.',
-      structure: 'Analyze the dramatic structure, acts, and plot points in this screenplay.',
-      screenplay: 'Review this screenplay for technical writing quality, formatting, and dramatic effectiveness.',
-      quick: 'Provide a quick summary and initial impressions of this screenplay.',
-      detailed: 'Provide a comprehensive analysis covering all aspects of this screenplay.',
-      full: 'Perform complete analysis including characters, themes, structure, and recommendations.'
+    const basePrompts: Record<AnalysisType, string> = {
+      [AnalysisType.CHARACTERS]: 'Analyze the characters in this screenplay. Identify main characters, their traits, relationships, and character arcs.',
+      [AnalysisType.THEMES]: 'Extract and analyze the main themes and motifs in this screenplay.',
+      [AnalysisType.STRUCTURE]: 'Analyze the dramatic structure, acts, and plot points in this screenplay.',
+      [AnalysisType.SCREENPLAY]: 'Review this screenplay for technical writing quality, formatting, and dramatic effectiveness.',
+      [AnalysisType.QUICK]: 'Provide a quick summary and initial impressions of this screenplay.',
+      [AnalysisType.DETAILED]: 'Provide a comprehensive analysis covering all aspects of this screenplay.',
+      [AnalysisType.FULL]: 'Perform complete analysis including characters, themes, structure, and recommendations.'
     };
 
     const prompt = basePrompts[step.type] || 'Analyze this content:';
