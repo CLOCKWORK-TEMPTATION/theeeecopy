@@ -88,8 +88,12 @@ export class UncertaintyService {
 
     for (let i = 0; i < outputs.length - 1; i++) {
       for (let j = i + 1; j < outputs.length; j++) {
-        totalSimilarity += this.calculateSimilarity(outputs[i], outputs[j]);
-        pairs++;
+        const output1 = outputs[i];
+        const output2 = outputs[j];
+        if (output1 && output2) {
+          totalSimilarity += this.calculateSimilarity(output1, output2);
+          pairs++;
+        }
       }
     }
 

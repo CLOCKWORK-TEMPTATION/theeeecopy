@@ -1,15 +1,13 @@
 import { GeminiService } from "./gemini-service";
 import {
-  Station5Output,
-  AllStationsOutput,
-  StationMetadata,
-  UncertaintyReport,
-} from "./station-types";
-import {
   MultiAgentDebateSystem,
   DebateResult,
 } from "../constitutional/multi-agent-debate";
-import { UncertaintyQuantificationEngine } from "../constitutional/uncertainty-quantification";
+import {
+  UncertaintyQuantificationEngine,
+  getUncertaintyQuantificationEngine,
+  UncertaintyMetrics,
+} from "../constitutional/uncertainty-quantification";
 
 // =====================================================
 // INTERFACES
@@ -254,6 +252,23 @@ export interface PlotPredictions {
   predictabilityScore: number; // 0-10
 }
 
+export interface StationMetadata {
+  analysisTimestamp: Date;
+  status: "Success" | "Partial" | "Failed";
+  executionTime: number;
+  agentsUsed: string[];
+  tokensUsed?: number;
+}
+
+export interface UncertaintyReport {
+  overallConfidence: number;
+  uncertainties: Array<{
+    type: "epistemic" | "aleatoric";
+    aspect: string;
+    note: string;
+  }>;
+}
+
 export interface Station6Output {
   diagnosticsReport: DiagnosticsReport;
   debateResults: DebateResult;
@@ -273,7 +288,7 @@ export class Station6Diagnostics {
 
   constructor(private geminiService: GeminiService) {
     this.debateSystem = new MultiAgentDebateSystem(geminiService);
-    this.uncertaintyEngine = new UncertaintyQuantificationEngine(geminiService);
+    this.uncertaintyEngine = getUncertaintyQuantificationEngine(geminiService);
   }
 
   /**
@@ -286,7 +301,7 @@ export class Station6Diagnostics {
       station2: any;
       station3: any;
       station4: any;
-      station5: Station5Output;
+      station5: any;
     }
   ): Promise<Station6Output> {
     console.log("[Station 6] Starting comprehensive diagnostics");
@@ -436,11 +451,13 @@ export class Station6Diagnostics {
 `;
 
     try {
-      const result = await this.geminiService.generateContent(prompt, {
+      const response = await this.geminiService.generate({
+        prompt,
         temperature: 0.3,
         maxTokens: 6144,
       });
 
+      const result = typeof response.content === 'string' ? response.content : (response.content as any).raw || '';
       const jsonMatch = result.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error("No valid JSON found in response");
@@ -510,13 +527,13 @@ export class Station6Diagnostics {
         ?.overallEfficiencyScore || 50;
 
     return {
-      overallHealthScore: efficiencyScore * 10,
+      overallHealthScore: Math.min(100, efficiencyScore),
       healthBreakdown: {
-        characterDevelopment: efficiencyScore * 10,
-        plotCoherence: efficiencyScore * 10,
-        structuralIntegrity: efficiencyScore * 10,
-        dialogueQuality: efficiencyScore * 10,
-        thematicDepth: efficiencyScore * 10,
+        characterDevelopment: Math.min(100, efficiencyScore),
+        plotCoherence: Math.min(100, efficiencyScore),
+        structuralIntegrity: Math.min(100, efficiencyScore),
+        dialogueQuality: Math.min(100, efficiencyScore),
+        thematicDepth: Math.min(100, efficiencyScore),
       },
       criticalIssues: [],
       warnings: [],
@@ -570,8 +587,8 @@ export class Station6Diagnostics {
         debateContext,
         {
           analysisType: "diagnostics-validation",
-          maxRounds: 3,
-        }
+        },
+        3
       );
     } catch (error) {
       console.error("[Station 6] Debate error:", error);
@@ -662,11 +679,13 @@ export class Station6Diagnostics {
 `;
 
     try {
-      const result = await this.geminiService.generateContent(prompt, {
+      const response = await this.geminiService.generate({
+        prompt,
         temperature: 0.3,
         maxTokens: 6144,
       });
 
+      const result = typeof response.content === 'string' ? response.content : (response.content as any).raw || '';
       const jsonMatch = result.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error("No valid JSON found in response");
@@ -729,10 +748,19 @@ export class Station6Diagnostics {
   private generateFallbackTreatmentPlan(
     diagnosticsReport: DiagnosticsReport
   ): TreatmentPlan {
+    // Map category to valid Recommendation category type
+    const mapCategory = (category: string): "character" | "plot" | "structure" | "dialogue" | "theme" | "pacing" => {
+      if (category === "continuity") return "structure";
+      if (["character", "plot", "structure", "dialogue", "theme", "pacing"].includes(category)) {
+        return category as "character" | "plot" | "structure" | "dialogue" | "theme" | "pacing";
+      }
+      return "structure"; // default fallback
+    };
+
     const recommendations: Recommendation[] = [
       ...diagnosticsReport.criticalIssues.map((issue) => ({
         priority: "immediate" as const,
-        category: issue.category,
+        category: mapCategory(issue.category),
         title: `معالجة: ${issue.description.substring(0, 50)}`,
         description: issue.description,
         rationale: `قضية حرجة بتأثير ${issue.impact}/10`,
@@ -875,11 +903,13 @@ export class Station6Diagnostics {
 `;
 
     try {
-      const result = await this.geminiService.generateContent(prompt, {
+      const response = await this.geminiService.generate({
+        prompt,
         temperature: 0.4,
         maxTokens: 6144,
       });
 
+      const result = typeof response.content === 'string' ? response.content : (response.content as any).raw || '';
       const jsonMatch = result.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error("No valid JSON found in response");
@@ -1013,25 +1043,32 @@ export class Station6Diagnostics {
 `;
 
     try {
-      return await this.uncertaintyEngine.quantify(combinedAnalysis, {
+      const metrics = await this.uncertaintyEngine.quantify(combinedAnalysis, {
         originalText: "",
         analysisType: "comprehensive-diagnostics",
         previousResults: analyses,
       });
+
+      // Map UncertaintyMetrics to UncertaintyReport format
+      return {
+        overallConfidence: metrics.confidence,
+        uncertainties: metrics.sources.map(source => ({
+          type: metrics.type,
+          aspect: source.aspect,
+          note: source.reason,
+        })),
+      };
     } catch (error) {
       console.error("[Station 6] Uncertainty quantification error:", error);
       return {
-        type: "epistemic",
-        score: 0.5,
-        confidence: 0.5,
-        sources: [
+        overallConfidence: 0.5,
+        uncertainties: [
           {
+            type: "epistemic",
             aspect: "فشل التحليل",
-            reason: "خطأ في معالجة البيانات",
-            reducible: true,
+            note: "خطأ في معالجة البيانات",
           },
         ],
-        alternativeInterpretations: [],
       };
     }
   }

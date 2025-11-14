@@ -40,8 +40,14 @@ const TASK_LABELS: Record<string, string> = {};
 const TASK_CATEGORY_MAP: Record<string, string> = {};
 const agentIdToTaskTypeMap: Record<string, any> = {};
 
-const submitTask = async (...args: any[]) => {};
-const runFullPipeline = async (...args: any[]) => {};
+const submitTask = async (...args: any[]): Promise<any> => {
+  // TODO: Implement task submission logic
+  return null;
+};
+const runFullPipeline = async (...args: any[]): Promise<any> => {
+  // TODO: Implement full pipeline logic
+  return null;
+};
 import { AgentReportViewer } from "@/components/agent-report-viewer";
 import { AgentReportsExporter } from "@/components/agent-reports-exporter";
 import {

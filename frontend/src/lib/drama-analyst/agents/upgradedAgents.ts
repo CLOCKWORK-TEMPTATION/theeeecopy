@@ -5,7 +5,7 @@
  * إخراج نصي فقط - لا JSON
  */
 
-import { TaskType } from "../enums";
+import { TaskType } from "@core/types";
 import { BaseAgent } from "./shared/BaseAgent";
 
 // Import upgraded agents
@@ -43,7 +43,7 @@ export const worldBuilderAgent = new WorldBuilderAgent();
 /**
  * Agent registry - maps task types to agent instances
  */
-export const UPGRADED_AGENTS: Map<TaskType, BaseAgent> = new Map([
+export const UPGRADED_AGENTS = new Map<TaskType, BaseAgent>([
   [TaskType.COMPLETION, completionAgent],
   [TaskType.CREATIVE_DEVELOPMENT, creativeAgent],
   [TaskType.CHARACTER_VOICE, characterVoiceAgent],
@@ -83,7 +83,7 @@ export async function executeAgentTask(
     return {
       text: `الوكيل ${taskType} لم يتم ترقيته بعد. يرجى المحاولة لاحقاً.`,
       confidence: 0.0,
-      notes: "الوكيل غير متاح",
+      notes: ["الوكيل غير متاح"],
       metadata: {
         processingTime: 0,
         tokensUsed: 0,
@@ -102,7 +102,7 @@ export async function executeAgentTask(
     return {
       text: `حدث خطأ أثناء تنفيذ المهمة. يرجى المحاولة مرة أخرى.`,
       confidence: 0.0,
-      notes: error instanceof Error ? error.message : "خطأ غير معروف",
+      notes: [error instanceof Error ? error.message : "خطأ غير معروف"],
       metadata: {
         processingTime: 0,
         tokensUsed: 0,
@@ -170,7 +170,8 @@ export async function batchExecuteAgentTasks(
     if (result.status === "fulfilled") {
       return result.value;
     } else {
-      const { taskType } = tasks[index];
+      const task = tasks[index];
+      const taskType = task?.taskType ?? "unknown";
       return {
         text: `فشل تنفيذ المهمة ${taskType}`,
         confidence: 0.0,

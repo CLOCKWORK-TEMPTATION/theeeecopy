@@ -210,7 +210,7 @@ export async function runPipelineWithInterfaces(
 ): Promise<any> {
   // TODO: Implement actual pipeline execution with interfaces
   const orchestrator = new SevenStationsOrchestrator();
-  return orchestrator.executePipeline(content, options);
+  return orchestrator.runSevenStationsPipeline('default', content, options || {});
 }
 
 // Export singleton instance

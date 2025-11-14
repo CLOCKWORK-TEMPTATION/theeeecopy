@@ -314,13 +314,13 @@ export class Station7Finalization extends BaseStation<
   private calculateStation5Score(s5?: Station5Output): number {
     if (!s5) return 0;
     const scores = [];
-    if (s5.symbolicAnalysisResults?.depthScore)
-      scores.push(s5.symbolicAnalysisResults.depthScore * 10);
-    if (s5.symbolicAnalysisResults?.consistencyScore)
-      scores.push(s5.symbolicAnalysisResults.consistencyScore * 10);
-    if (s5.stylisticAnalysisResults?.overallToneAssessment?.toneConsistency) {
+    if (s5.symbolicAnalysis?.depthScore)
+      scores.push(s5.symbolicAnalysis.depthScore * 10);
+    if (s5.symbolicAnalysis?.consistencyScore)
+      scores.push(s5.symbolicAnalysis.consistencyScore * 10);
+    if (s5.stylisticAnalysis?.toneAssessment?.toneConsistency) {
       scores.push(
-        s5.stylisticAnalysisResults.overallToneAssessment.toneConsistency * 10
+        s5.stylisticAnalysis.toneAssessment.toneConsistency * 10
       );
     }
     return scores.length > 0
@@ -347,8 +347,8 @@ export class Station7Finalization extends BaseStation<
 5. التوصية النهائية
 
 معلومات أساسية:
-- عدد الشخصيات: ${s3?.networkSummary?.charactersCount || 0}
-- عدد الصراعات: ${s3?.networkSummary?.conflictsCount || 0}
+- عدد الشخصيات: ${s3?.conflictNetwork?.characters?.size || 0}
+- عدد الصراعات: ${s3?.conflictNetwork?.conflicts?.size || 0}
 - نتيجة الكفاءة: ${s4?.efficiencyMetrics?.overallEfficiencyScore || 0}/100
 - نتيجة الصحة العامة: ${s6?.diagnosticsReport?.overallHealthScore || 0}/100
 - المشاكل الحرجة: ${s6?.diagnosticsReport?.criticalIssues?.length || 0}
@@ -399,13 +399,14 @@ export class Station7Finalization extends BaseStation<
   }
 
   private calculateCharacterScore(s3?: Station3Output): number {
-    if (!s3?.networkAnalysisResults) return 50;
+    if (!s3?.networkAnalysis) return 50;
     const scores = [];
-    if (s3.networkAnalysisResults.characterDevelopmentQuality) {
-      scores.push(s3.networkAnalysisResults.characterDevelopmentQuality * 10);
+    // Use available metrics from networkAnalysis
+    if (s3.networkAnalysis.complexity) {
+      scores.push(s3.networkAnalysis.complexity * 100);
     }
-    if (s3.networkAnalysisResults.characterComplexity) {
-      scores.push(s3.networkAnalysisResults.characterComplexity * 10);
+    if (s3.networkAnalysis.balance) {
+      scores.push(s3.networkAnalysis.balance * 100);
     }
     return scores.length > 0
       ? scores.reduce((a, b) => a + b) / scores.length
@@ -419,10 +420,10 @@ export class Station7Finalization extends BaseStation<
     if (!s3 && !s4) return 50;
     const scores = [];
     if (s4?.efficiencyMetrics?.conflictCohesion) {
-      scores.push(s4.efficiencyMetrics.conflictCohesion * 10);
+      scores.push(s4.efficiencyMetrics.conflictCohesion * 100);
     }
-    if (s3?.networkAnalysisResults?.conflictIntensity) {
-      scores.push(s3.networkAnalysisResults.conflictIntensity * 10);
+    if (s3?.networkAnalysis?.density) {
+      scores.push(s3.networkAnalysis.density * 100);
     }
     return scores.length > 0
       ? scores.reduce((a, b) => a + b) / scores.length
@@ -528,10 +529,10 @@ export class Station7Finalization extends BaseStation<
 قم بتحليل مدى صدى العمل الدرامي مع الجمهور وتوقع استجابتهم:
 
 معلومات العمل:
-- النوع: ${(s2 as any)?.hybridGenre?.genre || "غير محدد"}
-- الجمهور المستهدف: ${(s2 as any)?.targetAudience?.primaryAudience?.ageGroup || "غير محدد"}
-- القوة الرمزية: ${s5?.symbolicAnalysisResults?.depthScore || 0}/10
-- التناسق الأسلوبي: ${s5?.stylisticAnalysisResults?.overallToneAssessment?.toneConsistency || 0}/10
+- النوع: ${(s2 as any)?.hybridGenre?.primary || "غير محدد"}
+- الجمهور المستهدف: ${(s2 as any)?.targetAudience?.primaryAudience || "غير محدد"}
+- القوة الرمزية: ${s5?.symbolicAnalysis?.depthScore || 0}/10
+- التناسق الأسلوبي: ${s5?.stylisticAnalysis?.toneAssessment?.toneConsistency || 0}/10
 
 قدم تقييماً بصيغة نصية منظمة:
 
@@ -606,7 +607,7 @@ export class Station7Finalization extends BaseStation<
 بناءً على المشاكل المكتشفة، قدم اقتراحات محددة لإعادة الكتابة:
 
 المشاكل:
-${allIssues.map((issue, i) => `${i + 1}. ${issue.description} (نوع: ${issue.type}, خطورة: ${issue.severity})`).join("\n")}
+${allIssues.map((issue, i) => `${i + 1}. ${issue.description} (نوع: ${issue.category}, خطورة: ${issue.type})`).join("\n")}
 
 لكل مشكلة، قدم:
 - الموقع المحدد
@@ -656,18 +657,18 @@ ${allIssues.map((issue, i) => `${i + 1}. ${issue.description} (نوع: ${issue.t
   ): Promise<Station7Output["finalConfidence"]> {
     const stationConfidences = new Map<string, number>();
 
-    if (s1?.uncertaintyReport?.confidenceScore)
-      stationConfidences.set("station1", s1.uncertaintyReport.confidenceScore);
-    if (s2?.uncertaintyReport?.confidenceScore)
-      stationConfidences.set("station2", s2.uncertaintyReport.confidenceScore);
-    if (s3?.uncertaintyReport?.confidenceScore)
-      stationConfidences.set("station3", s3.uncertaintyReport.confidenceScore);
-    if (s4?.uncertaintyReport?.confidenceScore)
-      stationConfidences.set("station4", s4.uncertaintyReport.confidenceScore);
-    if (s5?.uncertaintyReport?.confidenceScore)
-      stationConfidences.set("station5", s5.uncertaintyReport.confidenceScore);
-    if (s6?.uncertaintyReport?.confidenceScore)
-      stationConfidences.set("station6", s6.uncertaintyReport.confidenceScore);
+    if (s1?.uncertaintyReport?.confidence)
+      stationConfidences.set("station1", s1.uncertaintyReport.confidence);
+    if (s2?.metadata?.confidenceScore)
+      stationConfidences.set("station2", s2.metadata.confidenceScore);
+    if (s3?.uncertaintyReport?.confidence)
+      stationConfidences.set("station3", s3.uncertaintyReport.confidence);
+    if (s4?.uncertaintyReport?.overallConfidence)
+      stationConfidences.set("station4", s4.uncertaintyReport.overallConfidence);
+    if (s5?.uncertaintyReport?.overallConfidence)
+      stationConfidences.set("station5", s5.uncertaintyReport.overallConfidence);
+    if (s6?.uncertaintyReport?.overallConfidence)
+      stationConfidences.set("station6", s6.uncertaintyReport.overallConfidence);
 
     const confidenceValues = Array.from(stationConfidences.values());
     const overallConfidence =
@@ -679,19 +680,19 @@ ${allIssues.map((issue, i) => `${i + 1}. ${issue.description} (نوع: ${issue.t
     const aleatoricUncertainties: string[] = [];
     const resolvableIssues: string[] = [];
 
-    [s1, s2, s3, s4, s5, s6].forEach((station, index) => {
-      if (station?.uncertaintyReport?.epistemicUncertainty) {
-        epistemicUncertainties.push(
-          ...station.uncertaintyReport.epistemicUncertainty
-        );
-      }
-      if (station?.uncertaintyReport?.aleatoricUncertainty) {
-        aleatoricUncertainties.push(
-          ...station.uncertaintyReport.aleatoricUncertainty
-        );
-      }
-      if (station?.uncertaintyReport?.resolvableIssues) {
-        resolvableIssues.push(...station.uncertaintyReport.resolvableIssues);
+    [s1, s3, s4, s5, s6].forEach((station) => {
+      if (station?.uncertaintyReport?.uncertainties) {
+        station.uncertaintyReport.uncertainties.forEach((uncertainty) => {
+          const description = `${uncertainty.aspect}: ${uncertainty.note}`;
+          if (uncertainty.type === "epistemic") {
+            epistemicUncertainties.push(description);
+            if ("reducible" in uncertainty && uncertainty.reducible) {
+              resolvableIssues.push(description);
+            }
+          } else if (uncertainty.type === "aleatoric") {
+            aleatoricUncertainties.push(description);
+          }
+        });
       }
     });
 
@@ -715,9 +716,9 @@ ${allIssues.map((issue, i) => `${i + 1}. ${issue.description} (نوع: ${issue.t
     s6?: Station6Output
   ): string[] {
     const agents = new Set<string>();
-    [s1, s2, s3, s4, s5, s6].forEach((station, index) => {
-      if (station?.agentsUsed && Array.isArray(station.agentsUsed)) {
-        station.agentsUsed.forEach((agent) => agents.add(agent));
+    [s1, s3, s4, s5, s6].forEach((station) => {
+      if (station?.metadata?.agentsUsed && Array.isArray(station.metadata.agentsUsed)) {
+        station.metadata.agentsUsed.forEach((agent: string) => agents.add(agent));
       }
     });
     return Array.from(agents);
@@ -732,11 +733,9 @@ ${allIssues.map((issue, i) => `${i + 1}. ${issue.description} (نوع: ${issue.t
     s6?: Station6Output
   ): number {
     let total = 0;
-    [s1, s2, s3, s4, s5, s6].forEach((station) => {
-      if (station?.tokensUsed && typeof station.tokensUsed === "number") {
-        total += station.tokensUsed;
-      }
-    });
+    if (s4?.metadata?.tokensUsed && typeof s4.metadata.tokensUsed === "number") {
+      total += s4.metadata.tokensUsed;
+    }
     return total;
   }
 
@@ -1063,19 +1062,19 @@ ${finalReport.rewritingSuggestions
 
       if (trimmed.includes("التأثير العاطفي")) {
         const match = trimmed.match(/(\d+)/);
-        if (match) result.emotionalImpact = parseInt(match[1]);
+        if (match?.[1]) result.emotionalImpact = parseInt(match[1]);
       } else if (trimmed.includes("التفاعل الفكري")) {
         const match = trimmed.match(/(\d+)/);
-        if (match) result.intellectualEngagement = parseInt(match[1]);
+        if (match?.[1]) result.intellectualEngagement = parseInt(match[1]);
       } else if (trimmed.includes("القابلية للارتباط")) {
         const match = trimmed.match(/(\d+)/);
-        if (match) result.relatability = parseInt(match[1]);
+        if (match?.[1]) result.relatability = parseInt(match[1]);
       } else if (trimmed.includes("قابلية التذكر")) {
         const match = trimmed.match(/(\d+)/);
-        if (match) result.memorability = parseInt(match[1]);
+        if (match?.[1]) result.memorability = parseInt(match[1]);
       } else if (trimmed.includes("الإمكانات الفيروسية")) {
         const match = trimmed.match(/(\d+)/);
-        if (match) result.viralPotential = parseInt(match[1]);
+        if (match?.[1]) result.viralPotential = parseInt(match[1]);
       } else if (trimmed.includes("الاستجابة الأولية")) {
         currentSection = "primary";
       } else if (trimmed.includes("الاستجابات الثانوية")) {
@@ -1114,20 +1113,24 @@ ${finalReport.rewritingSuggestions
 
       for (const line of lines) {
         if (line.includes("الموقع:")) {
-          suggestion.location = line.split("الموقع:")[1].trim();
+          const location = line.split("الموقع:")[1]?.trim();
+          if (location) suggestion.location = location;
         } else if (line.includes("المشكلة الحالية:")) {
-          suggestion.currentIssue = line.split("المشكلة الحالية:")[1].trim();
+          const currentIssue = line.split("المشكلة الحالية:")[1]?.trim();
+          if (currentIssue) suggestion.currentIssue = currentIssue;
         } else if (line.includes("الاقتراح:")) {
-          suggestion.suggestedRewrite = line.split("الاقتراح:")[1].trim();
+          const suggestedRewrite = line.split("الاقتراح:")[1]?.trim();
+          if (suggestedRewrite) suggestion.suggestedRewrite = suggestedRewrite;
         } else if (line.includes("التبرير:")) {
-          suggestion.reasoning = line.split("التبرير:")[1].trim();
+          const reasoning = line.split("التبرير:")[1]?.trim();
+          if (reasoning) suggestion.reasoning = reasoning;
         } else if (line.includes("التأثير:")) {
           const match = line.match(/(\d+)/);
-          if (match) suggestion.impact = parseInt(match[1]);
+          if (match?.[1]) suggestion.impact = parseInt(match[1]);
         } else if (line.includes("الأولوية:")) {
-          const priority = line.split("الأولوية:")[1].trim().toLowerCase();
-          if (priority.includes("must")) suggestion.priority = "must";
-          else if (priority.includes("should")) suggestion.priority = "should";
+          const priority = line.split("الأولوية:")[1]?.trim().toLowerCase();
+          if (priority?.includes("must")) suggestion.priority = "must";
+          else if (priority?.includes("should")) suggestion.priority = "should";
           else suggestion.priority = "could";
         }
       }
@@ -1147,7 +1150,7 @@ ${finalReport.rewritingSuggestions
   protected extractRequiredData(input: Station7Input): Record<string, unknown> {
     return {
       charactersCount: input.conflictNetwork.characters.size,
-      conflictsCount: input.conflictNetwork.conflicts.size,
+      conflictsCount: input.conflictNetwork.conflicts?.size ?? 0,
       station6Issues:
         input.station6Output.diagnosticsReport.criticalIssues.length,
       stationsTracked: input.allPreviousStationsData.size,

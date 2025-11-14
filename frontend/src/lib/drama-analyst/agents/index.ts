@@ -1,17 +1,11 @@
-import { AIAgentConfig } from "@core/types";
-import { TaskType } from "@core/enums";
+import { AIAgentConfig, TaskType, AgentConfigMapping } from "@core/types";
 
 /**
  * Agent configuration mapping
  * Maps TaskType to module path and config name
  * Reduces cyclomatic complexity from 28 to 3
  */
-interface AgentConfigMapping {
-  path: string;
-  configName: string;
-}
-
-const AGENT_CONFIG_MAP: Record<TaskType, AgentConfigMapping> = {
+const AGENT_CONFIG_MAP: Partial<Record<TaskType, AgentConfigMapping>> = {
   [TaskType.ANALYSIS]: {
     path: "./analysis/agent",
     configName: "ANALYSIS_AGENT_CONFIG",

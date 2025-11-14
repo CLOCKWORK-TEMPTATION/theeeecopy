@@ -51,7 +51,7 @@ export abstract class BaseAgent {
         basePrompt,
         options,
         {
-          ...input.context,
+          ...(typeof input.context === 'object' ? input.context : {}),
           taskType: this.taskType,
           agentName: this.name,
           systemPrompt: this.systemPrompt,

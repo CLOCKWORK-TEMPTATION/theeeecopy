@@ -1,4 +1,4 @@
-import { TaskType } from "@core/enums";
+import { TaskType } from "@core/types";
 import { BaseAgent } from "../shared/BaseAgent";
 import {
   StandardAgentInput,
@@ -88,7 +88,7 @@ export class TensionOptimizerAgent extends BaseAgent {
     return prompt;
   }
 
-  protected async postProcess(
+  protected override async postProcess(
     output: StandardAgentOutput
   ): Promise<StandardAgentOutput> {
     let processedText = this.cleanupTensionText(output.text);
@@ -306,7 +306,7 @@ export class TensionOptimizerAgent extends BaseAgent {
     techniques: number,
     practical: number,
     insight: number
-  ): string {
+  ): string[] {
     const notes: string[] = [];
 
     const avg = (depth + techniques + practical + insight) / 4;
@@ -323,9 +323,11 @@ export class TensionOptimizerAgent extends BaseAgent {
     if (techniques < 0.5) notes.push("يحتاج تحديد تقنيات أوضح");
     if (practical < 0.6) notes.push("يحتاج مزيد من التوصيات");
 
-    if (output.notes) notes.push(output.notes);
+    if (output.notes && Array.isArray(output.notes)) {
+      notes.push(...output.notes);
+    }
 
-    return notes.join(" | ");
+    return notes;
   }
 
   private translateLevel(level: string): string {
@@ -363,7 +365,7 @@ export class TensionOptimizerAgent extends BaseAgent {
     return paces[pace] || pace;
   }
 
-  protected async getFallbackResponse(
+  protected override async getFallbackResponse(
     input: StandardAgentInput
   ): Promise<string> {
     return `تقييم التوتر الحالي:

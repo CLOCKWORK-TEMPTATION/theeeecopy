@@ -240,7 +240,7 @@ const nextConfig = {
   },
 
   // Webpack configuration for handling Node.js built-in modules
-  webpack: (config, { isServer }) => {
+  webpack: (config: any, { isServer }: { isServer: boolean }) => {
     if (!isServer) {
       // Don't resolve Node.js modules on client side
       config.resolve.fallback = {

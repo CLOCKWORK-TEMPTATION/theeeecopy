@@ -20,7 +20,7 @@ export const COMPLETION_ENHANCEMENT_OPTIONS = [
   { value: "complete-rewrite", label: "إعادة كتابة كاملة" },
 ];
 
-export const TASK_LABELS: Record<TaskType, string> = {
+export const TASK_LABELS: Partial<Record<TaskType, string>> = {
   [TaskType.CHARACTER_ANALYSIS]: "تحليل الشخصيات",
   [TaskType.PLOT_ANALYSIS]: "تحليل الحبكة",
   [TaskType.THEME_ANALYSIS]: "تحليل الموضوعات",
@@ -35,7 +35,7 @@ export const TASK_LABELS: Record<TaskType, string> = {
   [TaskType.CUSTOM]: "مخصص",
 };
 
-export const TASK_CATEGORY_MAP: Record<TaskType, TaskCategory> = {
+export const TASK_CATEGORY_MAP: Partial<Record<TaskType, TaskCategory>> = {
   [TaskType.CHARACTER_ANALYSIS]: TaskCategory.ANALYSIS,
   [TaskType.PLOT_ANALYSIS]: TaskCategory.ANALYSIS,
   [TaskType.THEME_ANALYSIS]: TaskCategory.ANALYSIS,

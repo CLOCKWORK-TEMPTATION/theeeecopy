@@ -85,9 +85,10 @@ export class DevicePerformanceDetector {
       return;
     }
 
+    const deviceMemory = this.getDeviceMemory();
     const capabilities: DeviceCapabilities = {
       hardwareConcurrency: this.getHardwareConcurrency(),
-      deviceMemory: this.getDeviceMemory() || undefined,
+      ...(deviceMemory ? { deviceMemory } : {}),
       screenWidth: window.innerWidth,
       prefersReducedMotion: this.getPrefersReducedMotion(),
     };

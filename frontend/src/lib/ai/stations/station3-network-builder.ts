@@ -637,11 +637,21 @@ class ConflictInferenceEngine {
 
         if (charIds.length > 0) {
           conflicts.push({
-            id: `conflict-${conflicts.length + 1}`,
+            id: `conflict_${Date.now()}_${Math.random()}`,
             name: conflictName,
             description: conflictDesc,
-            involvedCharacterIds: charIds,
-            intensity: 0.7,
+            involvedCharacters: charIds,
+            subject: ConflictSubject.OTHER,
+            scope: ConflictScope.PERSONAL,
+            phase: ConflictPhase.EMERGING,
+            strength: 7,
+            relatedRelationships: [],
+            pivotPoints: [],
+            timestamps: [new Date()],
+            metadata: {
+              source: "AI_Text_Analysis",
+              inferenceTimestamp: new Date().toISOString(),
+            },
           });
         }
       }

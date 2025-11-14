@@ -1,4 +1,4 @@
-import { TaskType } from "@core/enums";
+import { TaskType } from "@core/types";
 import { BaseAgent } from "../shared/BaseAgent";
 import {
   StandardAgentInput,
@@ -17,8 +17,8 @@ export class CreativeAgent extends BaseAgent {
   constructor() {
     super(
       "CreativeVision AI",
-      TaskType.CREATIVE_DEVELOPMENT,
-      CREATIVE_AGENT_CONFIG.systemPrompt
+      TaskType.CREATIVE,
+      CREATIVE_AGENT_CONFIG.systemPrompt || ""
     );
 
     // Set agent-specific confidence floor
@@ -204,7 +204,7 @@ export class CreativeAgent extends BaseAgent {
     // If no sections found, try to split by paragraphs
     if (Object.keys(sections).length === 0) {
       const paragraphs = text.split("\n\n").filter((p) => p.trim());
-      if (paragraphs.length >= 2) {
+      if (paragraphs.length >= 2 && paragraphs[0]) {
         sections.analysis = paragraphs[0];
         sections.proposals = paragraphs.slice(1).join("\n\n");
       }
@@ -367,7 +367,7 @@ export class CreativeAgent extends BaseAgent {
   protected override async getFallbackResponse(
     input: StandardAgentInput
   ): Promise<string> {
-    const focus = input.context?.developmentFocus || "general";
+    const focus = (typeof input.context === 'object' && input.context?.developmentFocus) || "general";
 
     return `تحليل إبداعي:
 لتطوير ${this.translateFocus(focus)} في النص المقدم، يمكن التركيز على تعزيز العناصر الأساسية وإضافة عمق أكبر.

@@ -1,4 +1,4 @@
-import { TaskType } from "@core/enums";
+import { TaskType } from "@core/types";
 import { BaseAgent } from "../shared/BaseAgent";
 import {
   StandardAgentInput,
@@ -48,7 +48,7 @@ ${userInput}
 `;
 
     // إضافة السياق من المحطات السابقة
-    if (context?.previousStations) {
+    if (typeof context === 'object' && context?.previousStations) {
       prompt += `## السياق من المحطات السابقة:\n`;
 
       if (context.previousStations.analysis) {
@@ -140,7 +140,7 @@ ${userInput}
   /**
    * معالجة ما بعد التنفيذ - تنظيف المخرجات من JSON
    */
-  protected async postProcess(
+  protected override async postProcess(
     output: StandardAgentOutput
   ): Promise<StandardAgentOutput> {
     let cleanedText = output.text;
@@ -159,14 +159,14 @@ ${userInput}
     const worldQuality = this.assessWorldQuality(cleanedText);
 
     // إضافة ملاحظة حول جودة بناء العالم
-    let enhancedNotes = output.notes || "";
+    const enhancedNotes: string[] = Array.isArray(output.notes) ? [...output.notes] : [];
 
     if (worldQuality.consistency >= 0.85 && worldQuality.detail >= 0.85) {
-      enhancedNotes += " | عالم متكامل عالي الاتساق والتفصيل";
+      enhancedNotes.push("عالم متكامل عالي الاتساق والتفصيل");
     } else if (worldQuality.consistency >= 0.7 && worldQuality.detail >= 0.7) {
-      enhancedNotes += " | عالم جيد يحتاج تطوير بعض الجوانب";
+      enhancedNotes.push("عالم جيد يحتاج تطوير بعض الجوانب");
     } else {
-      enhancedNotes += " | عالم أولي يحتاج توسع وتعميق";
+      enhancedNotes.push("عالم أولي يحتاج توسع وتعميق");
     }
 
     // تعديل الثقة بناءً على جودة العالم
@@ -181,7 +181,7 @@ ${userInput}
       ...output,
       text: cleanedText,
       confidence: adjustedConfidence,
-      notes: enhancedNotes.trim(),
+      notes: enhancedNotes,
       metadata: {
         ...output.metadata,
         worldQuality: worldQuality,
@@ -291,7 +291,7 @@ ${userInput}
   /**
    * استجابة احتياطية في حالة الفشل
    */
-  protected async getFallbackResponse(
+  protected override async getFallbackResponse(
     input: StandardAgentInput
   ): Promise<string> {
     return `# عالم درامي - نسخة أولية
