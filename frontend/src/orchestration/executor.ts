@@ -221,5 +221,18 @@ export class PipelineOrchestrator {
   }
 }
 
+/**
+ * Submit a task to the executor
+ */
+export async function submitTask(taskRequest: any): Promise<any> {
+  // TODO: Implement actual task submission logic
+  return {
+    success: true,
+    taskId: `task_${Date.now()}`,
+    status: 'submitted',
+    data: taskRequest,
+  };
+}
+
 // Export singleton instance
 export const pipelineExecutor = new PipelineOrchestrator();
