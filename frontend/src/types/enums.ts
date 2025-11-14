@@ -199,8 +199,8 @@ export enum FeatureFlagEnum {
   ENTERPRISE_FEATURES = 'enterprise-features',
 }
 
-// Analysis types
-export enum AnalysisType {
+// Analysis types for AI pipeline
+export enum AnalysisTypeEnum {
   CHARACTERS = 'characters',
   THEMES = 'themes',
   STRUCTURE = 'structure',
@@ -231,7 +231,7 @@ export const WebhookEvent = WebhookEventEnum;
 export const NotificationType = NotificationTypeEnum;
 export const SubscriptionStatus = SubscriptionStatusEnum;
 export const FeatureFlag = FeatureFlagEnum;
-export const AnalysisTypeConst = AnalysisType;
+export const AnalysisType = AnalysisTypeEnum;
 
 // Export types
 export type TaskCategory = TaskCategoryEnum;
@@ -254,3 +254,4 @@ export type WebhookEvent = WebhookEventEnum;
 export type NotificationType = NotificationTypeEnum;
 export type SubscriptionStatus = SubscriptionStatusEnum;
 export type FeatureFlag = FeatureFlagEnum;
+export type AnalysisType = AnalysisTypeEnum;
