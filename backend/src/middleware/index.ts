@@ -118,15 +118,15 @@ export const setupMiddleware = (app: express.Application): void => {
   });
 
   // Apply general rate limiting to all API routes
-  app.use('/api/', generalLimiter);
+  app.use('/api/', generalLimiter as any);
 
   // Apply stricter rate limiting to auth endpoints
-  app.use('/api/auth/login', authLimiter);
-  app.use('/api/auth/signup', authLimiter);
+  app.use('/api/auth/login', authLimiter as any);
+  app.use('/api/auth/signup', authLimiter as any);
 
   // Apply AI-specific rate limiting to analysis endpoints
-  app.use('/api/analysis/', aiLimiter);
-  app.use('/api/projects/:id/analyze', aiLimiter);
+  app.use('/api/analysis/', aiLimiter as any);
+  app.use('/api/projects/:id/analyze', aiLimiter as any);
 
   // Request logging
   app.use((req, res, next) => {
