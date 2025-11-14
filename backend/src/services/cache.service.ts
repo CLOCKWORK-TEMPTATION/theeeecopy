@@ -16,8 +16,21 @@
 
 import { createClient, RedisClientType } from 'redis';
 import crypto from 'crypto';
-import { logger } from '@/utils/logger';
 import { env } from '@/config/env';
+
+// Safe logger import for testing compatibility
+let logger: any;
+try {
+  logger = require('@/utils/logger').logger;
+} catch {
+  // Fallback logger for testing or when logger is not available
+  logger = {
+    info: (...args: any[]) => console.log('[INFO]', ...args),
+    error: (...args: any[]) => console.error('[ERROR]', ...args),
+    warn: (...args: any[]) => console.warn('[WARN]', ...args),
+    debug: (...args: any[]) => console.debug('[DEBUG]', ...args),
+  };
+}
 
 // Optional Sentry import (only if SENTRY_DSN is configured)
 let Sentry: typeof import('@sentry/node') | null = null;
