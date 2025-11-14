@@ -199,7 +199,7 @@ export enum FeatureFlagEnum {
   ENTERPRISE_FEATURES = 'enterprise-features',
 }
 
-// Analysis types
+// Analysis types for AI pipeline
 export enum AnalysisTypeEnum {
   CHARACTERS = 'characters',
   THEMES = 'themes',

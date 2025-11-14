@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { streamFlash } from '@/lib/ai/gemini-core';
+import { streamFlash } from '@/ai/gemini-core';
 
 /**
  * POST /api/ai/chat

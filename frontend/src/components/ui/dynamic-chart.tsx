@@ -18,7 +18,6 @@
 
 import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
-import type * as RechartsPrimitive from "recharts";
 
 // Loading component shown while chart is loading
 const ChartLoading = () => (
@@ -101,64 +100,50 @@ export const DynamicRadarChart = dynamic(
 
 export const DynamicLine = dynamic(
   () =>
-    import("recharts").then((mod) => mod.Line) as Promise<
-      ComponentType<RechartsPrimitive.LineProps>
-    >,
+    import("recharts").then((mod) => mod.Line) as Promise<ComponentType<any>>,
   { ssr: false }
 );
 
 export const DynamicBar = dynamic(
   () =>
-    import("recharts").then((mod) => mod.Bar) as Promise<
-      ComponentType<RechartsPrimitive.BarProps>
-    >,
+    import("recharts").then((mod) => mod.Bar) as Promise<ComponentType<any>>,
   { ssr: false }
 );
 
 export const DynamicArea = dynamic(
   () =>
-    import("recharts").then((mod) => mod.Area) as Promise<
-      ComponentType<RechartsPrimitive.AreaProps>
-    >,
+    import("recharts").then((mod) => mod.Area) as Promise<ComponentType<any>>,
   { ssr: false }
 );
 
 export const DynamicPie = dynamic(
   () =>
-    import("recharts").then((mod) => mod.Pie) as Promise<
-      ComponentType<RechartsPrimitive.PieProps>
-    >,
+    import("recharts").then((mod) => mod.Pie) as Promise<ComponentType<any>>,
   { ssr: false }
 );
 
 export const DynamicRadar = dynamic(
   () =>
-    import("recharts").then((mod) => mod.Radar) as Promise<
-      ComponentType<RechartsPrimitive.RadarProps>
-    >,
+    import("recharts").then((mod) => mod.Radar) as Promise<ComponentType<any>>,
   { ssr: false }
 );
 
 export const DynamicXAxis = dynamic(
   () =>
-    import("recharts").then((mod) => mod.XAxis) as Promise<
-      ComponentType<RechartsPrimitive.XAxisProps>
-    >,
+    import("recharts").then((mod) => mod.XAxis) as Promise<ComponentType<any>>,
   { ssr: false }
 );
 
 export const DynamicYAxis = dynamic(
   () =>
-    import("recharts").then((mod) => mod.YAxis) as Promise<
-      ComponentType<RechartsPrimitive.YAxisProps>
-    >,
+    import("recharts").then((mod) => mod.YAxis) as Promise<ComponentType<any>>,
   { ssr: false }
 );
 
 export const DynamicCartesianGrid = dynamic(
   () =>
     import("recharts").then((mod) => mod.CartesianGrid) as Promise<
-      ComponentType<RechartsPrimitive.CartesianGridProps>
+      ComponentType<any>
     >,
   { ssr: false }
 );

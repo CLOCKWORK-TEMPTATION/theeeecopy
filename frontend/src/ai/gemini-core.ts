@@ -3,6 +3,16 @@
 
 import { analyzeScript, getShotSuggestion, chatWithAI } from '@/lib/api';
 
+/**
+ * Convert Gemini response to plain text
+ */
+export function toText(response: any): string {
+  if (typeof response === 'string') return response;
+  if (response?.text) return response.text;
+  if (response?.response?.text) return response.response.text();
+  return JSON.stringify(response);
+}
+
 // Core Gemini functions that call Backend API
 export const geminiCore = {
   // Analyze screenplay content via Backend
@@ -60,6 +70,19 @@ export async function streamFlash(
   }
 
   return response.message || response.content || response;
+}
+
+/**
+ * Convert AI response to text
+ */
+export function toText(response: any): string {
+  if (typeof response === 'string') {
+    return response;
+  }
+  if (response && typeof response === 'object') {
+    return response.content || response.message || response.text || JSON.stringify(response);
+  }
+  return String(response);
 }
 
 export default geminiCore;

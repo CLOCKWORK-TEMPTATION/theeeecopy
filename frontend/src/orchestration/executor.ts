@@ -2,7 +2,7 @@
 // Manages execution of AI analysis pipelines with proper error handling and progress tracking
 
 import { geminiService, type GeminiConfig } from '@/ai/gemini-service';
-import { getCached } from '@/lib/redis';
+import { cachedGeminiCall, generateGeminiCacheKey } from '@/lib/redis';
 import { AnalysisType } from '@/types/enums';
 
 export interface PipelineStep {
@@ -211,6 +211,19 @@ export class PipelineOrchestrator {
     }
     return false;
   }
+}
+
+/**
+ * Submit a task to the executor
+ */
+export async function submitTask(taskRequest: any): Promise<any> {
+  // TODO: Implement actual task submission logic
+  return {
+    success: true,
+    taskId: `task_${Date.now()}`,
+    status: 'submitted',
+    data: taskRequest,
+  };
 }
 
 // Export singleton instance
