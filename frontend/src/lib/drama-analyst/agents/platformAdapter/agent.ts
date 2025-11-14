@@ -1,4 +1,4 @@
-import { TaskCategory, TaskType } from "@core/enums";
+import { TaskCategory, TaskType } from "@core/types";
 import { AIAgentConfig } from "@core/types";
 
 export const PLATFORM_ADAPTER_AGENT_CONFIG: AIAgentConfig = {
@@ -20,8 +20,8 @@ export const PLATFORM_ADAPTER_AGENT_CONFIG: AIAgentConfig = {
     adaptiveLearning: true,
     complexityScore: 0.75,
     accuracyLevel: 0.8,
-    processingSpeed: "fast",
-    resourceIntensity: "medium",
+    processingSpeed: 0.8,
+    resourceIntensity: 0.5,
     languageModeling: true,
     patternRecognition: true,
     creativeGeneration: true,

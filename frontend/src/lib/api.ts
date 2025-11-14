@@ -104,8 +104,8 @@ export async function createScene(projectId: string, data: any): Promise<any> {
   return response.json();
 }
 
-export async function updateScene(projectId: string, sceneId: string, data: any): Promise<any> {
-  const response = await fetch(`/api/projects/${projectId}/scenes/${sceneId}`, {
+export async function updateScene(sceneId: string, data: any): Promise<any> {
+  const response = await fetch(`/api/scenes/${sceneId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -114,8 +114,8 @@ export async function updateScene(projectId: string, sceneId: string, data: any)
   return response.json();
 }
 
-export async function deleteScene(projectId: string, sceneId: string): Promise<any> {
-  const response = await fetch(`/api/projects/${projectId}/scenes/${sceneId}`, { method: "DELETE" });
+export async function deleteScene(sceneId: string): Promise<any> {
+  const response = await fetch(`/api/scenes/${sceneId}`, { method: "DELETE" });
   if (!response.ok) throw new Error("Failed to delete scene");
   return response.json();
 }
@@ -137,8 +137,8 @@ export async function createCharacter(projectId: string, data: any): Promise<any
   return response.json();
 }
 
-export async function updateCharacter(projectId: string, characterId: string, data: any): Promise<any> {
-  const response = await fetch(`/api/projects/${projectId}/characters/${characterId}`, {
+export async function updateCharacter(characterId: string, data: any): Promise<any> {
+  const response = await fetch(`/api/characters/${characterId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -147,21 +147,21 @@ export async function updateCharacter(projectId: string, characterId: string, da
   return response.json();
 }
 
-export async function deleteCharacter(projectId: string, characterId: string): Promise<any> {
-  const response = await fetch(`/api/projects/${projectId}/characters/${characterId}`, { method: "DELETE" });
+export async function deleteCharacter(characterId: string): Promise<any> {
+  const response = await fetch(`/api/characters/${characterId}`, { method: "DELETE" });
   if (!response.ok) throw new Error("Failed to delete character");
   return response.json();
 }
 
 // Shot API functions
-export async function getSceneShots(projectId: string, sceneId: string): Promise<any> {
-  const response = await fetch(`/api/projects/${projectId}/scenes/${sceneId}/shots`);
+export async function getSceneShots(sceneId: string): Promise<any> {
+  const response = await fetch(`/api/scenes/${sceneId}/shots`);
   if (!response.ok) throw new Error("Failed to fetch shots");
   return response.json();
 }
 
-export async function createShot(projectId: string, sceneId: string, data: any): Promise<any> {
-  const response = await fetch(`/api/projects/${projectId}/scenes/${sceneId}/shots`, {
+export async function createShot(sceneId: string, data: any): Promise<any> {
+  const response = await fetch(`/api/scenes/${sceneId}/shots`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -170,8 +170,8 @@ export async function createShot(projectId: string, sceneId: string, data: any):
   return response.json();
 }
 
-export async function updateShot(projectId: string, sceneId: string, shotId: string, data: any): Promise<any> {
-  const response = await fetch(`/api/projects/${projectId}/scenes/${sceneId}/shots/${shotId}`, {
+export async function updateShot(shotId: string, data: any): Promise<any> {
+  const response = await fetch(`/api/shots/${shotId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -180,8 +180,8 @@ export async function updateShot(projectId: string, sceneId: string, shotId: str
   return response.json();
 }
 
-export async function deleteShot(projectId: string, sceneId: string, shotId: string): Promise<any> {
-  const response = await fetch(`/api/projects/${projectId}/scenes/${sceneId}/shots/${shotId}`, { method: "DELETE" });
+export async function deleteShot(shotId: string): Promise<any> {
+  const response = await fetch(`/api/shots/${shotId}`, { method: "DELETE" });
   if (!response.ok) throw new Error("Failed to delete shot");
   return response.json();
 }

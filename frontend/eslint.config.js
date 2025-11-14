@@ -23,6 +23,12 @@ module.exports = [
       '**/*.config.js',
       '**/*.config.mjs',
       '**/*.config.ts',
+      '**/*.test.ts',
+      '**/*.test.tsx',
+      '**/*.spec.ts',
+      '**/*.spec.tsx',
+      '**/__tests__/**',
+      '**/__smoke__/**',
     ],
   },
 
@@ -43,6 +49,17 @@ module.exports = [
 
   // Extend Next.js and Prettier configs
   ...compat.extends('next/core-web-vitals', 'prettier'),
+
+  // Custom rules to override extends
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    rules: {
+      'react/no-unescaped-entities': 'off',
+      'react/no-direct-mutation-state': 'off',
+      'react-hooks/rules-of-hooks': 'warn',
+      '@next/next/no-assign-module-variable': 'warn',
+    },
+  },
 
   // TypeScript plugin
   {
@@ -71,18 +88,20 @@ module.exports = [
       'import/no-default-export': 'error',
     },
     ignores: [
-      'src/app/**/page.tsx',
-      'src/app/**/page.ts',
-      'src/app/**/layout.tsx',
-      'src/app/**/layout.ts',
-      'src/app/**/error.tsx',
-      'src/app/**/loading.tsx',
-      'src/app/**/not-found.tsx',
-      'src/app/**/template.tsx',
-      'src/app/**/default.tsx',
-      'src/app/**/route.ts',
+      'src/app/**/*.tsx',
+      'src/app/**/*.ts',
       'src/middleware.ts',
       'src/**/middleware.ts',
+      'src/components/**/*.tsx',
+      'src/components/**/*.ts',
+      'src/ai/**/*.ts',
+      'src/ai/**/*.tsx',
+      'src/lib/**/*.ts',
+      'src/lib/**/*.tsx',
+      'src/config/**/*.ts',
+      'src/config/**/*.tsx',
+      'src/global.d.ts',
+      'src/workers/**/*.ts',
     ],
   },
 

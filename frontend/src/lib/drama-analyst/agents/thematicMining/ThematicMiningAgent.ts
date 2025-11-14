@@ -1,4 +1,4 @@
-import { TaskType } from "@core/enums";
+import { TaskType } from "@core/types";
 import { BaseAgent } from "../shared/BaseAgent";
 import {
   StandardAgentInput,
@@ -95,7 +95,7 @@ ${includeMotifs ? `5. **الموتيفات المتكررة**: الأنماط و
     return prompt;
   }
 
-  protected async postProcess(
+  protected override async postProcess(
     output: StandardAgentOutput
   ): Promise<StandardAgentOutput> {
     let processedText = this.cleanupThematicText(output.text);
@@ -283,7 +283,7 @@ ${includeMotifs ? `5. **الموتيفات المتكررة**: الأنماط و
     evidence: number,
     insight: number,
     coherence: number
-  ): string {
+  ): string[] {
     const notes: string[] = [];
 
     const avg = (depth + evidence + insight + coherence) / 4;
@@ -300,9 +300,11 @@ ${includeMotifs ? `5. **الموتيفات المتكررة**: الأنماط و
     if (evidence < 0.5) notes.push("يحتاج مزيد من الأدلة");
     if (insight < 0.6) notes.push("يحتاج تحليل أعمق");
 
-    if (output.notes) notes.push(output.notes);
+    if (output.notes && Array.isArray(output.notes)) {
+      notes.push(...output.notes);
+    }
 
-    return notes.join(" | ");
+    return notes;
   }
 
   private translateDepth(depth: string): string {
@@ -327,7 +329,7 @@ ${includeMotifs ? `5. **الموتيفات المتكررة**: الأنماط و
     return categories[category] || category;
   }
 
-  protected async getFallbackResponse(
+  protected override async getFallbackResponse(
     input: StandardAgentInput
   ): Promise<string> {
     return `نظرة عامة:

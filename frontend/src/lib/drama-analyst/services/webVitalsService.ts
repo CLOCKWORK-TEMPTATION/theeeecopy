@@ -389,7 +389,7 @@ class WebVitalsService {
    * Usage: webVitalsService.markComponentRenderStart('MyComponent')
    */
   public markComponentRenderStart(componentName: string): void {
-    if (typeof window !== "undefined" && window.performance?.mark) {
+    if (typeof window !== "undefined" && window.performance) {
       try {
         performance.mark(`${componentName}-render-start`);
       } catch (error) {
@@ -403,7 +403,7 @@ class WebVitalsService {
    * Usage: webVitalsService.markComponentRenderEnd('MyComponent')
    */
   public markComponentRenderEnd(componentName: string): void {
-    if (typeof window !== "undefined" && window.performance?.mark) {
+    if (typeof window !== "undefined" && window.performance) {
       try {
         const endMark = `${componentName}-render-end`;
         const startMark = `${componentName}-render-start`;

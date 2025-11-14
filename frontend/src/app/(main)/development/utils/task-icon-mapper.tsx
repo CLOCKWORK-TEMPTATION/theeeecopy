@@ -54,6 +54,12 @@ const TASK_CATEGORY_ICONS: Record<TaskCategory, React.ReactNode> = {
   [TaskCategory.CREATIVE]: <Sparkles className="w-4 h-4" />,
   [TaskCategory.INTEGRATED]: <FileText className="w-4 h-4" />,
   [TaskCategory.GENERAL]: <Clipboard className="w-4 h-4" />,
+  [TaskCategory.CHARACTER]: <Users className="w-4 h-4" />,
+  [TaskCategory.SCENE]: <Film className="w-4 h-4" />,
+  [TaskCategory.SCRIPT]: <FileText className="w-4 h-4" />,
+  [TaskCategory.CORE]: <Target className="w-4 h-4" />,
+  [TaskCategory.PREDICTIVE]: <TrendingUp className="w-4 h-4" />,
+  [TaskCategory.ADVANCED_MODULES]: <Brain className="w-4 h-4" />,
 };
 
 /**

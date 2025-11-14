@@ -9,7 +9,7 @@ export function useChatWithAI() {
     }: {
       message: string;
       history: Array<{ role: string; content: string }>;
-    }) => api.chatWithAI(message, { history }),
+    }) => api.chatWithAI(message, undefined, { history }),
   });
 }
 

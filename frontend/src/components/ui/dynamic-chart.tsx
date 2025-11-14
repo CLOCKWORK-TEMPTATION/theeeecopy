@@ -38,9 +38,9 @@ export const DynamicChartContainer = dynamic(
 );
 
 export const DynamicChartTooltip = dynamic(
-  () => import("./chart").then((mod) => ({ default: mod.ChartTooltip })),
+  () => import("./chart").then((mod) => ({ default: mod.ChartTooltip as any })),
   { ssr: false }
-);
+) as any;
 
 export const DynamicChartTooltipContent = dynamic(
   () => import("./chart").then((mod) => ({ default: mod.ChartTooltipContent })),
@@ -48,9 +48,9 @@ export const DynamicChartTooltipContent = dynamic(
 );
 
 export const DynamicChartLegend = dynamic(
-  () => import("./chart").then((mod) => ({ default: mod.ChartLegend })),
+  () => import("./chart").then((mod) => ({ default: mod.ChartLegend as any })),
   { ssr: false }
-);
+) as any;
 
 export const DynamicChartLegendContent = dynamic(
   () => import("./chart").then((mod) => ({ default: mod.ChartLegendContent })),

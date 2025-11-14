@@ -1,4 +1,4 @@
-import { TaskType } from "@core/enums";
+import { TaskType } from "@core/types";
 import { BaseAgent } from "../shared/BaseAgent";
 import {
   StandardAgentInput,
@@ -17,7 +17,7 @@ export class SceneGeneratorAgent extends BaseAgent {
     super(
       "SceneCraft AI",
       TaskType.SCENE_GENERATOR,
-      SCENE_GENERATOR_AGENT_CONFIG.systemPrompt
+      SCENE_GENERATOR_AGENT_CONFIG.systemPrompt || ""
     );
 
     // Set agent-specific confidence floor
@@ -143,7 +143,8 @@ export class SceneGeneratorAgent extends BaseAgent {
       ),
       metadata: {
         ...output.metadata,
-        sceneQuality: {
+        sceneQuality: qualityScore,
+        sceneQualityDetails: {
           overall: qualityScore,
           dramaticTension,
           dialogueQuality,
@@ -476,8 +477,8 @@ export class SceneGeneratorAgent extends BaseAgent {
 
     for (const line of lines) {
       if (this.isCharacterName(line)) {
-        const name = line.split(":")[0].trim();
-        characterNames.add(name);
+        const name = line.split(":")[0]?.trim();
+        if (name) characterNames.add(name);
       }
     }
 
@@ -588,7 +589,7 @@ export class SceneGeneratorAgent extends BaseAgent {
   protected override async getFallbackResponse(
     input: StandardAgentInput
   ): Promise<string> {
-    const sceneType = input.context?.sceneType || "dramatic";
+    const sceneType = (typeof input.context === 'object' && input.context?.sceneType) || "dramatic";
 
     return `وصف المشهد:
 مشهد ${this.translateSceneType(sceneType)} يحتاج إلى تطوير أعمق للشخصيات والصراع.

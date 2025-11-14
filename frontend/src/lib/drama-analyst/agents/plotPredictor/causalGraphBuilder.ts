@@ -92,11 +92,14 @@ ${text}
     const nodes: PlotNode[] = [];
 
     for (let i = 0; i < events.length; i++) {
-      const importance = await this.assessEventImportance(events[i]);
+      const event = events[i];
+      if (!event) continue;
+
+      const importance = await this.assessEventImportance(event);
 
       nodes.push({
         id: `event_${i + 1}`,
-        event: events[i],
+        event,
         timestamp: i,
         importance,
       });
@@ -147,20 +150,26 @@ ${text}
 
     // فحص العلاقات السببية بين الأحداث المتتالية والقريبة
     for (let i = 0; i < nodes.length; i++) {
+      const nodeI = nodes[i];
+      if (!nodeI) continue;
+
       // فحص الأحداث اللاحقة (حد أقصى 5 أحداث للأمام)
       const endIndex = Math.min(i + 6, nodes.length);
 
       for (let j = i + 1; j < endIndex; j++) {
+        const nodeJ = nodes[j];
+        if (!nodeJ) continue;
+
         const relation = await this.detectCausalRelation(
-          nodes[i].event,
-          nodes[j].event,
+          nodeI.event,
+          nodeJ.event,
           text
         );
 
         if (relation) {
           edges.push({
-            from: nodes[i].id,
-            to: nodes[j].id,
+            from: nodeI.id,
+            to: nodeJ.id,
             causationType: relation.type,
             strength: relation.strength,
           });

@@ -26,6 +26,11 @@ export interface StandardAgentInput {
 
 export interface StandardAgentOptions {
   temperature?: number;
+  maxTokens?: number;
+  timeout?: number;
+  retries?: number;
+  enableCaching?: boolean;
+  enableLogging?: boolean;
   enableRAG?: boolean;
   enableSelfCritique?: boolean;
   enableConstitutional?: boolean;
@@ -47,6 +52,12 @@ export interface StandardAgentOutput {
     uncertaintyScore?: number;
     hallucinationDetected?: boolean;
     debateRounds?: number;
+    completionQuality?: number;
+    creativityScore?: number;
+    sceneQuality?: number;
+    worldQuality?: any;
+    processingTime?: number;
+    [key: string]: any; // Allow additional metadata properties
   };
 }
 
@@ -139,10 +150,10 @@ async function performRAG(
     chunk,
     score: relevanceScores[i],
   }));
-  indexed.sort((a, b) => b.score - a.score);
+  indexed.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
   const topChunks = indexed.slice(0, 3).map((x) => x.chunk);
-  const topScores = indexed.slice(0, 3).map((x) => x.score);
+  const topScores = indexed.slice(0, 3).map((x) => x.score ?? 0);
 
   return {
     chunks: topChunks,
@@ -415,13 +426,13 @@ ${text.substring(0, 1500)}
 
   const claims = claimsText
     .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0)
+    .map((line: string) => line.trim())
+    .filter((line: string) => line.length > 0)
     .slice(0, 5);
 
   // Check each claim against input
   const checkedClaims = await Promise.all(
-    claims.map(async (claim) => {
+    claims.map(async (claim: string) => {
       const checkPrompt = `هل الادعاء التالي مدعوم بالنص الأصلي؟
 
 النص الأصلي:
@@ -443,7 +454,7 @@ ${claim}
     })
   );
 
-  const unsupportedClaims = checkedClaims.filter((c) => !c.supported);
+  const unsupportedClaims = checkedClaims.filter((c: { claim: string; supported: boolean }) => !c.supported);
   const detected = unsupportedClaims.length > 0;
 
   let correctedText = text;
@@ -635,10 +646,10 @@ export function formatAgentOutput(
   if (output.metadata) {
     sections.push("--- معلومات إضافية ---");
     if (output.metadata.ragUsed) sections.push("✓ استخدم RAG");
-    if (output.metadata.critiqueIterations > 0) {
+    if ((output.metadata.critiqueIterations ?? 0) > 0) {
       sections.push(`✓ نقد ذاتي: ${output.metadata.critiqueIterations} دورات`);
     }
-    if (output.metadata.constitutionalViolations > 0) {
+    if ((output.metadata.constitutionalViolations ?? 0) > 0) {
       sections.push(
         `⚠ انتهاكات دستورية: ${output.metadata.constitutionalViolations}`
       );

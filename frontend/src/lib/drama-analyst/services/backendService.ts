@@ -88,7 +88,7 @@ class BackendService {
 
         // Sanitize response before returning
         const sanitizedResponse = sanitization.aiResponse(response);
-        return { ok: true, value: sanitizedResponse };
+        return { success: true, data: sanitizedResponse };
       } catch (error: any) {
         lastError = error;
         log.error(
@@ -123,13 +123,13 @@ class BackendService {
       errorCode = "INVALID_REQUEST";
     }
 
+    const error = new Error(userMessage);
+    (error as any).code = errorCode;
+    (error as any).cause = lastError;
+
     return {
-      ok: false,
-      error: {
-        code: errorCode,
-        message: userMessage,
-        cause: lastError,
-      },
+      success: false,
+      error: error,
     };
   }
 

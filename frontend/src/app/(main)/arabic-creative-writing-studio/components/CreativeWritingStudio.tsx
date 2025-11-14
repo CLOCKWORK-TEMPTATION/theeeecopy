@@ -72,14 +72,7 @@ export const CreativeWritingStudio: React.FC<CreativeWritingStudioProps> = ({
   // تهيئة خدمة Gemini
   useEffect(() => {
     if (settings.geminiApiKey) {
-      const service = new GeminiService({
-        apiKey: settings.geminiApiKey,
-        model: settings.geminiModel,
-        temperature: settings.geminiTemperature,
-        maxTokens: settings.geminiMaxTokens,
-        topP: 0.95,
-        topK: 40
-      });
+      const service = new GeminiService(settings.geminiApiKey);
       setGeminiService(service);
     }
   }, [settings.geminiApiKey, settings.geminiModel]);
@@ -393,7 +386,7 @@ ${project.content}`;
                 const result = await geminiService.testConnection();
                 showNotification(
                   result.success ? 'success' : 'error',
-                  result.message || 'تم اختبار الاتصال'
+                  result.success ? 'تم اختبار الاتصال بنجاح' : result.error || 'فشل اختبار الاتصال'
                 );
               }
             }}

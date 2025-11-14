@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useRef, useEffect, useState, useCallback } from "react";
-// @ts-ignore
-import { FixedSizeGrid } from "react-window";
 
 interface VirtualizedGridProps<T> {
   items: T[];
@@ -31,14 +29,11 @@ export function VirtualizedGrid<T>({
     height: 800,
   });
 
+  // Calculate responsive dimensions
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
-        const width = containerRef.current.offsetWidth;
-        const height = Math.min(
-          window.innerHeight - 200,
-          Math.max(600, window.innerHeight * 0.7)
-        );
+        const { width, height } = containerRef.current.getBoundingClientRect();
         setDimensions({ width, height });
       }
     };
@@ -48,64 +43,27 @@ export function VirtualizedGrid<T>({
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
-  // حساب عدد الأعمدة بناءً على عرض الحاوية
-  const dynamicColumnCount = Math.max(
-    1,
-    Math.floor((dimensions.width - gap) / (itemWidth + gap))
-  );
+  // Calculate grid dimensions
+  const rowCount = Math.ceil(items.length / columnCount);
+  const totalWidth = columnCount * (itemWidth + gap) - gap;
 
-  const actualColumnCount = Math.min(columnCount, dynamicColumnCount);
-  const rowCount = Math.ceil(items.length / actualColumnCount);
-
-  // دالة عرض الخلية
-  const Cell = ({
-    columnIndex,
-    rowIndex,
-    style,
-  }: {
-    columnIndex: number;
-    rowIndex: number;
-    style: React.CSSProperties;
-  }) => {
-    const index = rowIndex * actualColumnCount + columnIndex;
-    if (index >= items.length) return null;
-
-    const item = items[index];
-
-    return (
+  // Simple grid rendering (fallback without react-window for now)
+  return (
+    <div ref={containerRef} className={`overflow-auto ${className}`} style={{ height: dimensions.height }}>
       <div
         style={{
-          ...style,
-          left: Number(style.left) + gap / 2,
-          top: Number(style.top) + gap / 2,
-          width: Number(style.width) - gap,
-          height: Number(style.height) - gap,
+          display: "grid",
+          gridTemplateColumns: `repeat(${columnCount}, ${itemWidth}px)`,
+          gap: `${gap}px`,
+          padding: `${gap}px`,
         }}
       >
-        {item !== undefined && renderItem(item, index)}
+        {items.map((item, index) => (
+          <div key={index} style={{ height: itemHeight }}>
+            {renderItem(item, index)}
+          </div>
+        ))}
       </div>
-    );
-  };
-
-  if (items.length === 0) {
-    return null;
-  }
-
-  return (
-    <div ref={containerRef} className={className} style={{ width: "100%" }}>
-      {/* @ts-ignore - FixedSizeGrid type issues */}
-      <FixedSizeGrid<T>
-        columnCount={actualColumnCount}
-        columnWidth={itemWidth + gap}
-        height={dimensions.height}
-        rowCount={rowCount}
-        rowHeight={itemHeight + gap}
-        width={dimensions.width}
-        overscanRowCount={overscanRowCount}
-        style={{ direction: "rtl" }}
-      >
-        {Cell}
-      </FixedSizeGrid>
     </div>
   );
 }

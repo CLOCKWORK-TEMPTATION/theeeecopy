@@ -1,4 +1,4 @@
-import { TaskCategory, TaskType } from "@core/enums";
+import { TaskCategory, TaskType } from "@core/types";
 import { AIAgentConfig } from "@core/types";
 
 export const PLOT_PREDICTOR_AGENT_CONFIG: AIAgentConfig = {
@@ -20,8 +20,8 @@ export const PLOT_PREDICTOR_AGENT_CONFIG: AIAgentConfig = {
     adaptiveLearning: true,
     complexityScore: 0.88,
     accuracyLevel: 0.8,
-    processingSpeed: "medium",
-    resourceIntensity: "high",
+    processingSpeed: 0.5,
+    resourceIntensity: 0.8,
     languageModeling: true,
     patternRecognition: true,
     creativeGeneration: true,

@@ -81,7 +81,9 @@ function createStore<T extends Record<string, any>>(
     setState: set,
     subscribe: (listener: () => void) => {
       listeners.add(listener);
-      return () => listeners.delete(listener);
+      return () => {
+        listeners.delete(listener);
+      };
     }
   };
 }
@@ -189,7 +191,7 @@ export function useProjectStore<T>(selector?: (state: ProjectStore) => T): T ext
   }, [rerender]);
   
   const state = projectStore.getState();
-  return selector ? selector(state) : state as any;
+  return (selector ? selector(state) : state) as (T extends undefined ? ProjectStore : T);
 }
 
 // Selectors
@@ -219,4 +221,5 @@ export function getShotById(id: string): Shot | undefined {
 }
 
 // Default export
+// eslint-disable-next-line import/no-default-export
 export default useProjectStore;

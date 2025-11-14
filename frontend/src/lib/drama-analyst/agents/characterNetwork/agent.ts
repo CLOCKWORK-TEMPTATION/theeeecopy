@@ -1,4 +1,4 @@
-import { TaskCategory, TaskType } from "@core/enums";
+import { TaskCategory, TaskType } from "@core/types";
 import { AIAgentConfig } from "@core/types";
 
 export const CHARACTER_NETWORK_AGENT_CONFIG: AIAgentConfig = {
@@ -20,8 +20,8 @@ export const CHARACTER_NETWORK_AGENT_CONFIG: AIAgentConfig = {
     adaptiveLearning: true,
     complexityScore: 0.8,
     accuracyLevel: 0.87,
-    processingSpeed: "medium",
-    resourceIntensity: "medium",
+    processingSpeed: 0.5,
+    resourceIntensity: 0.5,
     languageModeling: false,
     patternRecognition: true,
     creativeGeneration: false,

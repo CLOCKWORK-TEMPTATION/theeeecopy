@@ -2,37 +2,38 @@
  * Core types for Drama Analyst AI Agent System
  */
 
-/**
- * Result type for operations that can succeed or fail
- */
-export type Result<T, E = Error> =
-  | { success: true; data: T }
-  | { success: false; error: E };
+// Re-export core types from central types file
+export type {
+  AIAgentConfig,
+  AIAgentCapabilities,
+  StandardAgentOptions,
+  StandardAgentInput,
+  StandardAgentOutput,
+  Result,
+  AIRequest,
+  AIResponse,
+  AgentConfigMapping,
+} from '../../core/types';
+
+export {
+  TaskType,
+  TaskCategory,
+} from '../../core/types';
 
 /**
- * AI Agent capabilities configuration
+ * Processed file information
  */
-export interface AIAgentCapabilities {
-  supportsStreaming?: boolean;
-  supportsMultiModal?: boolean;
-  maxTokens?: number;
-  temperature?: number;
-  topP?: number;
-  topK?: number;
-}
-
-/**
- * AI Agent configuration
- */
-export interface AIAgentConfig {
+export interface ProcessedFile {
   id: string;
   name: string;
-  description: string;
-  modelName: string;
-  capabilities?: AIAgentCapabilities;
-  systemPrompt?: string;
-  temperature?: number;
-  maxTokens?: number;
-  topP?: number;
-  topK?: number;
+  content: string;
+  type: string;
+  size: number;
+  processedAt: Date;
+  metadata?: Record<string, unknown>;
 }
+
+/**
+ * Agent identifier type
+ */
+export type AgentId = string;

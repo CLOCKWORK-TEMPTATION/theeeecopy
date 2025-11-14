@@ -9,7 +9,7 @@ import {
   Eye,
   type LucideIcon,
 } from "lucide-react";
-import { useState, memo, useMemo, useCallback } from "react";
+import { useState, memo, useMemo, useCallback, type ReactElement } from "react";
 
 import { cn } from "@/lib/utils";
 import { toText } from "@/ai/gemini-core";
@@ -185,7 +185,7 @@ const StationCard = memo(({
   const [showModal, setShowModal] = useState(false);
 
   // Memoize status icons to prevent recreation on every render
-  const statusIcons: Record<Status, JSX.Element> = useMemo(() => ({
+  const statusIcons: Record<Status, ReactElement> = useMemo(() => ({
     pending: <MinusCircle className="text-muted-foreground" />,
     running: <Loader2 className="animate-spin text-primary" />,
     completed: <CheckCircle2 className="text-green-500" />,

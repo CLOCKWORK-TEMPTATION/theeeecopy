@@ -15,10 +15,27 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 
 // Temporary placeholders
-type StationOutput = any;
-const runSevenStations = async (...args: any[]) => ({ stations: [] });
+interface StationOutput {
+  stationId: string;
+  stationName: string;
+  textOutput: string;
+  success: boolean;
+}
+
+interface SevenStationsResult {
+  success: boolean;
+  outputs: StationOutput[];
+  fullReport?: string;
+  error?: string;
+}
+
+const runSevenStations = async (...args: any[]): Promise<SevenStationsResult> => ({
+  success: false,
+  outputs: [],
+  error: 'Not implemented'
+});
 const runPipelineWithInterfaces = async (...args: any[]) => ({});
-const getCached = async (...args: any[]) => null;
+const getCached = async <T>(key: string, fn: () => Promise<T>, ttl?: number): Promise<T> => fn();
 const invalidateCache = async (...args: any[]) => {};
 
 export const runtime = "nodejs";

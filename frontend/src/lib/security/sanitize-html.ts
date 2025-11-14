@@ -67,7 +67,7 @@ export function createSafeStyleObject(cssString: string): React.CSSProperties {
     if (!property || !value) continue;
 
     // Convert kebab-case to camelCase for React
-    const camelProperty = property.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+    const camelProperty = property.replace(/-([a-z])/g, (g) => g[1]?.toUpperCase() ?? g);
 
     // Only allow safe properties
     if (isSafeCSSProperty(property)) {
