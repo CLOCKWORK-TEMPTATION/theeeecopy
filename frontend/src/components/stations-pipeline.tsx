@@ -140,8 +140,6 @@ const StationsPipeline = () => {
         // setContextMap(chunkedData);
         // setIsLongText(chunkedData.chunks.length > 1);
 
-        let pipelineResult;
-
         // Process as single text (chunking disabled)
         const pipelineResult = await runFullPipeline({
           fullText: text,

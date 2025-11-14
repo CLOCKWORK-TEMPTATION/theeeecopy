@@ -199,6 +199,17 @@ export enum FeatureFlagEnum {
   ENTERPRISE_FEATURES = 'enterprise-features',
 }
 
+// Analysis types for AI pipeline
+export enum AnalysisTypeEnum {
+  CHARACTERS = 'characters',
+  THEMES = 'themes',
+  STRUCTURE = 'structure',
+  SCREENPLAY = 'screenplay',
+  QUICK = 'quick',
+  DETAILED = 'detailed',
+  FULL = 'full',
+}
+
 // Export all enums as const objects for better tree-shaking
 export const TaskCategory = TaskCategoryEnum;
 export const TaskType = TaskTypeEnum;
@@ -221,17 +232,6 @@ export const NotificationType = NotificationTypeEnum;
 export const SubscriptionStatus = SubscriptionStatusEnum;
 export const FeatureFlag = FeatureFlagEnum;
 export const AnalysisType = AnalysisTypeEnum;
-
-// Analysis types for screenplay analysis
-export enum AnalysisTypeEnum {
-  CHARACTERS = 'characters',
-  THEMES = 'themes',
-  STRUCTURE = 'structure',
-  SCREENPLAY = 'screenplay',
-  QUICK = 'quick',
-  DETAILED = 'detailed',
-  FULL = 'full',
-}
 
 // Export types
 export type TaskCategory = TaskCategoryEnum;
