@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import ProjectStats from "@/app/(main)/directors-studio/components/ProjectStats";
 import { ProjectTabs } from "@/app/(main)/directors-studio/components/ProjectTabs";
 import {
@@ -23,3 +24,5 @@ export function ProjectContent({ scenes, characters }: ProjectContentProps) {
     </>
   );
 }
+
+export default ProjectContent;
