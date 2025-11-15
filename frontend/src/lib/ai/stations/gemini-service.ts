@@ -548,7 +548,7 @@ export function getGeminiService(config?: GeminiConfig): GeminiService {
         // Dynamic import to avoid issues if env.ts is not available
         const { getApiKey } = require("../../env");
         apiKey = getApiKey();
-      } catch (error) {
+      } catch (_error) {
         // Fallback: try to get from process.env directly
         apiKey =
           process.env.GEMINI_API_KEY_PROD ||

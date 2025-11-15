@@ -1,15 +1,9 @@
 // frontend/src/lib/ai/stations/base-station.ts
 
 import { GeminiService } from "./gemini-service";
-import {
-  checkConstitutionalCompliance,
-  ConstitutionalCheckResult,
-} from "../constitutional/principles";
-import {
-  getUncertaintyQuantificationEngine,
-  UncertaintyMetrics,
-} from "../constitutional/uncertainty-quantification";
 import { StationMetadata } from "../core/models/base-entities";
+import { checkConstitutionalCompliance } from "../constitutional/principles";
+import { getUncertaintyQuantificationEngine } from "../constitutional/uncertainty-quantification";
 
 // تعريف واجهة للخيارات الجديدة
 export interface StationOptions {
@@ -368,7 +362,7 @@ export abstract class BaseStation {
     ) {
       const characterAnalysis = result.characterAnalysis;
       if (typeof characterAnalysis === "object" && characterAnalysis !== null) {
-        for (const [character, analysis] of Object.entries(characterAnalysis)) {
+        for (const [_character, analysis] of Object.entries(characterAnalysis)) {
           if (typeof analysis === "string") texts.push(analysis);
         }
       }

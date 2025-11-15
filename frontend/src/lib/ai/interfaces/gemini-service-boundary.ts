@@ -5,21 +5,11 @@
 
 import type { GeminiService as GeminiServiceClass } from "../stations/gemini-service";
 import type {
-  Character,
   CharacterAnalysis,
+  DialogueAnalysis,
   Relationship,
   Conflict,
   Theme,
-  DialogueAnalysis,
-  UncertaintyReport,
-  AudienceProfile,
-  ScoreMatrix,
-  Recommendation,
-  DebateResult,
-  ConflictNetwork,
-  PreviousResults,
-  TextChunk,
-  ContextMap,
 } from "./response-types";
 
 /**
@@ -113,30 +103,30 @@ export function createGeminiServiceBoundary(
     },
 
     async generateCharacterAnalysis(prompt, options = {}) {
-      const text = await this.generateText(prompt, options);
+      const _text = await this.generateText(prompt, options);
       // In a real implementation, we would parse the text as JSON or structured data
       // For now, we return a basic structure
       return {
         character: { name: "Unknown" },
-        analysis: text,
+        analysis: "text",
       };
     },
 
     async generateRelationships(prompt, options = {}) {
-      const text = await this.generateText(prompt, options);
+      const _text = await this.generateText(prompt, options);
       // Parse relationships from text response
       // For now, return empty array - would need proper parsing
       return [];
     },
 
     async generateConflicts(prompt, options = {}) {
-      const text = await this.generateText(prompt, options);
+      const _text = await this.generateText(prompt, options);
       // Parse conflicts from text response
       return [];
     },
 
     async generateThemes(prompt, options = {}) {
-      const text = await this.generateText(prompt, options);
+      const _text = await this.generateText(prompt, options);
       // Parse themes from text response
       return [];
     },
@@ -149,4 +139,3 @@ export function createGeminiServiceBoundary(
     },
   };
 }
-

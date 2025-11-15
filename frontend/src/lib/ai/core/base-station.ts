@@ -1,20 +1,10 @@
 // lib/ai/core/base-station.ts
 
 import { getGeminiService, type GeminiService } from "../stations/gemini-service";
-import {
-  checkConstitutionalCompliance,
-  ConstitutionalCheckResult,
-} from "../constitutional/principles";
-import {
-  getUncertaintyQuantificationEngine,
-  UncertaintyMetrics,
-} from "../constitutional/uncertainty-quantification";
 import { SystemMetadata } from "./models/base-entities";
-import {
-  CharacterContext,
-  NarrativeContext,
-  AnalysisContext,
-} from "./contexts";
+import { AnalysisContext } from "./contexts";
+import { checkConstitutionalCompliance } from "../constitutional/principles";
+import { getUncertaintyQuantificationEngine } from "../constitutional/uncertainty-quantification";
 
 // تعريف واجهة للخيارات المشتركة
 export interface SystemOptions {
@@ -369,7 +359,7 @@ export abstract class BaseSystem {
     ) {
       const characterAnalysis = result.characterAnalysis;
       if (typeof characterAnalysis === "object" && characterAnalysis !== null) {
-        for (const [character, analysis] of Object.entries(characterAnalysis)) {
+        for (const [_character, analysis] of Object.entries(characterAnalysis)) {
           if (typeof analysis === "string") texts.push(analysis);
         }
       }

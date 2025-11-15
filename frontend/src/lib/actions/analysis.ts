@@ -48,7 +48,7 @@ export interface PipelineResult {
  * 6. Return actual pipeline results
  */
 export async function runFullPipeline(
-  input: PipelineInput
+  _input: PipelineInput
 ): Promise<PipelineResult> {
   try {
     if (USE_MOCK_PIPELINE) {

@@ -1,20 +1,34 @@
 // frontend/src/lib/ai/core/models/station-types.ts
 
 import {
+
   Character,
+
   CharacterAnalysis,
+
   DialogueAnalysis,
+
   UncertaintyReport,
+
   StationMetadata,
+
   Relationship,
+
   Conflict,
+
   Theme,
+
   AudienceProfile,
+
   ScoreMatrix,
+
   Recommendation,
+
   DebateResult,
+
 } from "./base-entities";
-import { StationInput, StationOptions } from "../../stations/base-station";
+
+import { StationInput } from "../../stations/base-station";
 
 // ======== المحطة 1: التحليل النصي الأساسي ========
 

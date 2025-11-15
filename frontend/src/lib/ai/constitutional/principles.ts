@@ -12,8 +12,8 @@ export interface ConstitutionalCheckResult {
 
 export async function checkConstitutionalCompliance(
   text: string,
-  originalText: string,
-  geminiService: GeminiService
+  _originalText: string,
+  _geminiService: GeminiService
 ): Promise<ConstitutionalCheckResult> {
   // Simplified implementation
   return {

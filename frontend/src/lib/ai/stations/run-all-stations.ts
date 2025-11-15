@@ -130,15 +130,11 @@ export class AnalysisPipeline {
       options: data.options,
     });
 
-    const startedAt = Date.now();
-
     try {
       const orchestrationResult = await this.orchestrator.execute(
         data.text,
         (data.options?.title as string) ?? "untitled-project"
       );
-
-      const finishedAt = Date.now();
 
       const performanceMetrics =
         this.calculatePerformanceMetrics(orchestrationResult);

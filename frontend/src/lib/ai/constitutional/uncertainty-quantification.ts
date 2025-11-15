@@ -17,7 +17,7 @@ export interface UncertaintyQuantificationEngine {
 class SimpleUncertaintyEngine implements UncertaintyQuantificationEngine {
   constructor(private geminiService: GeminiService) {}
 
-  async quantify(text: string, context: any): Promise<UncertaintyMetrics> {
+  async quantify(_text: string, _context: any): Promise<UncertaintyMetrics> {
     return {
       confidence: 0.8,
       type: "epistemic",
