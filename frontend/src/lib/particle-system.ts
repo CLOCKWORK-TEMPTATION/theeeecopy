@@ -18,13 +18,13 @@ export interface ParticleSystemOptions {
 
 export class OptimizedParticleSystem {
   private canvas: HTMLCanvasElement;
-  private scene: THREE.Scene;
-  private camera: THREE.OrthographicCamera;
-  private renderer: THREE.WebGLRenderer;
+  private scene!: THREE.Scene;
+  private camera!: THREE.OrthographicCamera;
+  private renderer!: THREE.WebGLRenderer;
   private particles: THREE.Points | null = null;
   private particleCount: number;
-  private velocities: Float32Array;
-  private alphas: Float32Array;
+  private velocities!: Float32Array;
+  private alphas!: Float32Array;
   private animationId: number | null = null;
   private lastFrameTime: number = 0;
   private config: ParticleConfig;
@@ -303,6 +303,6 @@ export class OptimizedParticleSystem {
   }
 
   public isHealthy(): boolean {
-    return !this.isDestroyed && this.renderer && this.renderer.domElement;
+    return !this.isDestroyed && !!this.renderer && !!this.renderer.domElement;
   }
 }
