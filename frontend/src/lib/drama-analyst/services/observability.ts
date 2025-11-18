@@ -98,12 +98,6 @@ export const initObservability = () => {
       attachStacktrace: true,
       sendDefaultPii: false,
 
-      // Performance monitoring
-      enableTracing: true,
-
-      // Session tracking
-      autoSessionTracking: true,
-
       // Error boundaries
       beforeBreadcrumb(breadcrumb) {
         // Filter out noisy breadcrumbs

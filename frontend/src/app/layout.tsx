@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   description: "منصة متكاملة للكتابة الإبداعية والتحليل الدرامي مدعومة بالذكاء الاصطناعي",
 };
 
+// Enable ISR with 24-hour revalidation (86400 seconds)
+export const revalidate = 86400;
+
 export default function RootLayout({
   children,
 }: Readonly<{

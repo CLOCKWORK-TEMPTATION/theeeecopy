@@ -268,7 +268,7 @@ const nextConfig = {
 // Sentry configuration
 const { withSentryConfig } = require("@sentry/nextjs");
 
-const shouldUseSentry = !!(process.env.SENTRY_ORG && process.env.SENTRY_PROJECT && process.env.NEXT_PUBLIC_SENTRY_DSN);
+const shouldUseSentry = false; // Temporarily disabled due to version conflict
 
 const sentryConfig = shouldUseSentry ? {
   org: process.env.SENTRY_ORG,
