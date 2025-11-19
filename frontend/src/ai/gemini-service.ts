@@ -139,7 +139,7 @@ export class GeminiService {
       }
 
       const model = this.getModel("gemini-1.5-flash", "chat");
-      const result = await model.generateContent("Hello");
+      await model.generateContent("Hello");
 
       return { success: true };
     } catch (error: any) {

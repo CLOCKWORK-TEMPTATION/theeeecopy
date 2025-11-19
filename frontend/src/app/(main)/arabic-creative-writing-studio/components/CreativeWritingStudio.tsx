@@ -186,7 +186,7 @@ export const CreativeWritingStudio: React.FC<CreativeWritingStudioProps> = ({
           showNotification("error", response.error || "فشل في تحليل النص");
           return null;
         }
-      } catch (error) {
+      } catch (_error) {
         showNotification("error", "حدث خطأ أثناء تحليل النص");
         return null;
       } finally {
@@ -222,7 +222,7 @@ export const CreativeWritingStudio: React.FC<CreativeWritingStudioProps> = ({
           showNotification("error", response.error || "فشل في تحسين المحفز");
           return null;
         }
-      } catch (error) {
+      } catch (_error) {
         showNotification("error", "حدث خطأ أثناء تحسين المحفز");
         return null;
       } finally {

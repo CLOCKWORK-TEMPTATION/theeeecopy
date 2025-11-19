@@ -4,7 +4,6 @@
 import type {
   PromptTemplate,
   PromptCategory,
-  TemplateVariable,
 } from "@/app/(main)/arabic-prompt-engineering-studio/types";
 
 /**

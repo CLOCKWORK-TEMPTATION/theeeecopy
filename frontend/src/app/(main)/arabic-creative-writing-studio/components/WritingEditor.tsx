@@ -43,7 +43,7 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
   onAnalyze,
   onExport,
   settings,
-  loading,
+  _loading,
 }) => {
   const [content, setContent] = useState<string>("");
   const [title, setTitle] = useState<string>("");

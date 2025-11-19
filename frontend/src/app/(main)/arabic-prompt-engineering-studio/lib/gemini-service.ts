@@ -5,7 +5,6 @@
 import {
   GeminiService,
   GeminiModel,
-  type GeminiConfig,
 } from "@/lib/ai/gemini-service";
 
 /**
@@ -52,7 +51,7 @@ export function createPromptStudioGeminiService(
  */
 export async function generatePromptAnalysis(
   prompt: string,
-  options: {
+  _options: {
     model?: GeminiModel;
     temperature?: number;
     systemInstruction?: string;

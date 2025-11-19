@@ -39,7 +39,7 @@ export function safeSub(
  */
 export async function callGeminiText(
   prompt: string,
-  options?: {
+  _options?: {
     model?: ModelId;
     temperature?: number;
     maxTokens?: number;
@@ -59,7 +59,7 @@ export const geminiCore = {
   // Analyze screenplay content via Backend
   async analyzeScreenplay(
     content: string,
-    analysisType: string = "structure",
+    _analysisType: string = "structure",
     projectId?: string
   ) {
     if (!projectId) {

@@ -5,14 +5,8 @@ import type {
   PromptAnalysis,
   PromptMetrics,
   PromptCategory,
-  EnhancedPrompt,
-  PromptEnhancementOptions,
 } from "@/app/(main)/arabic-prompt-engineering-studio/types";
-import {
-  estimateTokenCount,
-  estimatePromptCost,
-  validatePrompt,
-} from "@/app/(main)/arabic-prompt-engineering-studio/lib/gemini-service";
+import { estimateTokenCount } from "@/app/(main)/arabic-prompt-engineering-studio/lib/gemini-service";
 
 /**
  * Analyze a prompt and return detailed metrics
@@ -50,7 +44,7 @@ export function analyzePrompt(prompt: string): PromptAnalysis {
 function calculatePromptMetrics(prompt: string): PromptMetrics {
   const words = prompt.trim().split(/\s+/).length;
   const sentences = prompt.split(/[.!?؟]\s+/).filter((s) => s.trim()).length;
-  const paragraphs = prompt.split(/\n\s*\n/).filter((p) => p.trim()).length;
+  const _paragraphs = prompt.split(/\n\s*\n/).filter((p) => p.trim()).length;
 
   // Clarity: Based on sentence length, structure, and clarity indicators
   const avgWordsPerSentence = words / Math.max(sentences, 1);
