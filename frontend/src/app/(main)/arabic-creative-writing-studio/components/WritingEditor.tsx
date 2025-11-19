@@ -7,7 +7,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { CreativeProject, CreativePrompt, AppSettings, TextAnalysis } from '@/app/(main)/arabic-creative-writing-studio/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Progress } from '@/components/ui/progress';
 
@@ -340,11 +340,10 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
               value={content}
               onChange={(e) => handleContentChange(e.target.value)}
               placeholder="ابدأ كتابة إبداعك هنا... 🖋️"
-              className={`w-full h-96 p-6 border-none resize-none focus:outline-none ${
-                settings.fontSize === 'small' ? 'text-sm' : 
-                settings.fontSize === 'large' ? 'text-lg' : 'text-base'
-              }`}
-              style={{ 
+              className={`w-full h-96 p-6 border-none resize-none focus:outline-none ${settings.fontSize === 'small' ? 'text-sm' :
+                  settings.fontSize === 'large' ? 'text-lg' : 'text-base'
+                }`}
+              style={{
                 fontFamily: "'Noto Sans Arabic', 'Cairo', 'Tajawal', Arial, sans-serif",
                 lineHeight: 1.8,
                 direction: settings.textDirection

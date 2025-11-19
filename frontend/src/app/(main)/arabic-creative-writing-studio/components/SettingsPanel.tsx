@@ -4,7 +4,7 @@
 "use client";
 
 import React, { useState, useCallback } from 'react';
-import { AppSettings, GeminiSettings } from '@/app/(main)/arabic-creative-writing-studio/types';
+import { AppSettings } from '@/app/(main)/arabic-creative-writing-studio/types';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -193,7 +193,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     className="px-3 py-2"
                   >
                     {theme === 'light' ? '☀️ فاتح' :
-                     theme === 'dark' ? '🌙 داكن' : '🔄 تلقائي'}
+                      theme === 'dark' ? '🌙 داكن' : '🔄 تلقائي'}
                   </Button>
                 ))}
               </div>
@@ -212,7 +212,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     className="px-3 py-2"
                   >
                     {size === 'small' ? 'صغير' :
-                     size === 'medium' ? 'متوسط' : 'كبير'}
+                      size === 'medium' ? 'متوسط' : 'كبير'}
                   </Button>
                 ))}
               </div>

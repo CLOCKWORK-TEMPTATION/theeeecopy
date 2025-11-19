@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useState, useEffect, useCallback, memo, Suspense } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import {
   CreativePrompt,
@@ -15,7 +15,7 @@ import {
 } from '@/app/(main)/arabic-creative-writing-studio/types';
 import { GeminiService } from '@/ai/gemini-service';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Loader2 } from 'lucide-react';
@@ -40,8 +40,8 @@ interface CreativeWritingStudioProps {
   initialSettings?: Partial<AppSettings>;
 }
 
-export const CreativeWritingStudio: React.FC<CreativeWritingStudioProps> = ({ 
-  initialSettings 
+export const CreativeWritingStudio: React.FC<CreativeWritingStudioProps> = ({
+  initialSettings
 }) => {
   // حالات التطبيق الأساسية
   const [currentView, setCurrentView] = useState<'home' | 'library' | 'editor' | 'analysis' | 'settings'>('home');
@@ -149,8 +149,8 @@ export const CreativeWritingStudio: React.FC<CreativeWritingStudioProps> = ({
 
   // تحسين المحفز
   const enhancePrompt = useCallback(async (
-    prompt: string, 
-    genre: CreativeGenre, 
+    prompt: string,
+    genre: CreativeGenre,
     technique: WritingTechnique
   ) => {
     if (!geminiService) {

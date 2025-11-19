@@ -8,7 +8,7 @@ import { CreativePrompt, CreativeGenre, WritingTechnique, DifficultyLevel } from
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { VirtualizedGrid } from '@/components/ui/virtualized-grid';
 
@@ -38,7 +38,7 @@ const ARABIC_PROMPTS: CreativePrompt[] = [
     ]
   },
   {
-    id: 'fantasy_002', 
+    id: 'fantasy_002',
     title: 'التنين الشقيق',
     description: 'محارب يكتشف أن التنين هو شقيقه المفقود',
     genre: 'fantasy',
@@ -166,7 +166,7 @@ export const PromptLibrary: React.FC<PromptLibraryProps> = ({
   // تصفية المحفزات
   const filteredPrompts = useMemo(() => {
     return ARABIC_PROMPTS.filter(prompt => {
-      const matchesSearch = searchTerm === '' || 
+      const matchesSearch = searchTerm === '' ||
         prompt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         prompt.arabic.toLowerCase().includes(searchTerm.toLowerCase()) ||
         prompt.tags.some(tag => tag.includes(searchTerm));

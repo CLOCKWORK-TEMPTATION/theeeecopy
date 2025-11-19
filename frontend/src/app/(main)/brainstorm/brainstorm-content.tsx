@@ -48,6 +48,65 @@ interface Session {
   startTime: Date;
 }
 
+// Agent definitions
+const agentDefinitions = [
+  {
+    name: "مهندس القصة",
+    role: "البناء الهيكلي",
+    icon: <Layers className="w-5 h-5" />,
+  },
+  {
+    name: "ناقد الواقعية",
+    role: "التحقق من المنطق",
+    icon: <Shield className="w-5 h-5" />,
+  },
+  {
+    name: "مطور الشخصيات",
+    role: "عمق الشخصيات",
+    icon: <Users className="w-5 h-5" />,
+  },
+  {
+    name: "منسق الحوارات",
+    role: "الحوارات الطبيعية",
+    icon: <MessageSquare className="w-5 h-5" />,
+  },
+  {
+    name: "محلل السوق",
+    role: "الجدوى التجارية",
+    icon: <Target className="w-5 h-5" />,
+  },
+  {
+    name: "خبير النوع",
+    role: "معايير النوع الأدبي",
+    icon: <BookOpen className="w-5 h-5" />,
+  },
+  {
+    name: "محرر التوتر",
+    role: "الإيقاع والتشويق",
+    icon: <Zap className="w-5 h-5" />,
+  },
+  {
+    name: "مستشار الثقافة",
+    role: "الحساسية الثقافية",
+    icon: <Brain className="w-5 h-5" />,
+  },
+  {
+    name: "مخطط المشاهد",
+    role: "البناء البصري",
+    icon: <FileText className="w-5 h-5" />,
+  },
+  {
+    name: "محلل المواضيع",
+    role: "العمق الموضوعي",
+    icon: <Cpu className="w-5 h-5" />,
+  },
+  {
+    name: "المنسق الرئيسي",
+    role: "التنسيق والقرار",
+    icon: <Rocket className="w-5 h-5" />,
+  },
+];
+
 export default function BrainstormContent() {
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -57,64 +116,7 @@ export default function BrainstormContent() {
   const [sessionActive, setSessionActive] = useState(false);
   const [brief, setBrief] = useState("");
 
-  // Agent definitions
-  const agentDefinitions = [
-    {
-      name: "مهندس القصة",
-      role: "البناء الهيكلي",
-      icon: <Layers className="w-5 h-5" />,
-    },
-    {
-      name: "ناقد الواقعية",
-      role: "التحقق من المنطق",
-      icon: <Shield className="w-5 h-5" />,
-    },
-    {
-      name: "مطور الشخصيات",
-      role: "عمق الشخصيات",
-      icon: <Users className="w-5 h-5" />,
-    },
-    {
-      name: "منسق الحوارات",
-      role: "الحوارات الطبيعية",
-      icon: <MessageSquare className="w-5 h-5" />,
-    },
-    {
-      name: "محلل السوق",
-      role: "الجدوى التجارية",
-      icon: <Target className="w-5 h-5" />,
-    },
-    {
-      name: "خبير النوع",
-      role: "معايير النوع الأدبي",
-      icon: <BookOpen className="w-5 h-5" />,
-    },
-    {
-      name: "محرر التوتر",
-      role: "الإيقاع والتشويق",
-      icon: <Zap className="w-5 h-5" />,
-    },
-    {
-      name: "مستشار الثقافة",
-      role: "الحساسية الثقافية",
-      icon: <Brain className="w-5 h-5" />,
-    },
-    {
-      name: "مخطط المشاهد",
-      role: "البناء البصري",
-      icon: <FileText className="w-5 h-5" />,
-    },
-    {
-      name: "محلل المواضيع",
-      role: "العمق الموضوعي",
-      icon: <Cpu className="w-5 h-5" />,
-    },
-    {
-      name: "المنسق الرئيسي",
-      role: "التنسيق والقرار",
-      icon: <Rocket className="w-5 h-5" />,
-    },
-  ];
+
 
   // Initialize agents
   useEffect(() => {
@@ -281,9 +283,8 @@ export default function BrainstormContent() {
                     <Button
                       key={phase.id}
                       variant={activePhase === phase.id ? "default" : "outline"}
-                      className={`p-4 h-auto flex items-center gap-3 ${
-                        activePhase === phase.id ? "ring-2 ring-blue-500" : ""
-                      }`}
+                      className={`p-4 h-auto flex items-center gap-3 ${activePhase === phase.id ? "ring-2 ring-blue-500" : ""
+                        }`}
                       onClick={() => setActivePhase(phase.id)}
                     >
                       {phase.icon}
