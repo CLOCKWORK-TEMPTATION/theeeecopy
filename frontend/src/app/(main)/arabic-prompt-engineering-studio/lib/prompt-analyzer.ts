@@ -5,6 +5,7 @@ import type {
   PromptAnalysis,
   PromptMetrics,
   PromptCategory,
+  PromptEnhancementOptions,
 } from "@/app/(main)/arabic-prompt-engineering-studio/types";
 import { estimateTokenCount } from "@/app/(main)/arabic-prompt-engineering-studio/lib/gemini-service";
 
