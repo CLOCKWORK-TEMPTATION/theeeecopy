@@ -11,7 +11,7 @@ import { ReactNode, useState } from 'react';
  *
  * This component must use 'use client' directive since it manages client-side state
  */
-export function Providers({ children }: { children: ReactNode }) {
+function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -35,3 +35,6 @@ export function Providers({ children }: { children: ReactNode }) {
     </QueryClientProvider>
   );
 }
+
+export { Providers };
+export default Providers;
