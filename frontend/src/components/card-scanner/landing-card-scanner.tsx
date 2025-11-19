@@ -5,6 +5,21 @@ import * as THREE from "three";
 import { CARDS_11 } from "@/components/carousel/cards.config";
 import images from "@/config/images";
 
+// Map cards to their images
+const cardImageMap: Record<string, number> = {
+  "directors-studio": 8,
+  editor: 9,
+  analysis: 1,
+  "arabic-creative-writing-studio": 2,
+  "actorai-arabic": 0,
+  "cinematography-studio": 6,
+  breakdown: 5,
+  development: 7,
+  brainstorm: 4,
+  "metrics-dashboard": 10,
+  "arabic-prompt-engineering-studio": 3,
+};
+
 export function LandingCardScanner() {
   const containerRef = useRef<HTMLDivElement>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -13,19 +28,6 @@ export function LandingCardScanner() {
   const cardLineRef = useRef<HTMLDivElement>(null);
 
   // Map cards to their images
-  const cardImageMap: Record<string, number> = {
-    "directors-studio": 8,
-    editor: 9,
-    analysis: 1,
-    "arabic-creative-writing-studio": 2,
-    "actorai-arabic": 0,
-    "cinematography-studio": 6,
-    breakdown: 5,
-    development: 7,
-    brainstorm: 4,
-    "metrics-dashboard": 10,
-    "arabic-prompt-engineering-studio": 3,
-  };
 
   useEffect(() => {
     if (

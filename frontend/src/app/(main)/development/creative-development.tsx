@@ -1,13 +1,6 @@
-"use client";
-
 import dynamic from "next/dynamic";
 import React, { useState, useEffect, useCallback } from "react";
-import { TaskCategory, TaskType } from "@/types/enums";
 import { useToast } from "@/hooks/use-toast";
-import {
-  getTaskIcon as getTaskIconUtil,
-  getCreativeTaskIcon as getCreativeTaskIconUtil,
-} from "@/app/(main)/development/utils/task-icon-mapper";
 import { toText } from "@/ai/gemini-core";
 // TODO: Re-import these types once they're properly defined
 // import {
@@ -40,11 +33,11 @@ const TASK_LABELS: Record<string, string> = {};
 const TASK_CATEGORY_MAP: Record<string, string> = {};
 const agentIdToTaskTypeMap: Record<string, any> = {};
 
-const submitTask = async (...args: any[]): Promise<any> => {
+const submitTask = async (..._args: any[]): Promise<any> => {
   // TODO: Implement task submission logic
   return null;
 };
-const runFullPipeline = async (...args: any[]): Promise<any> => {
+const runFullPipeline = async (..._args: any[]): Promise<any> => {
   // TODO: Implement full pipeline logic
   return null;
 };
@@ -69,17 +62,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Loader2,
   Upload,
-  Sparkles,
   Lightbulb,
-  PenTool,
-  FileText,
-  Beaker,
-  BarChart,
-  Users,
   Search,
   Film,
   Globe,
@@ -93,18 +80,15 @@ import {
   MessageSquare,
   Palette,
   TrendingUp,
-  Music,
   Map,
   Zap,
   Target,
   Settings,
   CheckCircle2,
-  Shield,
   AlertTriangle,
   Database,
   Eye,
   Download,
-  FileDown,
 } from "lucide-react";
 // Dynamically import heavy components
 const FileUpload = dynamic(() => import("@/components/file-upload"), {
@@ -348,6 +332,7 @@ const DramaAnalystApp: React.FC = () => {
     selectedCompletionEnhancements,
     advancedSettings,
     analysisReport,
+    analysisId,
     toast,
   ]);
 
@@ -392,6 +377,11 @@ const DramaAnalystApp: React.FC = () => {
           <Unlock className="h-4 w-4" />
           <AlertTitle>تم تحميل نتائج التحليل</AlertTitle>
           <AlertDescription>
+            يمكنك الآن استخدام أدوات التطوير الإبداعي لتحليل النص الخاص بك
+          </AlertDescription>
+        </Alert>
+        </Alert>
+      )}
             تم تحميل نتائج تحليل المحطات السبع تلقائياً (ID:{" "}
             {analysisId.slice(0, 8)}...)
             <Button
@@ -416,13 +406,10 @@ const DramaAnalystApp: React.FC = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <FileUpload
-            onFileContent={(content, filename) => {
+            onFileContent={(content, _filename) => {
               setTextInput(content);
               toast({
                 title: "تم تحميل الملف",
-                description: `تم تحميل ${filename} بنجاح`,
-              });
-            }}
           />
           <div>
             <Label htmlFor="screenplay">النص الدرامي</Label>
@@ -803,7 +790,6 @@ const DramaAnalystApp: React.FC = () => {
       {/* رسائل الخطأ */}
       {error && (
         <Alert variant="destructive">
-          <AlertTitle>خطأ</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}

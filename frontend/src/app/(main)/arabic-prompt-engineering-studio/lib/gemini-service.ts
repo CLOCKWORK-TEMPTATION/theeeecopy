@@ -2,10 +2,7 @@
 // Gemini service wrapper for Arabic Prompt Engineering Studio
 // This is a client-side wrapper that uses the main GeminiService from lib/ai
 
-import {
-  GeminiService,
-  GeminiModel,
-} from "@/lib/ai/gemini-service";
+import { GeminiService, GeminiModel } from "@/lib/ai/gemini-service";
 
 /**
  * Client-side Gemini service configuration

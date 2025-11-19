@@ -476,7 +476,7 @@ export default function WorkerParticleAnimation() {
     };
 
     return cleanup;
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <div className="absolute inset-0 z-0 flex items-center justify-center w-full h-full bg-black">

@@ -90,58 +90,61 @@ export default function FileUpload({
     });
   };
 
-  const processFile = async (file: File) => {
-    const fileId = `${file.name}-${Date.now()}`;
+  const processFile = useCallback(
+    async (file: File) => {
+      const fileId = `${file.name}-${Date.now()}`;
 
-    // Add file to state with uploading status
-    const newFile: UploadedFile = {
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      content: "",
-      status: "uploading",
-      progress: 0,
-    };
+      // Add file to state with uploading status
+      const newFile: UploadedFile = {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        content: "",
+        status: "uploading",
+        progress: 0,
+      };
 
-    setFiles((prev) => [...prev, newFile]);
+      setFiles((prev) => [...prev, newFile]);
 
-    try {
-      // Simulate progress
-      const progressInterval = setInterval(() => {
+      try {
+        // Simulate progress
+        const progressInterval = setInterval(() => {
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.name === file.name
+                ? { ...f, progress: Math.min(f.progress + 10, 90) }
+                : f
+            )
+          );
+        }, 100);
+
+        // Extract text content
+        const content = await extractTextFromFile(file);
+
+        clearInterval(progressInterval);
+
+        // Update file status
         setFiles((prev) =>
           prev.map((f) =>
             f.name === file.name
-              ? { ...f, progress: Math.min(f.progress + 10, 90) }
+              ? { ...f, content, status: "success", progress: 100 }
               : f
           )
         );
-      }, 100);
 
-      // Extract text content
-      const content = await extractTextFromFile(file);
-
-      clearInterval(progressInterval);
-
-      // Update file status
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.name === file.name
-            ? { ...f, content, status: "success", progress: 100 }
-            : f
-        )
-      );
-
-      // Call callback with content
-      onFileContent(content, file.name);
-    } catch (error) {
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.name === file.name ? { ...f, status: "error", progress: 0 } : f
-        )
-      );
-      console.error("خطأ في معالجة الملف:", error);
-    }
-  };
+        // Call callback with content
+        onFileContent(content, file.name);
+      } catch (error) {
+        setFiles((prev) =>
+          prev.map((f) =>
+            f.name === file.name ? { ...f, status: "error", progress: 0 } : f
+          )
+        );
+        console.error("خطأ في معالجة الملف:", error);
+      }
+    },
+    [onFileContent]
+  );
 
   const handleFileSelect = useCallback(
     (selectedFiles: FileList | null) => {
@@ -171,7 +174,7 @@ export default function FileUpload({
         processFile(file);
       });
     },
-    [maxSize, onFileContent]
+    [maxSize, processFile]
   );
 
   const handleDrop = useCallback(
