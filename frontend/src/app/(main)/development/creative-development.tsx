@@ -380,20 +380,23 @@ const DramaAnalystApp: React.FC = () => {
             يمكنك الآن استخدام أدوات التطوير الإبداعي لتحليل النص الخاص بك
           </AlertDescription>
         </Alert>
-        </Alert>
       )}
+
+      {isAnalysisComplete && analysisId && (
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <span>
             تم تحميل نتائج تحليل المحطات السبع تلقائياً (ID:{" "}
             {analysisId.slice(0, 8)}...)
-            <Button
-              variant="link"
-              size="sm"
-              onClick={clearAnalysisData}
-              className="p-0 h-auto ml-2"
-            >
-              مسح البيانات
-            </Button>
-          </AlertDescription>
-        </Alert>
+          </span>
+          <Button
+            variant="link"
+            size="sm"
+            onClick={clearAnalysisData}
+            className="p-0 h-auto ml-2"
+          >
+            مسح البيانات
+          </Button>
+        </div>
       )}
 
       {/* Input Section */}
@@ -410,6 +413,9 @@ const DramaAnalystApp: React.FC = () => {
               setTextInput(content);
               toast({
                 title: "تم تحميل الملف",
+                description: "تم استيراد محتوى الملف بنجاح",
+              });
+            }}
           />
           <div>
             <Label htmlFor="screenplay">النص الدرامي</Label>
