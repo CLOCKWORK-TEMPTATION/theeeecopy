@@ -165,7 +165,6 @@
     ]
   },
   "overrides": {
-    "next@<=15.4.7": "15.4.7",
     "esbuild": "^0.25.0"
   },
   "keywords": [

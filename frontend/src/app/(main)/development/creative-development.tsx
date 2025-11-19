@@ -62,7 +62,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Loader2,
   Upload,
@@ -88,6 +88,8 @@ import {
   AlertTriangle,
   Database,
   Eye,
+  Shield,
+  Users,
   Download,
 } from "lucide-react";
 // Dynamically import heavy components
