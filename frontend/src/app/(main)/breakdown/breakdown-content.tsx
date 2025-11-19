@@ -1,8 +1,14 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface AnalysisReport {
   executiveSummary: string;
@@ -27,14 +33,14 @@ export default function BreakdownContent() {
 
   useEffect(() => {
     // Load the analysis report
-    fetch('/analysis_output/final-report.json')
-      .then(res => res.json())
-      .then(data => {
+    fetch("/analysis_output/final-report.json")
+      .then((res) => res.json())
+      .then((data) => {
         setReport(data);
         setLoading(false);
       })
-      .catch(err => {
-        console.error('Failed to load analysis report:', err);
+      .catch((err) => {
+        console.error("Failed to load analysis report:", err);
         setLoading(false);
       });
   }, []);
@@ -57,7 +63,9 @@ export default function BreakdownContent() {
       <div className="container mx-auto max-w-6xl p-6">
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-4">تحليل النص</h1>
-          <p className="text-muted-foreground">لم يتم العثور على تقرير تحليل.</p>
+          <p className="text-muted-foreground">
+            لم يتم العثور على تقرير تحليل.
+          </p>
         </div>
       </div>
     );
@@ -67,7 +75,9 @@ export default function BreakdownContent() {
     <div className="container mx-auto max-w-6xl p-6 space-y-6">
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-2">📊 تحليل شامل للنص</h1>
-        <p className="text-muted-foreground">تقرير مفصل عن جودة النص ونقاط القوة والضعف</p>
+        <p className="text-muted-foreground">
+          تقرير مفصل عن جودة النص ونقاط القوة والضعف
+        </p>
       </div>
 
       {/* Overall Assessment */}
@@ -79,24 +89,40 @@ export default function BreakdownContent() {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">{report.overallAssessment.narrativeQualityScore}</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {report.overallAssessment.narrativeQualityScore}
+              </div>
               <div className="text-sm text-muted-foreground">جودة السرد</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{report.overallAssessment.structuralIntegrityScore}</div>
-              <div className="text-sm text-muted-foreground">السلامة الهيكلية</div>
+              <div className="text-2xl font-bold text-green-600">
+                {report.overallAssessment.structuralIntegrityScore}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                السلامة الهيكلية
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{report.overallAssessment.characterDevelopmentScore}</div>
-              <div className="text-sm text-muted-foreground">تطوير الشخصيات</div>
+              <div className="text-2xl font-bold text-purple-600">
+                {report.overallAssessment.characterDevelopmentScore}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                تطوير الشخصيات
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">{report.overallAssessment.conflictEffectivenessScore}</div>
+              <div className="text-2xl font-bold text-orange-600">
+                {report.overallAssessment.conflictEffectivenessScore}
+              </div>
               <div className="text-sm text-muted-foreground">فعالية الصراع</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-red-600">{report.overallAssessment.overallScore}</div>
-              <div className="text-sm text-muted-foreground">النتيجة الإجمالية</div>
+              <div className="text-2xl font-bold text-red-600">
+                {report.overallAssessment.overallScore}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                النتيجة الإجمالية
+              </div>
             </div>
           </div>
           <div className="text-center">
@@ -178,7 +204,9 @@ export default function BreakdownContent() {
       {report.threatsToCohesion.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-orange-700">⚡ التهديدات للتماسك</CardTitle>
+            <CardTitle className="text-orange-700">
+              ⚡ التهديدات للتماسك
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">

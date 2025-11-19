@@ -159,14 +159,11 @@ export class TensionOptimizerAgent extends BaseAgent {
       "تراكم",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const termCount = tensionTerms.reduce(
-      (count, term) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const occurrences = text.split(term).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const termCount = tensionTerms.reduce((count, term) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const occurrences = text.split(term).length - 1;
+      return count + occurrences;
+    }, 0);
     score += Math.min(0.25, termCount * 0.02);
 
     const analyticalTerms = [
@@ -179,14 +176,11 @@ export class TensionOptimizerAgent extends BaseAgent {
       "يخفف",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const analyticCount = analyticalTerms.reduce(
-      (count, term) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const occurrences = text.split(term).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const analyticCount = analyticalTerms.reduce((count, term) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const occurrences = text.split(term).length - 1;
+      return count + occurrences;
+    }, 0);
     score += Math.min(0.15, analyticCount * 0.03);
 
     if (text.length > 1500) score += 0.1;
@@ -209,14 +203,11 @@ export class TensionOptimizerAgent extends BaseAgent {
       "مفاجأة",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const techCount = techniques.reduce(
-      (count, tech) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const occurrences = text.split(tech).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const techCount = techniques.reduce((count, tech) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const occurrences = text.split(tech).length - 1;
+      return count + occurrences;
+    }, 0);
     score += Math.min(0.35, techCount * 0.04);
 
     const hasTechniqueSection =
@@ -239,14 +230,11 @@ export class TensionOptimizerAgent extends BaseAgent {
       "الأفضل",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const practicalCount = practicalTerms.reduce(
-      (count, term) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const occurrences = text.split(term).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const practicalCount = practicalTerms.reduce((count, term) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const occurrences = text.split(term).length - 1;
+      return count + occurrences;
+    }, 0);
     score += Math.min(0.25, practicalCount * 0.03);
 
     const hasExamples = text.includes("مثال") || text.includes("مثل");
@@ -268,14 +256,11 @@ export class TensionOptimizerAgent extends BaseAgent {
       "نلاحظ",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const insightCount = insightWords.reduce(
-      (count, word) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const occurrences = text.split(word).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const insightCount = insightWords.reduce((count, word) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const occurrences = text.split(word).length - 1;
+      return count + occurrences;
+    }, 0);
     score += Math.min(0.3, insightCount * 0.03);
 
     const hasEvaluation =

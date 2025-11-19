@@ -4,7 +4,7 @@
  * Custom hook for fetching system metrics from backend
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import type {
   MetricsSnapshot,
   DashboardSummary,
@@ -16,9 +16,9 @@ import type {
   ApiMetrics,
   ResourceMetrics,
   GeminiMetrics,
-} from '@/types/metrics';
+} from "@/types/metrics";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 /**
  * Fetch helper with authentication
@@ -26,9 +26,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 async function fetchWithAuth<T>(endpoint: string): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-    credentials: 'include', // Include cookies for auth
+    credentials: "include", // Include cookies for auth
   });
 
   if (!response.ok) {
@@ -38,7 +38,7 @@ async function fetchWithAuth<T>(endpoint: string): Promise<T> {
   const data = await response.json();
 
   if (!data.success) {
-    throw new Error(data.error || 'Unknown error occurred');
+    throw new Error(data.error || "Unknown error occurred");
   }
 
   return data.data;
@@ -49,8 +49,8 @@ async function fetchWithAuth<T>(endpoint: string): Promise<T> {
  */
 export function useDashboardSummary(refreshInterval = 30000) {
   return useQuery<DashboardSummary>({
-    queryKey: ['metrics', 'dashboard'],
-    queryFn: () => fetchWithAuth<DashboardSummary>('/api/metrics/dashboard'),
+    queryKey: ["metrics", "dashboard"],
+    queryFn: () => fetchWithAuth<DashboardSummary>("/api/metrics/dashboard"),
     refetchInterval: refreshInterval,
     staleTime: 20000, // Consider data stale after 20s
   });
@@ -61,8 +61,8 @@ export function useDashboardSummary(refreshInterval = 30000) {
  */
 export function useLatestMetrics(refreshInterval = 30000) {
   return useQuery<MetricsSnapshot>({
-    queryKey: ['metrics', 'latest'],
-    queryFn: () => fetchWithAuth<MetricsSnapshot>('/api/metrics/latest'),
+    queryKey: ["metrics", "latest"],
+    queryFn: () => fetchWithAuth<MetricsSnapshot>("/api/metrics/latest"),
     refetchInterval: refreshInterval,
     staleTime: 20000,
   });
@@ -73,8 +73,8 @@ export function useLatestMetrics(refreshInterval = 30000) {
  */
 export function useHealthStatus(refreshInterval = 15000) {
   return useQuery<HealthStatus>({
-    queryKey: ['metrics', 'health'],
-    queryFn: () => fetchWithAuth<HealthStatus>('/api/metrics/health'),
+    queryKey: ["metrics", "health"],
+    queryFn: () => fetchWithAuth<HealthStatus>("/api/metrics/health"),
     refetchInterval: refreshInterval,
     staleTime: 10000,
   });
@@ -85,8 +85,8 @@ export function useHealthStatus(refreshInterval = 15000) {
  */
 export function useDatabaseMetrics(refreshInterval = 30000) {
   return useQuery<DatabaseMetrics>({
-    queryKey: ['metrics', 'database'],
-    queryFn: () => fetchWithAuth<DatabaseMetrics>('/api/metrics/database'),
+    queryKey: ["metrics", "database"],
+    queryFn: () => fetchWithAuth<DatabaseMetrics>("/api/metrics/database"),
     refetchInterval: refreshInterval,
     staleTime: 20000,
   });
@@ -97,8 +97,8 @@ export function useDatabaseMetrics(refreshInterval = 30000) {
  */
 export function useRedisMetrics(refreshInterval = 30000) {
   return useQuery<RedisMetrics>({
-    queryKey: ['metrics', 'redis'],
-    queryFn: () => fetchWithAuth<RedisMetrics>('/api/metrics/redis'),
+    queryKey: ["metrics", "redis"],
+    queryFn: () => fetchWithAuth<RedisMetrics>("/api/metrics/redis"),
     refetchInterval: refreshInterval,
     staleTime: 20000,
   });
@@ -109,8 +109,8 @@ export function useRedisMetrics(refreshInterval = 30000) {
  */
 export function useQueueMetrics(refreshInterval = 15000) {
   return useQuery<QueueMetrics>({
-    queryKey: ['metrics', 'queue'],
-    queryFn: () => fetchWithAuth<QueueMetrics>('/api/metrics/queue'),
+    queryKey: ["metrics", "queue"],
+    queryFn: () => fetchWithAuth<QueueMetrics>("/api/metrics/queue"),
     refetchInterval: refreshInterval,
     staleTime: 10000,
   });
@@ -121,8 +121,8 @@ export function useQueueMetrics(refreshInterval = 15000) {
  */
 export function useApiMetrics(refreshInterval = 30000) {
   return useQuery<ApiMetrics>({
-    queryKey: ['metrics', 'api'],
-    queryFn: () => fetchWithAuth<ApiMetrics>('/api/metrics/api'),
+    queryKey: ["metrics", "api"],
+    queryFn: () => fetchWithAuth<ApiMetrics>("/api/metrics/api"),
     refetchInterval: refreshInterval,
     staleTime: 20000,
   });
@@ -133,8 +133,8 @@ export function useApiMetrics(refreshInterval = 30000) {
  */
 export function useResourceMetrics(refreshInterval = 10000) {
   return useQuery<ResourceMetrics>({
-    queryKey: ['metrics', 'resources'],
-    queryFn: () => fetchWithAuth<ResourceMetrics>('/api/metrics/resources'),
+    queryKey: ["metrics", "resources"],
+    queryFn: () => fetchWithAuth<ResourceMetrics>("/api/metrics/resources"),
     refetchInterval: refreshInterval,
     staleTime: 5000,
   });
@@ -145,8 +145,8 @@ export function useResourceMetrics(refreshInterval = 10000) {
  */
 export function useGeminiMetrics(refreshInterval = 30000) {
   return useQuery<GeminiMetrics>({
-    queryKey: ['metrics', 'gemini'],
-    queryFn: () => fetchWithAuth<GeminiMetrics>('/api/metrics/gemini'),
+    queryKey: ["metrics", "gemini"],
+    queryFn: () => fetchWithAuth<GeminiMetrics>("/api/metrics/gemini"),
     refetchInterval: refreshInterval,
     staleTime: 20000,
   });
@@ -161,14 +161,15 @@ export function usePerformanceReport(
   enabled = true
 ) {
   const params = new URLSearchParams();
-  if (startTime) params.append('start', startTime.toISOString());
-  if (endTime) params.append('end', endTime.toISOString());
+  if (startTime) params.append("start", startTime.toISOString());
+  if (endTime) params.append("end", endTime.toISOString());
 
-  const queryString = params.toString() ? `?${params.toString()}` : '';
+  const queryString = params.toString() ? `?${params.toString()}` : "";
 
   return useQuery<PerformanceReport>({
-    queryKey: ['metrics', 'report', startTime, endTime],
-    queryFn: () => fetchWithAuth<PerformanceReport>(`/api/metrics/report${queryString}`),
+    queryKey: ["metrics", "report", startTime, endTime],
+    queryFn: () =>
+      fetchWithAuth<PerformanceReport>(`/api/metrics/report${queryString}`),
     enabled,
     staleTime: 60000, // Reports are valid for 1 minute
   });
@@ -188,8 +189,11 @@ export function useMetricsRange(
   });
 
   return useQuery<MetricsSnapshot[]>({
-    queryKey: ['metrics', 'range', startTime, endTime],
-    queryFn: () => fetchWithAuth<MetricsSnapshot[]>(`/api/metrics/range?${params.toString()}`),
+    queryKey: ["metrics", "range", startTime, endTime],
+    queryFn: () =>
+      fetchWithAuth<MetricsSnapshot[]>(
+        `/api/metrics/range?${params.toString()}`
+      ),
     enabled,
     staleTime: 60000,
   });

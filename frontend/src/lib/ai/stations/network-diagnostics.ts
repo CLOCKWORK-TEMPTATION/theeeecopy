@@ -172,7 +172,9 @@ export class NetworkDiagnostics {
   } {
     const isolatedChars: IsolatedCharacterIssue[] = [];
 
-    for (const [characterId, character] of Object.entries(this.network.characters)) {
+    for (const [characterId, character] of Object.entries(
+      this.network.characters
+    )) {
       const relationships = this.getCharacterRelationships(characterId);
       const conflicts = this.getCharacterConflicts(characterId);
 
@@ -181,18 +183,16 @@ export class NetworkDiagnostics {
           characterName: character.name,
           characterId: characterId,
           isolationType: "completely_isolated",
-          suggestedConnections: this.suggestConnectionsForCharacter(
-            characterId
-          ),
+          suggestedConnections:
+            this.suggestConnectionsForCharacter(characterId),
         });
       } else if (relationships.length <= 1 && conflicts.length === 0) {
         isolatedChars.push({
           characterName: character.name,
           characterId: characterId,
           isolationType: "weakly_connected",
-          suggestedConnections: this.suggestConnectionsForCharacter(
-            characterId
-          ),
+          suggestedConnections:
+            this.suggestConnectionsForCharacter(characterId),
         });
       } else if (relationships.length > 0 && conflicts.length === 0) {
         isolatedChars.push({
@@ -218,7 +218,9 @@ export class NetworkDiagnostics {
 
     if (!this.network.conflicts) return { totalAbandoned: 0, conflicts: [] };
 
-    for (const [conflictId, conflict] of Object.entries(this.network.conflicts)) {
+    for (const [conflictId, conflict] of Object.entries(
+      this.network.conflicts
+    )) {
       const daysSinceLastUpdate = this.calculateDaysSinceLastUpdate(conflict);
 
       if (daysSinceLastUpdate > 30) {
@@ -252,7 +254,9 @@ export class NetworkDiagnostics {
   } {
     const overloadedChars: OverloadedCharacterIssue[] = [];
 
-    for (const [characterId, character] of Object.entries(this.network.characters)) {
+    for (const [characterId, character] of Object.entries(
+      this.network.characters
+    )) {
       const relationships = this.getCharacterRelationships(characterId);
       const conflicts = this.getCharacterConflicts(characterId);
 
@@ -289,22 +293,26 @@ export class NetworkDiagnostics {
         if ((relationship.strength ?? 0) < 4) {
           weakConnections.push({
             connectionType: "relationship",
-            elementId: relationship.id ?? `${relationship.source}-${relationship.target}`,
-          weakness: "قوة العلاقة ضعيفة",
-          strengthScore: relationship.strength,
-          improvementSuggestions: [
-            "أضف مشاهد تفاعل أكثر بين الشخصيتين",
-            "طور الخلفية المشتركة للشخصيتين",
-            "أنشئ صراعاً يجمع بينهما",
-          ],
-        });
+            elementId:
+              relationship.id ??
+              `${relationship.source}-${relationship.target}`,
+            weakness: "قوة العلاقة ضعيفة",
+            strengthScore: relationship.strength,
+            improvementSuggestions: [
+              "أضف مشاهد تفاعل أكثر بين الشخصيتين",
+              "طور الخلفية المشتركة للشخصيتين",
+              "أنشئ صراعاً يجمع بينهما",
+            ],
+          });
         }
       }
     }
 
     // Check weak conflict involvement
     if (this.network.conflicts) {
-      for (const [conflictId, conflict] of Object.entries(this.network.conflicts)) {
+      for (const [conflictId, conflict] of Object.entries(
+        this.network.conflicts
+      )) {
         if ((conflict.strength ?? 0) < 4) {
           weakConnections.push({
             connectionType: "conflict_involvement",
@@ -368,13 +376,16 @@ export class NetworkDiagnostics {
   private getCharacterRelationships(characterId: string): Relationship[] {
     return Object.values(this.network.relationships)
       .flat()
-      .filter((rel) => rel.source === characterId || rel.target === characterId);
+      .filter(
+        (rel) => rel.source === characterId || rel.target === characterId
+      );
   }
 
   private getCharacterConflicts(characterId: string): Conflict[] {
     if (!this.network.conflicts) return [];
-    return Object.values(this.network.conflicts)
-      .filter((conflict) => conflict.involvedCharacters?.includes(characterId));
+    return Object.values(this.network.conflicts).filter((conflict) =>
+      conflict.involvedCharacters?.includes(characterId)
+    );
   }
 
   private findConnectedComponents(): string[][] {
@@ -437,7 +448,10 @@ export class NetworkDiagnostics {
 
     if (character) {
       // Find characters with similar traits or roles
-      for (const [otherCharId, otherChar] of this.network.characters.entries()) {
+      for (const [
+        otherCharId,
+        otherChar,
+      ] of this.network.characters.entries()) {
         if (otherCharId !== characterId) {
           suggestions.push(`ربط مع الشخصية: ${otherChar.name}`);
           if (suggestions.length >= 3) break;
@@ -454,7 +468,7 @@ export class NetworkDiagnostics {
     const conflicts = Object.values(this.network.conflicts);
 
     for (const conflict of conflicts.slice(0, 2)) {
-      suggestions.push(`إشراك في الصراع: ${conflict.name ?? 'صراع غير معروف'}`);
+      suggestions.push(`إشراك في الصراع: ${conflict.name ?? "صراع غير معروف"}`);
     }
 
     return suggestions;
@@ -499,7 +513,7 @@ export class NetworkDiagnostics {
         if (this.areRelationshipsSimilar(rel1, rel2)) {
           duplicates.push([
             rel1.id ?? `${rel1.source}-${rel1.target}`,
-            rel2.id ?? `${rel2.source}-${rel2.target}`
+            rel2.id ?? `${rel2.source}-${rel2.target}`,
           ]);
         }
       }
@@ -523,10 +537,7 @@ export class NetworkDiagnostics {
 
       for (const [otherConflictId, otherConflict] of conflicts) {
         const otherId = otherConflict.id ?? otherConflictId;
-        if (
-          otherId !== id &&
-          !processed.has(otherId)
-        ) {
+        if (otherId !== id && !processed.has(otherId)) {
           if (this.areConflictsSimilar(conflict, otherConflict)) {
             similarGroup.push(otherId);
             processed.add(otherId);

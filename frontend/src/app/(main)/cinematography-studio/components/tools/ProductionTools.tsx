@@ -1,12 +1,18 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const ProductionTools: React.FC = () => {
   const [shotValidation, setShotValidation] = useState<any>(null);
@@ -17,16 +23,16 @@ const ProductionTools: React.FC = () => {
     // Simulated validation
     setTimeout(() => {
       setShotValidation({
-        status: 'good',
+        status: "good",
         score: 85,
         suggestions: [
-          'الإضاءة جيدة ولكن يمكن تحسين الـ fill light قليلاً',
-          'الإطار مكون بشكل ممتاز - القاعدة الثلثية مطبقة',
-          'تأكد من ضبط الفوكس على عيني الممثل',
+          "الإضاءة جيدة ولكن يمكن تحسين الـ fill light قليلاً",
+          "الإطار مكون بشكل ممتاز - القاعدة الثلثية مطبقة",
+          "تأكد من ضبط الفوكس على عيني الممثل",
         ],
-        exposure: 'Good',
-        composition: 'Excellent',
-        focus: 'Acceptable'
+        exposure: "Good",
+        composition: "Excellent",
+        focus: "Acceptable",
       });
       setIsValidating(false);
     }, 2000);
@@ -48,7 +54,9 @@ const ProductionTools: React.FC = () => {
         <CardContent className="space-y-4">
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
             <div className="text-6xl mb-4">📷</div>
-            <p className="text-gray-600 mb-4">ارفع صورة من الكاميرا أو Monitor</p>
+            <p className="text-gray-600 mb-4">
+              ارفع صورة من الكاميرا أو Monitor
+            </p>
             <Button>📤 رفع صورة للتحليل</Button>
           </div>
 
@@ -57,7 +65,7 @@ const ProductionTools: React.FC = () => {
             disabled={isValidating}
             className="w-full"
           >
-            {isValidating ? '🔄 جاري التحليل...' : '🔍 تحليل اللقطة'}
+            {isValidating ? "🔄 جاري التحليل..." : "🔍 تحليل اللقطة"}
           </Button>
 
           {shotValidation && (
@@ -65,8 +73,12 @@ const ProductionTools: React.FC = () => {
               <Alert className="bg-green-50 border-green-200">
                 <AlertDescription>
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold">تقييم اللقطة: {shotValidation.score}/100</span>
-                    <Badge className="bg-green-600">{shotValidation.status === 'good' ? 'جيد' : 'يحتاج تحسين'}</Badge>
+                    <span className="font-semibold">
+                      تقييم اللقطة: {shotValidation.score}/100
+                    </span>
+                    <Badge className="bg-green-600">
+                      {shotValidation.status === "good" ? "جيد" : "يحتاج تحسين"}
+                    </Badge>
                   </div>
                 </AlertDescription>
               </Alert>
@@ -92,12 +104,17 @@ const ProductionTools: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
-                    {shotValidation.suggestions.map((suggestion: string, idx: number) => (
-                      <li key={idx} className="text-sm flex items-start space-x-2 space-x-reverse">
-                        <span className="text-blue-600">•</span>
-                        <span>{suggestion}</span>
-                      </li>
-                    ))}
+                    {shotValidation.suggestions.map(
+                      (suggestion: string, idx: number) => (
+                        <li
+                          key={idx}
+                          className="text-sm flex items-start space-x-2 space-x-reverse"
+                        >
+                          <span className="text-blue-600">•</span>
+                          <span>{suggestion}</span>
+                        </li>
+                      )
+                    )}
                   </ul>
                 </CardContent>
               </Card>
@@ -113,9 +130,7 @@ const ProductionTools: React.FC = () => {
             <span className="text-2xl">🤖</span>
             <span>المساعد الفوري - Real-Time Assistant</span>
           </CardTitle>
-          <CardDescription>
-            اسأل أي سؤال فني أثناء التصوير
-          </CardDescription>
+          <CardDescription>اسأل أي سؤال فني أثناء التصوير</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -131,13 +146,25 @@ const ProductionTools: React.FC = () => {
           <div className="bg-gray-50 rounded-lg p-4 mt-4">
             <h4 className="font-semibold mb-2 text-sm">أسئلة شائعة:</h4>
             <div className="space-y-2">
-              <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full justify-start text-xs"
+              >
                 ما هي أفضل إعدادات الكاميرا للتصوير الخارجي؟
               </Button>
-              <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full justify-start text-xs"
+              >
                 كيف أحقق الـ bokeh effect في هذا المشهد؟
               </Button>
-              <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full justify-start text-xs"
+              >
                 ما هو ISO المناسب في ظروف الإضاءة المنخفضة؟
               </Button>
             </div>

@@ -51,7 +51,8 @@ export function SlidingCarousel({
     (index: number) => {
       if (isTransitioning) return;
 
-      const newIndex = ((index % slides.length) + slides.length) % slides.length;
+      const newIndex =
+        ((index % slides.length) + slides.length) % slides.length;
       setIsTransitioning(true);
       setCurrentIndex(newIndex);
 

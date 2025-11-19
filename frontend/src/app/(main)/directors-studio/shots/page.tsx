@@ -2,7 +2,13 @@
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit, Trash2, Camera, Lightbulb } from "lucide-react";
 import ShotPlanningCard from "@/app/(main)/directors-studio/components/ShotPlanningCard";
@@ -111,16 +117,24 @@ export default function ShotsPage() {
                   <CardContent>
                     <div className="space-y-3 text-sm">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold w-24">زاوية الكاميرا:</span>
-                        <span className="text-muted-foreground">{shot.cameraAngle}</span>
+                        <span className="font-semibold w-24">
+                          زاوية الكاميرا:
+                        </span>
+                        <span className="text-muted-foreground">
+                          {shot.cameraAngle}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold w-24">الحركة:</span>
-                        <span className="text-muted-foreground">{shot.cameraMovement}</span>
+                        <span className="text-muted-foreground">
+                          {shot.cameraMovement}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold w-24">الإضاءة:</span>
-                        <span className="text-muted-foreground">{shot.lighting}</span>
+                        <span className="text-muted-foreground">
+                          {shot.lighting}
+                        </span>
                       </div>
                       {shot.aiSuggestion && (
                         <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950 rounded-md">
@@ -172,16 +186,24 @@ export default function ShotsPage() {
                   <CardContent>
                     <div className="space-y-3 text-sm">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold w-24">زاوية الكاميرا:</span>
-                        <span className="text-muted-foreground">{shot.cameraAngle}</span>
+                        <span className="font-semibold w-24">
+                          زاوية الكاميرا:
+                        </span>
+                        <span className="text-muted-foreground">
+                          {shot.cameraAngle}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold w-24">الحركة:</span>
-                        <span className="text-muted-foreground">{shot.cameraMovement}</span>
+                        <span className="text-muted-foreground">
+                          {shot.cameraMovement}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold w-24">الإضاءة:</span>
-                        <span className="text-muted-foreground">{shot.lighting}</span>
+                        <span className="text-muted-foreground">
+                          {shot.lighting}
+                        </span>
                       </div>
                       {shot.aiSuggestion && (
                         <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950 rounded-md">
@@ -207,7 +229,9 @@ export default function ShotsPage() {
 
           {shots?.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">لا توجد لقطات لهذا المشهد حتى الآن</p>
+              <p className="text-muted-foreground">
+                لا توجد لقطات لهذا المشهد حتى الآن
+              </p>
             </div>
           )}
 

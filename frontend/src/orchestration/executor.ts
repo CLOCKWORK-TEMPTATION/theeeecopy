@@ -1,9 +1,9 @@
 // Pipeline Orchestration Executor
 // Manages execution of AI analysis pipelines with proper error handling and progress tracking
 
-import { geminiService, type GeminiConfig } from '@/ai/gemini-service';
-import { cachedGeminiCall, generateGeminiCacheKey } from '@/lib/redis';
-import { AnalysisType } from '@/types/enums';
+import { geminiService, type GeminiConfig } from "@/ai/gemini-service";
+import { cachedGeminiCall, generateGeminiCacheKey } from "@/lib/redis";
+import { AnalysisType } from "@/types/enums";
 
 export interface PipelineStep {
   id: string;
@@ -29,7 +29,7 @@ export interface PipelineExecution {
   id: string;
   steps: PipelineStep[];
   results: Map<string, PipelineResult>;
-  status: 'pending' | 'running' | 'completed' | 'failed';
+  status: "pending" | "running" | "completed" | "failed";
   progress: number;
   startTime: Date;
   endTime?: Date;
@@ -49,9 +49,9 @@ export class PipelineOrchestrator {
       id: pipelineId,
       steps,
       results: new Map(),
-      status: 'running',
+      status: "running",
       progress: 0,
-      startTime: new Date()
+      startTime: new Date(),
     };
 
     this.activeExecutions.set(pipelineId, execution);
@@ -81,13 +81,12 @@ export class PipelineOrchestrator {
         }
       }
 
-      execution.status = 'completed';
+      execution.status = "completed";
       execution.endTime = new Date();
-
     } catch (error) {
-      execution.status = 'failed';
+      execution.status = "failed";
       execution.endTime = new Date();
-      console.error('Pipeline execution failed:', error);
+      console.error("Pipeline execution failed:", error);
     }
 
     return execution;
@@ -101,12 +100,16 @@ export class PipelineOrchestrator {
     const startTime = Date.now();
 
     try {
-      const cacheKey = generateGeminiCacheKey(`analysis:${step.id}:${step.type}`, 'gemini-1.5-flash', inputData);
+      const cacheKey = generateGeminiCacheKey(
+        `analysis:${step.id}:${step.type}`,
+        "gemini-1.5-flash",
+        inputData
+      );
 
       const result = await cachedGeminiCall(
         cacheKey,
         async () => {
-          const model = geminiService.getModel('gemini-1.5-flash', 'analysis');
+          const model = geminiService.getModel("gemini-1.5-flash", "analysis");
 
           // Build prompt based on step type and input data
           const prompt = this.buildStepPrompt(step, inputData);
@@ -122,16 +125,15 @@ export class PipelineOrchestrator {
         success: true,
         data: result,
         duration: Date.now() - startTime,
-        cached: false // This would need to be determined from cache layer
+        cached: false, // This would need to be determined from cache layer
       };
-
     } catch (error) {
       return {
         stepId: step.id,
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
         duration: Date.now() - startTime,
-        cached: false
+        cached: false,
       };
     }
   }
@@ -148,9 +150,12 @@ export class PipelineOrchestrator {
   }
 
   // Check if step can be executed
-  private canExecuteStep(step: PipelineStep, executedSteps: Set<string>): boolean {
+  private canExecuteStep(
+    step: PipelineStep,
+    executedSteps: Set<string>
+  ): boolean {
     const dependencies = step.dependencies || [];
-    return dependencies.every(dep => executedSteps.has(dep));
+    return dependencies.every((dep) => executedSteps.has(dep));
   }
 
   // Wait for dependencies to complete
@@ -164,7 +169,7 @@ export class PipelineOrchestrator {
     let waited = 0;
 
     while (waited < maxWait) {
-      const allDepsCompleted = dependencies.every(dep =>
+      const allDepsCompleted = dependencies.every((dep) =>
         execution.results.has(dep)
       );
 
@@ -172,7 +177,7 @@ export class PipelineOrchestrator {
         return;
       }
 
-      await new Promise(resolve => setTimeout(resolve, checkInterval));
+      await new Promise((resolve) => setTimeout(resolve, checkInterval));
       waited += checkInterval;
     }
 
@@ -180,18 +185,28 @@ export class PipelineOrchestrator {
   }
 
   // Build prompt for step execution
-  private buildStepPrompt(step: PipelineStep, inputData: Record<string, any>): string {
+  private buildStepPrompt(
+    step: PipelineStep,
+    inputData: Record<string, any>
+  ): string {
     const basePrompts: Record<AnalysisType, string> = {
-      [AnalysisType.CHARACTERS]: 'Analyze the characters in this screenplay. Identify main characters, their traits, relationships, and character arcs.',
-      [AnalysisType.THEMES]: 'Extract and analyze the main themes and motifs in this screenplay.',
-      [AnalysisType.STRUCTURE]: 'Analyze the dramatic structure, acts, and plot points in this screenplay.',
-      [AnalysisType.SCREENPLAY]: 'Review this screenplay for technical writing quality, formatting, and dramatic effectiveness.',
-      [AnalysisType.QUICK]: 'Provide a quick summary and initial impressions of this screenplay.',
-      [AnalysisType.DETAILED]: 'Provide a comprehensive analysis covering all aspects of this screenplay.',
-      [AnalysisType.FULL]: 'Perform complete analysis including characters, themes, structure, and recommendations.'
+      [AnalysisType.CHARACTERS]:
+        "Analyze the characters in this screenplay. Identify main characters, their traits, relationships, and character arcs.",
+      [AnalysisType.THEMES]:
+        "Extract and analyze the main themes and motifs in this screenplay.",
+      [AnalysisType.STRUCTURE]:
+        "Analyze the dramatic structure, acts, and plot points in this screenplay.",
+      [AnalysisType.SCREENPLAY]:
+        "Review this screenplay for technical writing quality, formatting, and dramatic effectiveness.",
+      [AnalysisType.QUICK]:
+        "Provide a quick summary and initial impressions of this screenplay.",
+      [AnalysisType.DETAILED]:
+        "Provide a comprehensive analysis covering all aspects of this screenplay.",
+      [AnalysisType.FULL]:
+        "Perform complete analysis including characters, themes, structure, and recommendations.",
     };
 
-    const prompt = basePrompts[step.type] || 'Analyze this content:';
+    const prompt = basePrompts[step.type] || "Analyze this content:";
 
     return `${prompt}\n\nContent: ${JSON.stringify(inputData)}\n\nProvide detailed analysis in Arabic.`;
   }
@@ -204,8 +219,8 @@ export class PipelineOrchestrator {
   // Cancel execution
   cancelExecution(pipelineId: string): boolean {
     const execution = this.activeExecutions.get(pipelineId);
-    if (execution && execution.status === 'running') {
-      execution.status = 'failed';
+    if (execution && execution.status === "running") {
+      execution.status = "failed";
       execution.endTime = new Date();
       return true;
     }
@@ -227,8 +242,8 @@ export class PipelineOrchestrator {
  */
 export async function submitTask(taskRequest: any): Promise<any> {
   // Development mode: return mock response
-  if (process.env.NODE_ENV !== 'production') {
-    console.warn('[DEV STUB] submitTask: returning mock response');
+  if (process.env.NODE_ENV !== "production") {
+    console.warn("[DEV STUB] submitTask: returning mock response");
   }
 
   // TODO PRODUCTION: Implement actual task submission
@@ -240,7 +255,7 @@ export async function submitTask(taskRequest: any): Promise<any> {
   return {
     success: true,
     taskId: `task_${Date.now()}`,
-    status: 'submitted',
+    status: "submitted",
     data: taskRequest,
   };
 }

@@ -5,7 +5,10 @@ import {
   StandardAgentOutput,
 } from "../shared/standardAgentPattern";
 import { SCENE_GENERATOR_AGENT_CONFIG } from "./agent";
-import { safeCountOccurrences, safeCountMultipleTerms } from "@/lib/security/safe-regexp";
+import {
+  safeCountOccurrences,
+  safeCountMultipleTerms,
+} from "@/lib/security/safe-regexp";
 
 /**
  * Scene Generator Agent - وكيل مولد المشاهد
@@ -31,7 +34,8 @@ export class SceneGeneratorAgent extends BaseAgent {
     const { input: taskInput, context } = input;
 
     // Extract relevant context
-    const contextObj = typeof context === 'object' && context !== null ? context : {};
+    const contextObj =
+      typeof context === "object" && context !== null ? context : {};
     const originalText = (contextObj as any)?.originalText || "";
     const sceneType = (contextObj as any)?.sceneType || "dramatic";
     const characters = (contextObj as any)?.characters || [];
@@ -589,7 +593,9 @@ export class SceneGeneratorAgent extends BaseAgent {
   protected override async getFallbackResponse(
     input: StandardAgentInput
   ): Promise<string> {
-    const sceneType = (typeof input.context === 'object' && input.context?.sceneType) || "dramatic";
+    const sceneType =
+      (typeof input.context === "object" && input.context?.sceneType) ||
+      "dramatic";
 
     return `وصف المشهد:
 مشهد ${this.translateSceneType(sceneType)} يحتاج إلى تطوير أعمق للشخصيات والصراع.

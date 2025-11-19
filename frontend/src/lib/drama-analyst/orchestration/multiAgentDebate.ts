@@ -145,7 +145,9 @@ ${JSON.stringify(context, null, 2).substring(0, 2000)}
     } catch (error) {
       // SECURITY FIX: Pass agentId as separate argument to prevent format string injection
       console.error(
-        "[Debate] Error generating proposal for", agentId, ":",
+        "[Debate] Error generating proposal for",
+        agentId,
+        ":",
         error
       );
       return {

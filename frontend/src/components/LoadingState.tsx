@@ -4,7 +4,7 @@
  * Provides accessible loading indicators for better UX
  */
 
-'use client';
+"use client";
 
 import { cn } from "@/lib/utils";
 
@@ -20,7 +20,7 @@ interface LoadingSpinnerProps {
 export function LoadingSpinner({
   size = "md",
   className,
-  label = "جاري التحميل..."
+  label = "جاري التحميل...",
 }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: "w-4 h-4 border-2",
@@ -57,7 +57,7 @@ interface LoadingOverlayProps {
  */
 export function LoadingOverlay({
   message = "جاري التحميل...",
-  fullScreen = true
+  fullScreen = true,
 }: LoadingOverlayProps) {
   return (
     <div
@@ -85,7 +85,7 @@ interface SkeletonProps {
  */
 export function Skeleton({
   className,
-  variant = "rectangular"
+  variant = "rectangular",
 }: SkeletonProps) {
   const variantClasses = {
     text: "h-4 w-full rounded",
@@ -152,7 +152,7 @@ export function ProgressBar({
   value,
   max = 100,
   label,
-  className
+  className,
 }: ProgressBarProps) {
   const percentage = Math.min(100, Math.max(0, (value / max) * 100));
 

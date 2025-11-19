@@ -1,8 +1,14 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export const CinematographyStudio: React.FC = () => {
   return (
@@ -25,10 +31,16 @@ export const CinematographyStudio: React.FC = () => {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-3xl mb-2">🚧 قيد التطوير</CardTitle>
-                  <CardDescription className="text-lg">Under Development</CardDescription>
+                  <CardTitle className="text-3xl mb-2">
+                    🚧 قيد التطوير
+                  </CardTitle>
+                  <CardDescription className="text-lg">
+                    Under Development
+                  </CardDescription>
                 </div>
-                <Badge variant="outline" className="text-lg px-4 py-2">قريباً</Badge>
+                <Badge variant="outline" className="text-lg px-4 py-2">
+                  قريباً
+                </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -45,35 +57,45 @@ export const CinematographyStudio: React.FC = () => {
                     <span className="text-2xl">📷</span>
                     <div>
                       <strong className="text-lg">تحليل الإضاءة:</strong>
-                      <p className="text-gray-600">أدوات لتحليل وتخطيط إضاءة المشاهد</p>
+                      <p className="text-gray-600">
+                        أدوات لتحليل وتخطيط إضاءة المشاهد
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3 space-x-reverse">
                     <span className="text-2xl">🎨</span>
                     <div>
                       <strong className="text-lg">لوحات الألوان:</strong>
-                      <p className="text-gray-600">إنشاء وإدارة لوحات الألوان السينمائية</p>
+                      <p className="text-gray-600">
+                        إنشاء وإدارة لوحات الألوان السينمائية
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3 space-x-reverse">
                     <span className="text-2xl">📐</span>
                     <div>
                       <strong className="text-lg">تخطيط اللقطات:</strong>
-                      <p className="text-gray-600">أدوات لتخطيط زوايا الكاميرا وحركتها</p>
+                      <p className="text-gray-600">
+                        أدوات لتخطيط زوايا الكاميرا وحركتها
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3 space-x-reverse">
                     <span className="text-2xl">🎬</span>
                     <div>
                       <strong className="text-lg">مرجع اللقطات:</strong>
-                      <p className="text-gray-600">مكتبة مرجعية للقطات السينمائية الشهيرة</p>
+                      <p className="text-gray-600">
+                        مكتبة مرجعية للقطات السينمائية الشهيرة
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3 space-x-reverse">
                     <span className="text-2xl">⚙️</span>
                     <div>
                       <strong className="text-lg">حاسبة المعدات:</strong>
-                      <p className="text-gray-600">حسابات العدسات والإضاءة والمعدات</p>
+                      <p className="text-gray-600">
+                        حسابات العدسات والإضاءة والمعدات
+                      </p>
                     </div>
                   </li>
                 </ul>
@@ -89,7 +111,9 @@ export const CinematographyStudio: React.FC = () => {
           </Card>
 
           <div className="mt-8 text-center text-gray-600">
-            <p>للاستفسارات أو المساهمة في التطوير، يرجى التواصل مع فريق التطوير</p>
+            <p>
+              للاستفسارات أو المساهمة في التطوير، يرجى التواصل مع فريق التطوير
+            </p>
           </div>
         </div>
       </main>

@@ -35,7 +35,9 @@ function isSimpleLine(line) {
 
 function isSimpleTypeFile(filePath) {
   const content = fs.readFileSync(filePath, "utf-8");
-  const hasLogic = /function |class |const .*=.*=>|if \(|switch \(/.test(content);
+  const hasLogic = /function |class |const .*=.*=>|if \(|switch \(/.test(
+    content
+  );
   return !hasLogic;
 }
 
@@ -111,7 +113,7 @@ function scanDirectory(dir) {
   for (const item of items) {
     let fullPath;
     try {
-      if (item.includes('..') || item.includes('/') || item.includes('\\')) {
+      if (item.includes("..") || item.includes("/") || item.includes("\\")) {
         console.warn(`Skipping potentially dangerous path: ${item}`);
         continue;
       }

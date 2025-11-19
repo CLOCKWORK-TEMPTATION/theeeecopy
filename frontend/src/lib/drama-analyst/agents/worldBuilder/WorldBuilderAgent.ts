@@ -48,7 +48,7 @@ ${userInput}
 `;
 
     // إضافة السياق من المحطات السابقة
-    if (typeof context === 'object' && context?.previousStations) {
+    if (typeof context === "object" && context?.previousStations) {
       prompt += `## السياق من المحطات السابقة:\n`;
 
       if (context.previousStations.analysis) {
@@ -159,7 +159,9 @@ ${userInput}
     const worldQuality = this.assessWorldQuality(cleanedText);
 
     // إضافة ملاحظة حول جودة بناء العالم
-    const enhancedNotes: string[] = Array.isArray(output.notes) ? [...output.notes] : [];
+    const enhancedNotes: string[] = Array.isArray(output.notes)
+      ? [...output.notes]
+      : [];
 
     if (worldQuality.consistency >= 0.85 && worldQuality.detail >= 0.85) {
       enhancedNotes.push("عالم متكامل عالي الاتساق والتفصيل");
@@ -210,16 +212,13 @@ ${userInput}
       "منطق",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const consistencyCount = consistencyMarkers.reduce(
-      (count, marker) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const lowerText = text.toLowerCase();
-        const lowerMarker = marker.toLowerCase();
-        const occurrences = lowerText.split(lowerMarker).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const consistencyCount = consistencyMarkers.reduce((count, marker) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const lowerText = text.toLowerCase();
+      const lowerMarker = marker.toLowerCase();
+      const occurrences = lowerText.split(lowerMarker).length - 1;
+      return count + occurrences;
+    }, 0);
     const consistency = Math.min(1, 0.5 + consistencyCount * 0.02);
 
     // تقييم التفصيل
@@ -233,16 +232,13 @@ ${userInput}
       "جغرافيا",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const detailCount = detailMarkers.reduce(
-      (count, marker) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const lowerText = text.toLowerCase();
-        const lowerMarker = marker.toLowerCase();
-        const occurrences = lowerText.split(lowerMarker).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const detailCount = detailMarkers.reduce((count, marker) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const lowerText = text.toLowerCase();
+      const lowerMarker = marker.toLowerCase();
+      const occurrences = lowerText.split(lowerMarker).length - 1;
+      return count + occurrences;
+    }, 0);
     const detail = Math.min(
       1,
       0.5 + (text.length / 2000) * 0.3 + detailCount * 0.02
@@ -258,16 +254,13 @@ ${userInput}
       "مبتكر",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const creativityCount = creativityMarkers.reduce(
-      (count, marker) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const lowerText = text.toLowerCase();
-        const lowerMarker = marker.toLowerCase();
-        const occurrences = lowerText.split(lowerMarker).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const creativityCount = creativityMarkers.reduce((count, marker) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const lowerText = text.toLowerCase();
+      const lowerMarker = marker.toLowerCase();
+      const occurrences = lowerText.split(lowerMarker).length - 1;
+      return count + occurrences;
+    }, 0);
     const creativity = Math.min(1, 0.6 + creativityCount * 0.04);
 
     // تقييم التماسك

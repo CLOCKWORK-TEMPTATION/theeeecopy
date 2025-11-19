@@ -1,33 +1,37 @@
 // types/index.ts
 // Type definitions for Arabic Creative Writing Studio
 
-export type Language = 'ar' | 'en';
-export type Theme = 'dark' | 'light' | 'auto';
-export type TextDirection = 'rtl' | 'ltr';
+export type Language = "ar" | "en";
+export type Theme = "dark" | "light" | "auto";
+export type TextDirection = "rtl" | "ltr";
 
 // Creative prompt genres
-export type CreativeGenre = 
-  | 'fantasy' 
-  | 'science_fiction' 
-  | 'mystery' 
-  | 'romance' 
-  | 'historical_fiction' 
-  | 'literary_fiction' 
-  | 'poetry' 
-  | 'cross_genre';
+export type CreativeGenre =
+  | "fantasy"
+  | "science_fiction"
+  | "mystery"
+  | "romance"
+  | "historical_fiction"
+  | "literary_fiction"
+  | "poetry"
+  | "cross_genre";
 
 // Writing techniques
-export type WritingTechnique = 
-  | 'character_driven' 
-  | 'world_building' 
-  | 'plot_driven' 
-  | 'dialogue_driven' 
-  | 'sensory_driven' 
-  | 'atmospheric' 
-  | 'experimental';
+export type WritingTechnique =
+  | "character_driven"
+  | "world_building"
+  | "plot_driven"
+  | "dialogue_driven"
+  | "sensory_driven"
+  | "atmospheric"
+  | "experimental";
 
 // Difficulty levels
-export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced' | 'academic';
+export type DifficultyLevel =
+  | "beginner"
+  | "intermediate"
+  | "advanced"
+  | "academic";
 
 // Creative prompt interface
 export interface CreativePrompt {
@@ -75,7 +79,7 @@ export interface TextAnalysis {
   readabilityScore: number;
   vocabularyDiversity: number;
   sentenceVariety: number;
-  emotionalTone: 'positive' | 'neutral' | 'negative';
+  emotionalTone: "positive" | "neutral" | "negative";
   qualityMetrics: {
     clarity: number;
     creativity: number;
@@ -90,7 +94,7 @@ export interface AppSettings {
   language: Language;
   theme: Theme;
   textDirection: TextDirection;
-  fontSize: 'small' | 'medium' | 'large';
+  fontSize: "small" | "medium" | "large";
   autoSave: boolean;
   autoSaveInterval: number;
   geminiApiKey?: string;
@@ -160,7 +164,7 @@ export interface UserStatistics {
 
 // Export settings
 export interface ExportSettings {
-  format: 'txt' | 'json' | 'html' | 'rtf' | 'pdf';
+  format: "txt" | "json" | "html" | "rtf" | "pdf";
   includeMetadata: boolean;
   includeAnalysis: boolean;
   fontSize?: number;
@@ -168,14 +172,14 @@ export interface ExportSettings {
 }
 
 // App events
-export type AppEvent = 
-  | 'prompt_generated'
-  | 'text_analyzed'
-  | 'project_saved'
-  | 'project_exported'
-  | 'settings_updated'
-  | 'api_connected'
-  | 'challenge_completed';
+export type AppEvent =
+  | "prompt_generated"
+  | "text_analyzed"
+  | "project_saved"
+  | "project_exported"
+  | "settings_updated"
+  | "api_connected"
+  | "challenge_completed";
 
 // App event data
 export interface AppEventData {

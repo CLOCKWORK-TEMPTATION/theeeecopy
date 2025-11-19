@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useMemo } from "react";
 import * as THREE from "three";
-import type { ParticleVelocity, ParticlePosition, EffectConfig } from "@/components/particle-effects";
+import type {
+  ParticleVelocity,
+  ParticlePosition,
+  EffectConfig,
+} from "@/components/particle-effects";
 import {
   applySparkEffect,
   applyWaveEffect,
@@ -34,13 +38,19 @@ type Effect = "default" | "spark" | "wave" | "vortex";
 /**
  * Get optimal particle configuration using device detection
  */
-function getOptimalParticleCount(): { count: number; batchSize: number; config: any } {
-  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+function getOptimalParticleCount(): {
+  count: number;
+  batchSize: number;
+  config: any;
+} {
+  if (typeof window === "undefined" || typeof navigator === "undefined") {
     return { count: 3000, batchSize: 400, config: null };
   }
 
   // Check for reduced motion preference
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
   if (prefersReducedMotion) {
     return { count: 0, batchSize: 0, config: null };
   }
@@ -53,7 +63,7 @@ function getOptimalParticleCount(): { count: number; batchSize: number; config: 
   const batchSize = Math.floor(lodConfig.particleCount * 0.22);
 
   // Log device capabilities in development
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     logDeviceCapabilities();
   }
 
@@ -67,14 +77,21 @@ function getOptimalParticleCount(): { count: number; batchSize: number; config: 
 /**
  * Enhanced requestIdleCallback with fallback
  */
-const requestIdle = (callback: (deadline: any) => void, options?: any): number => {
-  if (typeof requestIdleCallback !== 'undefined') {
+const requestIdle = (
+  callback: (deadline: any) => void,
+  options?: any
+): number => {
+  if (typeof requestIdleCallback !== "undefined") {
     return requestIdleCallback(callback, options);
   } else {
-    return setTimeout(() => callback({
-      timeRemaining: () => Math.max(0, 50),
-      didTimeout: false
-    }), options?.timeout || 0) as any;
+    return setTimeout(
+      () =>
+        callback({
+          timeRemaining: () => Math.max(0, 50),
+          didTimeout: false,
+        }),
+      options?.timeout || 0
+    ) as any;
   }
 };
 
@@ -82,14 +99,16 @@ export default function OptimizedParticleAnimation() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const cleanupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   const currentEffect: Effect = "spark";
 
   // Check for window object
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null;
 
   // Check for reduced motion preference
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
 
   // Skip animation if user prefers reduced motion
   if (prefersReducedMotion) return null;
@@ -120,35 +139,52 @@ export default function OptimizedParticleAnimation() {
 
   // Distance to box with rounded corners
   const sdBox = (
-    px: number, py: number, bx: number, by: number, r: number
+    px: number,
+    py: number,
+    bx: number,
+    by: number,
+    r: number
   ): number => {
     const dx = Math.abs(px) - bx;
     const dy = Math.abs(py) - by;
     return (
       Math.sqrt(Math.max(dx, 0) ** 2 + Math.max(dy, 0) ** 2) +
-      Math.min(Math.max(dx, dy), 0) - r
+      Math.min(Math.max(dx, dy), 0) -
+      r
     );
   };
 
   // Distance to circle
   const sdCircle = (
-    px: number, py: number, cx: number, cy: number, r: number
+    px: number,
+    py: number,
+    cx: number,
+    cy: number,
+    r: number
   ): number => {
     return Math.hypot(px - cx, py - cy) - r;
   };
 
   // Distance to ring (hollow circle)
   const sdRing = (
-    px: number, py: number, cx: number, cy: number, r: number, thickness: number
+    px: number,
+    py: number,
+    cx: number,
+    cy: number,
+    r: number,
+    thickness: number
   ): number => {
     return Math.abs(sdCircle(px, py, cx, cy, r)) - thickness;
   };
 
   // Distance to line segment (capsule)
   const sdSegment = (
-    px: number, py: number,
-    ax: number, ay: number,
-    bx: number, by: number,
+    px: number,
+    py: number,
+    ax: number,
+    ay: number,
+    bx: number,
+    by: number,
     r: number
   ): number => {
     const pax = px - ax;
@@ -163,9 +199,13 @@ export default function OptimizedParticleAnimation() {
 
   // Distance to arc
   const sdArc = (
-    px: number, py: number,
-    cx: number, cy: number, r: number,
-    startAngle: number, endAngle: number,
+    px: number,
+    py: number,
+    cx: number,
+    cy: number,
+    r: number,
+    startAngle: number,
+    endAngle: number,
     thickness: number
   ): number => {
     const dx = px - cx;
@@ -190,16 +230,57 @@ export default function OptimizedParticleAnimation() {
   // Letters SDF definitions (using shared constants)
   const dist_t = (px: number, py: number): number => {
     const x = LETTER_POSITIONS.T;
-    const stem = sdSegment(px, py, x, BASELINE + ASCENDER_HEIGHT - 0.05, x, BASELINE, STROKE_WIDTH);
-    const crossbar = sdSegment(px, py, x - 0.15, BASELINE + ASCENDER_HEIGHT, x + 0.15, BASELINE + ASCENDER_HEIGHT, STROKE_WIDTH);
+    const stem = sdSegment(
+      px,
+      py,
+      x,
+      BASELINE + ASCENDER_HEIGHT - 0.05,
+      x,
+      BASELINE,
+      STROKE_WIDTH
+    );
+    const crossbar = sdSegment(
+      px,
+      py,
+      x - 0.15,
+      BASELINE + ASCENDER_HEIGHT,
+      x + 0.15,
+      BASELINE + ASCENDER_HEIGHT,
+      STROKE_WIDTH
+    );
     return opUnion(stem, crossbar);
   };
 
   const dist_h = (px: number, py: number): number => {
     const x = LETTER_POSITIONS.H;
-    const stem = sdSegment(px, py, x, BASELINE + ASCENDER_HEIGHT, x, BASELINE, STROKE_WIDTH);
-    const shoulder = sdArc(px, py, x, BASELINE + X_HEIGHT * 0.8, 0.22, -Math.PI / 2, 0, STROKE_WIDTH);
-    const rightLeg = sdSegment(px, py, x + 0.22, BASELINE + X_HEIGHT * 0.8, x + 0.22, BASELINE, STROKE_WIDTH);
+    const stem = sdSegment(
+      px,
+      py,
+      x,
+      BASELINE + ASCENDER_HEIGHT,
+      x,
+      BASELINE,
+      STROKE_WIDTH
+    );
+    const shoulder = sdArc(
+      px,
+      py,
+      x,
+      BASELINE + X_HEIGHT * 0.8,
+      0.22,
+      -Math.PI / 2,
+      0,
+      STROKE_WIDTH
+    );
+    const rightLeg = sdSegment(
+      px,
+      py,
+      x + 0.22,
+      BASELINE + X_HEIGHT * 0.8,
+      x + 0.22,
+      BASELINE,
+      STROKE_WIDTH
+    );
     return opUnion(opUnion(stem, shoulder), rightLeg);
   };
 
@@ -233,7 +314,15 @@ export default function OptimizedParticleAnimation() {
   const dist_p = (px: number, py: number): number => {
     const x = LETTER_POSITIONS.P;
     const cy = BASELINE + X_HEIGHT * 0.5;
-    const stem = sdSegment(px, py, x, BASELINE + X_HEIGHT, x, BASELINE + DESCENDER_DEPTH, STROKE_WIDTH);
+    const stem = sdSegment(
+      px,
+      py,
+      x,
+      BASELINE + X_HEIGHT,
+      x,
+      BASELINE + DESCENDER_DEPTH,
+      STROKE_WIDTH
+    );
     const bowl = sdRing(px, py, x + 0.2, cy, 0.17, STROKE_WIDTH);
     return opUnion(stem, bowl);
   };
@@ -244,36 +333,118 @@ export default function OptimizedParticleAnimation() {
     const mid = BASELINE + X_HEIGHT * 0.2;
     const leftArm = sdSegment(px, py, x - 0.15, top, x, mid, STROKE_WIDTH);
     const rightArm = sdSegment(px, py, x + 0.15, top, x, mid, STROKE_WIDTH);
-    const descender = sdSegment(px, py, x, mid, x + 0.05, BASELINE + DESCENDER_DEPTH, STROKE_WIDTH);
+    const descender = sdSegment(
+      px,
+      py,
+      x,
+      mid,
+      x + 0.05,
+      BASELINE + DESCENDER_DEPTH,
+      STROKE_WIDTH
+    );
     return opUnion(opUnion(leftArm, rightArm), descender);
   };
 
   const dist_dash = (px: number, py: number): number => {
     const x = LETTER_POSITIONS.DASH;
-    return sdSegment(px, py, x - 0.1, BASELINE + X_HEIGHT * 0.5, x + 0.1, BASELINE + X_HEIGHT * 0.5, STROKE_WIDTH * 0.8);
+    return sdSegment(
+      px,
+      py,
+      x - 0.1,
+      BASELINE + X_HEIGHT * 0.5,
+      x + 0.1,
+      BASELINE + X_HEIGHT * 0.5,
+      STROKE_WIDTH * 0.8
+    );
   };
 
   const dist_alef = (px: number, py: number): number => {
     const x = LETTER_POSITIONS.ALEF;
-    const stem = sdSegment(px, py, x, BASELINE + ARABIC_HEIGHT * 0.95, x, BASELINE, STROKE_WIDTH * 1.2);
-    const base = sdSegment(px, py, x - 0.03, BASELINE, x + 0.03, BASELINE, STROKE_WIDTH * 1.5);
+    const stem = sdSegment(
+      px,
+      py,
+      x,
+      BASELINE + ARABIC_HEIGHT * 0.95,
+      x,
+      BASELINE,
+      STROKE_WIDTH * 1.2
+    );
+    const base = sdSegment(
+      px,
+      py,
+      x - 0.03,
+      BASELINE,
+      x + 0.03,
+      BASELINE,
+      STROKE_WIDTH * 1.5
+    );
     return opUnion(stem, base);
   };
 
   const dist_lam = (px: number, py: number): number => {
     const x = LETTER_POSITIONS.LAM;
-    const stem = sdSegment(px, py, x, BASELINE + ARABIC_HEIGHT * 0.95, x, BASELINE + 0.08, STROKE_WIDTH * 1.2);
-    const hook = sdArc(px, py, x - 0.12, BASELINE + 0.08, 0.12, 0, Math.PI / 2, STROKE_WIDTH * 1.1);
-    const hookEnd = sdSegment(px, py, x - 0.24, BASELINE, x - 0.15, BASELINE, STROKE_WIDTH);
+    const stem = sdSegment(
+      px,
+      py,
+      x,
+      BASELINE + ARABIC_HEIGHT * 0.95,
+      x,
+      BASELINE + 0.08,
+      STROKE_WIDTH * 1.2
+    );
+    const hook = sdArc(
+      px,
+      py,
+      x - 0.12,
+      BASELINE + 0.08,
+      0.12,
+      0,
+      Math.PI / 2,
+      STROKE_WIDTH * 1.1
+    );
+    const hookEnd = sdSegment(
+      px,
+      py,
+      x - 0.24,
+      BASELINE,
+      x - 0.15,
+      BASELINE,
+      STROKE_WIDTH
+    );
     return opUnion(opUnion(stem, hook), hookEnd);
   };
 
   const dist_noon = (px: number, py: number): number => {
     const x = LETTER_POSITIONS.NOON;
     const cy = BASELINE + ARABIC_HEIGHT * 0.4;
-    const mainArc = sdArc(px, py, x, cy, 0.18, -Math.PI * 0.15, Math.PI * 0.85, STROKE_WIDTH * 1.1);
-    const connector = sdSegment(px, py, x - 0.17, cy - 0.05, x - 0.08, BASELINE + 0.02, STROKE_WIDTH);
-    const base = sdSegment(px, py, x - 0.08, BASELINE + 0.02, x + 0.1, BASELINE, STROKE_WIDTH);
+    const mainArc = sdArc(
+      px,
+      py,
+      x,
+      cy,
+      0.18,
+      -Math.PI * 0.15,
+      Math.PI * 0.85,
+      STROKE_WIDTH * 1.1
+    );
+    const connector = sdSegment(
+      px,
+      py,
+      x - 0.17,
+      cy - 0.05,
+      x - 0.08,
+      BASELINE + 0.02,
+      STROKE_WIDTH
+    );
+    const base = sdSegment(
+      px,
+      py,
+      x - 0.08,
+      BASELINE + 0.02,
+      x + 0.1,
+      BASELINE,
+      STROKE_WIDTH
+    );
     const dot = sdCircle(px, py, x, cy + 0.28, 0.035);
     return opUnion(opUnion(opUnion(mainArc, connector), base), dot);
   };
@@ -282,22 +453,115 @@ export default function OptimizedParticleAnimation() {
     const x = LETTER_POSITIONS.SEEN;
     const baseY = BASELINE + 0.02;
     const toothHeight = ARABIC_HEIGHT * 0.35;
-    const baseLine = sdSegment(px, py, x - 0.28, baseY, x + 0.28, baseY, STROKE_WIDTH * 1.1);
-    const tooth1 = sdArc(px, py, x - 0.18, baseY + toothHeight * 0.6, 0.1, Math.PI * 0.9, Math.PI * 0.1, STROKE_WIDTH);
-    const tooth2 = sdArc(px, py, x, baseY + toothHeight * 0.8, 0.12, Math.PI * 0.9, Math.PI * 0.1, STROKE_WIDTH);
-    const tooth3 = sdArc(px, py, x + 0.18, baseY + toothHeight * 0.6, 0.1, Math.PI * 0.9, Math.PI * 0.1, STROKE_WIDTH);
-    const connect1 = sdSegment(px, py, x - 0.18, baseY, x - 0.18, baseY + toothHeight * 0.5, STROKE_WIDTH * 0.8);
-    const connect2 = sdSegment(px, py, x, baseY, x, baseY + toothHeight * 0.7, STROKE_WIDTH * 0.8);
-    const connect3 = sdSegment(px, py, x + 0.18, baseY, x + 0.18, baseY + toothHeight * 0.5, STROKE_WIDTH * 0.8);
-    return opUnion(opUnion(opUnion(opUnion(opUnion(opUnion(baseLine, tooth1), tooth2), tooth3), connect1), connect2), connect3);
+    const baseLine = sdSegment(
+      px,
+      py,
+      x - 0.28,
+      baseY,
+      x + 0.28,
+      baseY,
+      STROKE_WIDTH * 1.1
+    );
+    const tooth1 = sdArc(
+      px,
+      py,
+      x - 0.18,
+      baseY + toothHeight * 0.6,
+      0.1,
+      Math.PI * 0.9,
+      Math.PI * 0.1,
+      STROKE_WIDTH
+    );
+    const tooth2 = sdArc(
+      px,
+      py,
+      x,
+      baseY + toothHeight * 0.8,
+      0.12,
+      Math.PI * 0.9,
+      Math.PI * 0.1,
+      STROKE_WIDTH
+    );
+    const tooth3 = sdArc(
+      px,
+      py,
+      x + 0.18,
+      baseY + toothHeight * 0.6,
+      0.1,
+      Math.PI * 0.9,
+      Math.PI * 0.1,
+      STROKE_WIDTH
+    );
+    const connect1 = sdSegment(
+      px,
+      py,
+      x - 0.18,
+      baseY,
+      x - 0.18,
+      baseY + toothHeight * 0.5,
+      STROKE_WIDTH * 0.8
+    );
+    const connect2 = sdSegment(
+      px,
+      py,
+      x,
+      baseY,
+      x,
+      baseY + toothHeight * 0.7,
+      STROKE_WIDTH * 0.8
+    );
+    const connect3 = sdSegment(
+      px,
+      py,
+      x + 0.18,
+      baseY,
+      x + 0.18,
+      baseY + toothHeight * 0.5,
+      STROKE_WIDTH * 0.8
+    );
+    return opUnion(
+      opUnion(
+        opUnion(
+          opUnion(opUnion(opUnion(baseLine, tooth1), tooth2), tooth3),
+          connect1
+        ),
+        connect2
+      ),
+      connect3
+    );
   };
 
   const dist_khaa = (px: number, py: number): number => {
     const x = LETTER_POSITIONS.KHAA;
     const cy = BASELINE + ARABIC_HEIGHT * 0.4;
-    const mainArc = sdArc(px, py, x, cy, 0.2, Math.PI * 0.6, Math.PI * 2.4, STROKE_WIDTH * 1.1);
-    const rightConnect = sdSegment(px, py, x + 0.15, cy - 0.12, x + 0.12, BASELINE, STROKE_WIDTH);
-    const leftConnect = sdSegment(px, py, x - 0.15, cy - 0.12, x - 0.08, BASELINE, STROKE_WIDTH);
+    const mainArc = sdArc(
+      px,
+      py,
+      x,
+      cy,
+      0.2,
+      Math.PI * 0.6,
+      Math.PI * 2.4,
+      STROKE_WIDTH * 1.1
+    );
+    const rightConnect = sdSegment(
+      px,
+      py,
+      x + 0.15,
+      cy - 0.12,
+      x + 0.12,
+      BASELINE,
+      STROKE_WIDTH
+    );
+    const leftConnect = sdSegment(
+      px,
+      py,
+      x - 0.15,
+      cy - 0.12,
+      x - 0.08,
+      BASELINE,
+      STROKE_WIDTH
+    );
     const dot = sdCircle(px, py, x, cy + 0.28, 0.035);
     return opUnion(opUnion(opUnion(mainArc, rightConnect), leftConnect), dot);
   };
@@ -316,10 +580,20 @@ export default function OptimizedParticleAnimation() {
   // Combine all letters
   const dist_all = (px: number, py: number): number => {
     return Math.min(
-      dist_t(px, py), dist_h(px, py), dist_e(px, py), dist_c(px, py),
-      dist_o(px, py), dist_p(px, py), dist_y(px, py), dist_dash(px, py),
-      dist_alef(px, py), dist_lam(px, py), dist_noon(px, py),
-      dist_seen(px, py), dist_khaa(px, py), dist_taa_marbouta(px, py)
+      dist_t(px, py),
+      dist_h(px, py),
+      dist_e(px, py),
+      dist_c(px, py),
+      dist_o(px, py),
+      dist_p(px, py),
+      dist_y(px, py),
+      dist_dash(px, py),
+      dist_alef(px, py),
+      dist_lam(px, py),
+      dist_noon(px, py),
+      dist_seen(px, py),
+      dist_khaa(px, py),
+      dist_taa_marbouta(px, py)
     );
   };
 
@@ -373,21 +647,25 @@ export default function OptimizedParticleAnimation() {
       const processBatch = (): Promise<void> => {
         return new Promise((resolve) => {
           let batchGenerated = 0;
-          
-          while (batchGenerated < batchSize && 
-                 generatedCount < numParticles && 
-                 attempts < maxAttempts &&
-                 batchAttempts < maxBatchAttempts) {
-            
+
+          while (
+            batchGenerated < batchSize &&
+            generatedCount < numParticles &&
+            attempts < maxAttempts &&
+            batchAttempts < maxBatchAttempts
+          ) {
             attempts++;
             batchAttempts++;
-            
+
             const x = Math.random() * (maxX - minX) + minX;
             const y = Math.random() * (maxY - minY) + minY;
             const z = Math.random() * thickness - thickness / 2;
 
             const d = dist(x, y);
-            const threshold = x > 2.5 ? PARTICLE_THRESHOLDS.arabic : PARTICLE_THRESHOLDS.english;
+            const threshold =
+              x > 2.5
+                ? PARTICLE_THRESHOLDS.arabic
+                : PARTICLE_THRESHOLDS.english;
 
             if (d <= threshold) {
               const idx = generatedCount * 3;
@@ -402,9 +680,11 @@ export default function OptimizedParticleAnimation() {
             }
           }
 
-          if (generatedCount < numParticles && 
-              attempts < maxAttempts && 
-              batchAttempts < maxBatchAttempts) {
+          if (
+            generatedCount < numParticles &&
+            attempts < maxAttempts &&
+            batchAttempts < maxBatchAttempts
+          ) {
             requestIdle(() => resolve(), { timeout: 100 });
           } else {
             resolve();
@@ -452,9 +732,8 @@ export default function OptimizedParticleAnimation() {
         velocities,
         lodConfig: particleConfig.config,
       };
-
     } catch (error) {
-      console.error('❌ خطأ في توليد الجسيمات:', error);
+      console.error("❌ خطأ في توليد الجسيمات:", error);
       throw error;
     }
   };
@@ -462,7 +741,11 @@ export default function OptimizedParticleAnimation() {
   /**
    * Update camera position based on rotation
    */
-  const updateCameraPosition = (camera: THREE.PerspectiveCamera, rotationX: number, rotationY: number): void => {
+  const updateCameraPosition = (
+    camera: THREE.PerspectiveCamera,
+    rotationX: number,
+    rotationY: number
+  ): void => {
     camera.position.x = Math.sin(rotationY) * 3.5;
     camera.position.z = Math.cos(rotationY) * 3.5;
     camera.position.y = rotationX * 0.5;
@@ -488,7 +771,10 @@ export default function OptimizedParticleAnimation() {
   /**
    * Apply damping to velocity
    */
-  const applyDamping = (velocity: ParticleVelocity, damping: number): ParticleVelocity => {
+  const applyDamping = (
+    velocity: ParticleVelocity,
+    damping: number
+  ): ParticleVelocity => {
     return {
       vx: velocity.vx * damping,
       vy: velocity.vy * damping,
@@ -499,7 +785,10 @@ export default function OptimizedParticleAnimation() {
   /**
    * Update position based on velocity
    */
-  const updatePosition = (position: ParticlePosition, velocity: ParticleVelocity): ParticlePosition => {
+  const updatePosition = (
+    position: ParticlePosition,
+    velocity: ParticleVelocity
+  ): ParticlePosition => {
     return {
       px: position.px + velocity.vx,
       py: position.py + velocity.vy,
@@ -521,13 +810,27 @@ export default function OptimizedParticleAnimation() {
       return { r: 1, g: 1, b: 1 };
     }
 
-    const intersectionPoint = { x: intersection.x, y: intersection.y, z: intersection.z };
+    const intersectionPoint = {
+      x: intersection.x,
+      y: intersection.y,
+      z: intersection.z,
+    };
 
     if (effect === "wave") {
-      return calculateWaveColor(position, intersectionPoint, effectRadius, time);
+      return calculateWaveColor(
+        position,
+        intersectionPoint,
+        effectRadius,
+        time
+      );
     }
     if (effect === "vortex") {
-      return calculateVortexColor(position, intersectionPoint, effectRadius, time);
+      return calculateVortexColor(
+        position,
+        intersectionPoint,
+        effectRadius,
+        time
+      );
     }
 
     return { r: 1, g: 1, b: 1 };
@@ -544,17 +847,32 @@ export default function OptimizedParticleAnimation() {
     config: EffectConfig,
     time: number
   ): ParticleVelocity => {
-    const intersectionPoint = { x: intersection.x, y: intersection.y, z: intersection.z };
+    const intersectionPoint = {
+      x: intersection.x,
+      y: intersection.y,
+      z: intersection.z,
+    };
 
     switch (effect) {
       case "spark":
         return applySparkEffect(position, intersectionPoint, velocity, config);
       case "wave":
-        return applyWaveEffect(position, intersectionPoint, velocity, config, time);
+        return applyWaveEffect(
+          position,
+          intersectionPoint,
+          velocity,
+          config,
+          time
+        );
       case "vortex":
         return applyVortexEffect(position, intersectionPoint, velocity, config);
       case "default":
-        return applyDefaultEffect(position, intersectionPoint, velocity, config);
+        return applyDefaultEffect(
+          position,
+          intersectionPoint,
+          velocity,
+          config
+        );
     }
   };
 
@@ -562,10 +880,15 @@ export default function OptimizedParticleAnimation() {
     if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
-    
+
     // Initialize Three.js scene
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -597,7 +920,7 @@ export default function OptimizedParticleAnimation() {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
     };
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Initialize scene reference
     sceneRef.current = {
@@ -624,11 +947,25 @@ export default function OptimizedParticleAnimation() {
       .then((result) => {
         if (!sceneRef.current) return;
 
-        const { positions, colors, count, originalPositions, phases, velocities, lodConfig } = result;
+        const {
+          positions,
+          colors,
+          count,
+          originalPositions,
+          phases,
+          velocities,
+          lodConfig,
+        } = result;
 
         // Update geometry
-        sceneRef.current.geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-        sceneRef.current.geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+        sceneRef.current.geometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3)
+        );
+        sceneRef.current.geometry.setAttribute(
+          "color",
+          new THREE.BufferAttribute(colors, 3)
+        );
 
         // Update scene reference
         sceneRef.current.originalPositions = originalPositions;
@@ -638,7 +975,7 @@ export default function OptimizedParticleAnimation() {
         sceneRef.current.isGenerated = true;
       })
       .catch((error) => {
-        console.error('❌ فشل في توليد الجسيمات:', error);
+        console.error("❌ فشل في توليد الجسيمات:", error);
       });
 
     // Mouse interaction handlers
@@ -690,8 +1027,12 @@ export default function OptimizedParticleAnimation() {
         particleCount,
       } = sceneRef.current;
 
-      const positionAttribute = geometry.getAttribute("position") as THREE.BufferAttribute;
-      const colorAttribute = geometry.getAttribute("color") as THREE.BufferAttribute;
+      const positionAttribute = geometry.getAttribute(
+        "position"
+      ) as THREE.BufferAttribute;
+      const colorAttribute = geometry.getAttribute(
+        "color"
+      ) as THREE.BufferAttribute;
 
       const config: EffectConfig = {
         effectRadius: 0.5,
@@ -706,10 +1047,10 @@ export default function OptimizedParticleAnimation() {
       // Process particles in batches for better performance
       const processParticlesInBatches = (batchSize: number = 800) => {
         let currentIndex = 0;
-        
+
         const processBatch = () => {
           const endIndex = Math.min(currentIndex + batchSize, particleCount);
-          
+
           for (let j = currentIndex; j < endIndex; j++) {
             const idx = j * 3;
             const position: ParticlePosition = {
@@ -742,12 +1083,17 @@ export default function OptimizedParticleAnimation() {
                   time
                 );
               } catch (error) {
-                console.warn('خطأ في تأثير الجسيم:', error);
+                console.warn("خطأ في تأثير الجسيم:", error);
               }
             }
 
             // Attract back to original position
-            velocity = applyAttraction(position, target, velocity, attractStrength);
+            velocity = applyAttraction(
+              position,
+              target,
+              velocity,
+              attractStrength
+            );
             velocity = applyDamping(velocity, damping);
 
             // Update position
@@ -769,7 +1115,7 @@ export default function OptimizedParticleAnimation() {
               );
               colorAttribute.setXYZ(j, color.r, color.g, color.b);
             } catch (error) {
-              console.warn('خطأ في حساب لون الجسيم:', error);
+              console.warn("خطأ في حساب لون الجسيم:", error);
             }
           }
 
@@ -834,7 +1180,12 @@ export default function OptimizedParticleAnimation() {
     };
 
     const handleTouchMove = (event: TouchEvent) => {
-      if (!sceneRef.current || !sceneRef.current.isDragging || !event.touches[0]) return;
+      if (
+        !sceneRef.current ||
+        !sceneRef.current.isDragging ||
+        !event.touches[0]
+      )
+        return;
 
       const deltaX = event.touches[0].clientX - sceneRef.current.previousMouseX;
       const deltaY = event.touches[0].clientY - sceneRef.current.previousMouseY;
@@ -869,7 +1220,7 @@ export default function OptimizedParticleAnimation() {
         if (material) material.dispose();
         if (renderer) renderer.dispose();
 
-        window.removeEventListener('resize', handleResize);
+        window.removeEventListener("resize", handleResize);
 
         // Reset performance monitor
         performanceMonitor.reset();
@@ -883,7 +1234,7 @@ export default function OptimizedParticleAnimation() {
 
         // تم تنظيف موارد الجسيمات بنجاح
       } catch (error) {
-        console.error('خطأ في تنظيف موارد الجسيمات:', error);
+        console.error("خطأ في تنظيف موارد الجسيمات:", error);
       }
     };
 
@@ -909,7 +1260,7 @@ export default function OptimizedParticleAnimation() {
         width={1400}
         height={600}
         className="block"
-        style={{ touchAction: 'none' }}
+        style={{ touchAction: "none" }}
       />
     </div>
   );

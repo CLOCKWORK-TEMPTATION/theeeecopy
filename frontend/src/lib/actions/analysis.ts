@@ -8,7 +8,7 @@
 "use server";
 
 // Development mode flag - set to false to use real pipeline
-const USE_MOCK_PIPELINE = process.env.USE_MOCK_PIPELINE !== 'false';
+const USE_MOCK_PIPELINE = process.env.USE_MOCK_PIPELINE !== "false";
 
 export interface PipelineInput {
   fullText: string;
@@ -53,7 +53,7 @@ export async function runFullPipeline(
   try {
     if (USE_MOCK_PIPELINE) {
       // DEV MODE: Return mock response for UI development
-      console.warn('[DEV MODE] Using mock pipeline response');
+      console.warn("[DEV MODE] Using mock pipeline response");
       return {
         success: true,
         stationOutputs: {
@@ -78,7 +78,7 @@ export async function runFullPipeline(
     // const result = await orchestrator.execute(input);
     // return result;
 
-    throw new Error('Real pipeline not implemented yet');
+    throw new Error("Real pipeline not implemented yet");
   } catch (error) {
     return {
       success: false,

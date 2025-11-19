@@ -180,7 +180,10 @@ export function InspectorPanel({
               الروابط الواردة
             </Label>
             <div className="text-[var(--color-muted)]" dir="rtl">
-              {typeof sceneData.linksIn === 'number' ? sceneData.linksIn : (sceneData.linksIn?.length || 0)} مشهد
+              {typeof sceneData.linksIn === "number"
+                ? sceneData.linksIn
+                : sceneData.linksIn?.length || 0}{" "}
+              مشهد
             </div>
           </div>
 
@@ -190,7 +193,10 @@ export function InspectorPanel({
               الروابط الصادرة
             </Label>
             <div className="text-[var(--color-muted)]" dir="rtl">
-              {typeof sceneData.linksOut === 'number' ? sceneData.linksOut : (sceneData.linksOut?.length || 0)} مشهد
+              {typeof sceneData.linksOut === "number"
+                ? sceneData.linksOut
+                : sceneData.linksOut?.length || 0}{" "}
+              مشهد
             </div>
           </div>
         </div>

@@ -49,7 +49,11 @@ export function VirtualizedGrid<T>({
 
   // Simple grid rendering (fallback without react-window for now)
   return (
-    <div ref={containerRef} className={`overflow-auto ${className}`} style={{ height: dimensions.height }}>
+    <div
+      ref={containerRef}
+      className={`overflow-auto ${className}`}
+      style={{ height: dimensions.height }}
+    >
       <div
         style={{
           display: "grid",

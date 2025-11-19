@@ -344,10 +344,7 @@ class DynamicAnalysisEngine {
         description: `Network snapshot: ${snapshot.characters.length} characters, ${snapshot.relationships.length} relationships, ${snapshot.conflicts.length} conflicts`,
         involvedEntities: {},
         significance: 5,
-        narrativePhase: this.inferNarrativePhase(
-          snapshot.timestamp,
-          snapshots
-        ),
+        narrativePhase: this.inferNarrativePhase(snapshot.timestamp, snapshots),
       });
     }
 
@@ -381,10 +378,7 @@ class DynamicAnalysisEngine {
             conflicts: [conflict.id],
           },
           significance: conflict.strength || 5,
-          narrativePhase: this.inferNarrativePhase(
-            timestamp,
-            snapshots
-          ),
+          narrativePhase: this.inferNarrativePhase(timestamp, snapshots),
         });
       }
     }
@@ -567,7 +561,10 @@ class DynamicAnalysisEngine {
 
       const conflicts = network.conflicts || new Map();
       for (const [confId, conf] of Array.from(conflicts.entries())) {
-        if (conf.involvedCharacters && conf.involvedCharacters.includes(charId)) {
+        if (
+          conf.involvedCharacters &&
+          conf.involvedCharacters.includes(charId)
+        ) {
           characterConflicts.push(confId);
         }
       }
@@ -703,15 +700,30 @@ class DynamicAnalysisEngine {
     let probability = 0.5;
 
     const conflictWithPhase = conflict as ConflictWithPhase;
-    if (conflictWithPhase.phase === ConflictPhaseEnum.RESOLUTION || conflictWithPhase.phase === "resolution") {
+    if (
+      conflictWithPhase.phase === ConflictPhaseEnum.RESOLUTION ||
+      conflictWithPhase.phase === "resolution"
+    ) {
       probability = 0.95;
-    } else if (conflictWithPhase.phase === ConflictPhaseEnum.DEESCALATING || conflictWithPhase.phase === "deescalating") {
+    } else if (
+      conflictWithPhase.phase === ConflictPhaseEnum.DEESCALATING ||
+      conflictWithPhase.phase === "deescalating"
+    ) {
       probability = 0.75;
-    } else if (conflictWithPhase.phase === ConflictPhaseEnum.AFTERMATH || conflictWithPhase.phase === "aftermath") {
+    } else if (
+      conflictWithPhase.phase === ConflictPhaseEnum.AFTERMATH ||
+      conflictWithPhase.phase === "aftermath"
+    ) {
       probability = 1.0;
-    } else if (conflictWithPhase.phase === ConflictPhaseEnum.CLIMAX || conflictWithPhase.phase === "climax") {
+    } else if (
+      conflictWithPhase.phase === ConflictPhaseEnum.CLIMAX ||
+      conflictWithPhase.phase === "climax"
+    ) {
       probability = 0.6;
-    } else if (conflictWithPhase.phase === ConflictPhaseEnum.LATENT || conflictWithPhase.phase === "latent") {
+    } else if (
+      conflictWithPhase.phase === ConflictPhaseEnum.LATENT ||
+      conflictWithPhase.phase === "latent"
+    ) {
       probability = 0.2;
     }
 
@@ -1249,7 +1261,8 @@ export class Station5DynamicSymbolicStylistic extends BaseStation<
     this.dialogueEngine = new AdvancedDialogueAnalysisEngine(geminiService);
     this.visualEngine = new VisualCinematicAnalysisEngine(geminiService);
     this.debateSystem = getMultiAgentDebateSystem(geminiService);
-    this.uncertaintyQuantificationEngine = getUncertaintyQuantificationEngine(geminiService);
+    this.uncertaintyQuantificationEngine =
+      getUncertaintyQuantificationEngine(geminiService);
   }
 
   protected async process(input: Station5Input): Promise<Station5Output> {
@@ -1334,13 +1347,11 @@ export class Station5DynamicSymbolicStylistic extends BaseStation<
         visualCinematicAnalysis,
       });
 
-      const uncertaintyMetrics = await this.uncertaintyQuantificationEngine.quantify(
-        analysisText,
-        {
+      const uncertaintyMetrics =
+        await this.uncertaintyQuantificationEngine.quantify(analysisText, {
           originalText: input.fullText,
           analysisType: "Dynamic, Symbolic, and Stylistic Analysis",
-        }
-      );
+        });
 
       uncertaintyReport = {
         overallConfidence: uncertaintyMetrics.confidence,

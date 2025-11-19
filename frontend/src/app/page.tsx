@@ -91,7 +91,11 @@ export default function Home() {
         style={{ opacity: 0 }}
       >
         <div className="container mx-auto flex items-center justify-center px-6 py-4">
-          <a href="#" aria-label="العودة للصفحة الرئيسية" className="cursor-pointer">
+          <a
+            href="#"
+            aria-label="العودة للصفحة الرئيسية"
+            className="cursor-pointer"
+          >
             <h2 className="text-2xl">النسخة</h2>
           </a>
         </div>
@@ -114,9 +118,7 @@ export default function Home() {
       <section className="relative bg-black py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl mb-4 text-white">
-              بس اصلي
-            </h2>
+            <h2 className="text-4xl md:text-5xl mb-4 text-white">بس اصلي</h2>
             <p className="text-lg text-white/70 max-w-2xl mx-auto">
               مجموعة متكاملة من الأدوات الإبداعية المدعومة بالذكاء الاصطناعي
             </p>

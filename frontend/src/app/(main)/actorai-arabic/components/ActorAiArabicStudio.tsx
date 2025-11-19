@@ -1,20 +1,31 @@
 "use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 
 export const ActorAiArabicStudio: React.FC<{}> = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'demo' | 'dashboard'>('home');
+  const [currentView, setCurrentView] = useState<"home" | "demo" | "dashboard">(
+    "home"
+  );
   const [notification, setNotification] = useState<{
-    type: 'success' | 'error' | 'info';
+    type: "success" | "error" | "info";
     message: string;
   } | null>(null);
 
-  const showNotification = (type: 'success' | 'error' | 'info', message: string) => {
+  const showNotification = (
+    type: "success" | "error" | "info",
+    message: string
+  ) => {
     setNotification({ type, message });
     setTimeout(() => setNotification(null), 5000);
   };
@@ -29,23 +40,35 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
           </div>
           <nav className="flex space-x-4 space-x-reverse">
             <Button
-              onClick={() => setCurrentView('home')}
-              variant={currentView === 'home' ? 'secondary' : 'ghost'}
-              className={currentView === 'home' ? 'bg-white text-blue-900 hover:bg-white' : 'text-white hover:bg-blue-800'}
+              onClick={() => setCurrentView("home")}
+              variant={currentView === "home" ? "secondary" : "ghost"}
+              className={
+                currentView === "home"
+                  ? "bg-white text-blue-900 hover:bg-white"
+                  : "text-white hover:bg-blue-800"
+              }
             >
               🏠 Home
             </Button>
             <Button
-              onClick={() => setCurrentView('demo')}
-              variant={currentView === 'demo' ? 'secondary' : 'ghost'}
-              className={currentView === 'demo' ? 'bg-white text-blue-900 hover:bg-white' : 'text-white hover:bg-blue-800'}
+              onClick={() => setCurrentView("demo")}
+              variant={currentView === "demo" ? "secondary" : "ghost"}
+              className={
+                currentView === "demo"
+                  ? "bg-white text-blue-900 hover:bg-white"
+                  : "text-white hover:bg-blue-800"
+              }
             >
               🎬 Demo
             </Button>
             <Button
-              onClick={() => setCurrentView('dashboard')}
-              variant={currentView === 'dashboard' ? 'secondary' : 'ghost'}
-              className={currentView === 'dashboard' ? 'bg-white text-blue-900 hover:bg-white' : 'text-white hover:bg-blue-800'}
+              onClick={() => setCurrentView("dashboard")}
+              variant={currentView === "dashboard" ? "secondary" : "ghost"}
+              className={
+                currentView === "dashboard"
+                  ? "bg-white text-blue-900 hover:bg-white"
+                  : "text-white hover:bg-blue-800"
+              }
             >
               📊 Dashboard
             </Button>
@@ -60,7 +83,9 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
 
     return (
       <div className="fixed top-4 right-4 z-50">
-        <Alert variant={notification.type === 'error' ? 'destructive' : 'default'}>
+        <Alert
+          variant={notification.type === "error" ? "destructive" : "default"}
+        >
           <AlertDescription>{notification.message}</AlertDescription>
         </Alert>
       </div>
@@ -74,12 +99,13 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
           Transform Your Acting with AI
         </h2>
         <p className="text-xl text-gray-600 mb-8">
-          Master your craft with AI-powered script analysis, virtual scene partners, and performance analytics
+          Master your craft with AI-powered script analysis, virtual scene
+          partners, and performance analytics
         </p>
         <div className="flex gap-4 justify-center mb-12">
           <Button
             size="lg"
-            onClick={() => setCurrentView('demo')}
+            onClick={() => setCurrentView("demo")}
             className="bg-blue-600 hover:bg-blue-700"
           >
             🎬 Try Demo
@@ -87,7 +113,9 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
           <Button
             size="lg"
             variant="outline"
-            onClick={() => showNotification('info', 'Registration coming soon!')}
+            onClick={() =>
+              showNotification("info", "Registration coming soon!")
+            }
           >
             Get Started
           </Button>
@@ -100,7 +128,8 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
               <div className="text-5xl mb-4">🧠</div>
               <h3 className="text-xl font-semibold mb-2">Script Analysis</h3>
               <p className="text-gray-600">
-                Deep analysis of objectives, obstacles, and emotional arcs using proven acting methodologies
+                Deep analysis of objectives, obstacles, and emotional arcs using
+                proven acting methodologies
               </p>
             </CardContent>
           </Card>
@@ -110,7 +139,8 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
               <div className="text-5xl mb-4">💬</div>
               <h3 className="text-xl font-semibold mb-2">AI Scene Partner</h3>
               <p className="text-gray-600">
-                Rehearse scenes with an intelligent AI partner that responds naturally to your performance
+                Rehearse scenes with an intelligent AI partner that responds
+                naturally to your performance
               </p>
             </CardContent>
           </Card>
@@ -118,9 +148,12 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6 text-center">
               <div className="text-5xl mb-4">📊</div>
-              <h3 className="text-xl font-semibold mb-2">Performance Analytics</h3>
+              <h3 className="text-xl font-semibold mb-2">
+                Performance Analytics
+              </h3>
               <p className="text-gray-600">
-                Detailed feedback on emotional authenticity, vocal delivery, and physical presence
+                Detailed feedback on emotional authenticity, vocal delivery, and
+                physical presence
               </p>
             </CardContent>
           </Card>
@@ -130,14 +163,17 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
               <div className="text-5xl mb-4">📈</div>
               <h3 className="text-xl font-semibold mb-2">Progress Tracking</h3>
               <p className="text-gray-600">
-                Monitor your growth with comprehensive analytics and personalized coaching tips
+                Monitor your growth with comprehensive analytics and
+                personalized coaching tips
               </p>
             </CardContent>
           </Card>
         </div>
 
         <div className="mt-16">
-          <h3 className="text-3xl font-bold text-gray-800 mb-8">How It Works</h3>
+          <h3 className="text-3xl font-bold text-gray-800 mb-8">
+            How It Works
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
@@ -151,14 +187,18 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
                 2
               </div>
               <h4 className="text-xl font-semibold mb-2">Analyze & Rehearse</h4>
-              <p className="text-gray-600">Get AI insights and practice with virtual partners</p>
+              <p className="text-gray-600">
+                Get AI insights and practice with virtual partners
+              </p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
                 3
               </div>
               <h4 className="text-xl font-semibold mb-2">Track Progress</h4>
-              <p className="text-gray-600">Monitor improvements and master your craft</p>
+              <p className="text-gray-600">
+                Monitor improvements and master your craft
+              </p>
             </div>
           </div>
         </div>
@@ -183,19 +223,24 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
             <CardHeader>
               <CardTitle>Script Analysis</CardTitle>
               <CardDescription>
-                Upload a script to get AI-powered analysis using proven acting methodologies
+                Upload a script to get AI-powered analysis using proven acting
+                methodologies
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition-colors">
                 <div className="text-6xl mb-4">📄</div>
                 <p className="text-lg">Click to use sample script</p>
-                <p className="text-sm text-gray-500">or drag and drop your script here</p>
+                <p className="text-sm text-gray-500">
+                  or drag and drop your script here
+                </p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Acting Methodology</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Acting Methodology
+                  </label>
                   <select className="w-full border rounded-md p-2">
                     <option>Stanislavsky Method</option>
                     <option>Meisner Technique</option>
@@ -207,7 +252,9 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
 
                 <Button
                   className="w-full"
-                  onClick={() => showNotification('success', 'Analysis completed! 🎉')}
+                  onClick={() =>
+                    showNotification("success", "Analysis completed! 🎉")
+                  }
                 >
                   🔍 Analyze Script
                 </Button>
@@ -215,7 +262,9 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
 
               <Card className="bg-blue-50">
                 <CardHeader>
-                  <CardTitle className="text-blue-900">🎯 Sample Analysis Results</CardTitle>
+                  <CardTitle className="text-blue-900">
+                    🎯 Sample Analysis Results
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -233,9 +282,14 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
                   <div>
                     <h4 className="font-semibold mb-2">Coaching Tips:</h4>
                     <ul className="list-disc list-inside space-y-1 text-sm">
-                      <li>Focus on the visual imagery - really see Juliet as the sun</li>
+                      <li>
+                        Focus on the visual imagery - really see Juliet as the
+                        sun
+                      </li>
                       <li>Allow moments of silence for breath and thought</li>
-                      <li>Find the balance between passion and vulnerability</li>
+                      <li>
+                        Find the balance between passion and vulnerability
+                      </li>
                     </ul>
                   </div>
                 </CardContent>
@@ -258,18 +312,22 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
                   <CardContent className="p-4">
                     <div className="bg-blue-100 rounded-lg p-4 mb-3">
                       <p className="font-medium">Romeo (You):</p>
-                      <p className="italic">But soft, what light through yonder window breaks? It is the east, and Juliet is the sun.</p>
+                      <p className="italic">
+                        But soft, what light through yonder window breaks? It is
+                        the east, and Juliet is the sun.
+                      </p>
                     </div>
                     <div className="bg-purple-100 rounded-lg p-4">
                       <p className="font-medium">Juliet (AI):</p>
-                      <p className="italic">O Romeo, Romeo, wherefore art thou Romeo? Deny thy father and refuse thy name.</p>
+                      <p className="italic">
+                        O Romeo, Romeo, wherefore art thou Romeo? Deny thy
+                        father and refuse thy name.
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Button className="w-full">
-                  🎤 Start Rehearsal
-                </Button>
+                <Button className="w-full">🎤 Start Rehearsal</Button>
               </div>
             </CardContent>
           </Card>
@@ -286,10 +344,10 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
             <CardContent>
               <div className="text-center py-12">
                 <div className="text-8xl mb-4">🎥</div>
-                <p className="text-lg mb-4">Ready to record your performance?</p>
-                <Button size="lg">
-                  ⏺️ Start Recording
-                </Button>
+                <p className="text-lg mb-4">
+                  Ready to record your performance?
+                </p>
+                <Button size="lg">⏺️ Start Recording</Button>
               </div>
             </CardContent>
           </Card>
@@ -344,22 +402,32 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
           <div className="space-y-3">
             <div className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50">
               <div>
-                <h4 className="font-semibold">Romeo & Juliet - Balcony Scene</h4>
-                <p className="text-sm text-gray-600">William Shakespeare • Uploaded: Oct 28, 2025</p>
+                <h4 className="font-semibold">
+                  Romeo & Juliet - Balcony Scene
+                </h4>
+                <p className="text-sm text-gray-600">
+                  William Shakespeare • Uploaded: Oct 28, 2025
+                </p>
               </div>
               <Badge>Analyzed</Badge>
             </div>
             <div className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50">
               <div>
                 <h4 className="font-semibold">Hamlet - To be or not to be</h4>
-                <p className="text-sm text-gray-600">William Shakespeare • Uploaded: Oct 26, 2025</p>
+                <p className="text-sm text-gray-600">
+                  William Shakespeare • Uploaded: Oct 26, 2025
+                </p>
               </div>
               <Badge>Analyzed</Badge>
             </div>
             <div className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50">
               <div>
-                <h4 className="font-semibold">A Streetcar Named Desire - Scene 3</h4>
-                <p className="text-sm text-gray-600">Tennessee Williams • Uploaded: Oct 25, 2025</p>
+                <h4 className="font-semibold">
+                  A Streetcar Named Desire - Scene 3
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Tennessee Williams • Uploaded: Oct 25, 2025
+                </p>
               </div>
               <Badge variant="outline">Processing</Badge>
             </div>
@@ -376,14 +444,18 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
             <div className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50">
               <div>
                 <h4 className="font-semibold">Romeo & Juliet - Take 3</h4>
-                <p className="text-sm text-gray-600">Duration: 3:42 • Oct 30, 2025</p>
+                <p className="text-sm text-gray-600">
+                  Duration: 3:42 • Oct 30, 2025
+                </p>
               </div>
               <Badge className="bg-green-600">Score: 82</Badge>
             </div>
             <div className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50">
               <div>
                 <h4 className="font-semibold">Hamlet - Take 1</h4>
-                <p className="text-sm text-gray-600">Duration: 4:15 • Oct 29, 2025</p>
+                <p className="text-sm text-gray-600">
+                  Duration: 4:15 • Oct 29, 2025
+                </p>
               </div>
               <Badge className="bg-yellow-600">Score: 76</Badge>
             </div>
@@ -395,11 +467,11 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
 
   const renderMainContent = () => {
     switch (currentView) {
-      case 'home':
+      case "home":
         return renderHome();
-      case 'demo':
+      case "demo":
         return renderDemo();
-      case 'dashboard':
+      case "dashboard":
         return renderDashboard();
       default:
         return renderHome();
@@ -410,10 +482,7 @@ export const ActorAiArabicStudio: React.FC<{}> = () => {
     <div className="min-h-screen bg-gray-50">
       {renderHeader()}
       {renderNotification()}
-      <main className="container mx-auto px-4 py-8">
-        {renderMainContent()}
-      </main>
+      <main className="container mx-auto px-4 py-8">{renderMainContent()}</main>
     </div>
   );
 };
-

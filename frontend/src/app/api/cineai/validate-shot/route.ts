@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
+import { NextRequest, NextResponse } from "next/server";
+import { GoogleGenAI } from "@google/genai";
 
 /**
  * POST /api/cineai/validate-shot
@@ -8,19 +8,17 @@ import { GoogleGenAI } from '@google/genai';
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const image = formData.get('image');
+    const image = formData.get("image");
 
     if (!image) {
-      return NextResponse.json(
-        { error: 'Image is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Image is required" }, { status: 400 });
     }
 
     // Check for API key
-    const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
+    const apiKey =
+      process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      console.warn('No Gemini API key found, using fallback mock data');
+      console.warn("No Gemini API key found, using fallback mock data");
       return generateMockValidation();
     }
 
@@ -33,7 +31,7 @@ export async function POST(request: NextRequest) {
       imageBuffer = Buffer.from(arrayBuffer);
       mimeType = image.type;
     } else {
-      console.warn('Invalid image format, using fallback mock data');
+      console.warn("Invalid image format, using fallback mock data");
       return generateMockValidation();
     }
 
@@ -74,14 +72,14 @@ Return your analysis as a JSON object with the following structure:
 
     // Call Gemini vision API
     const result = await genAI.models.generateContent({
-      model: 'gemini-2.0-flash-exp',
+      model: "gemini-2.0-flash-exp",
       contents: [
         {
           parts: [
             { text: prompt },
             {
               inlineData: {
-                data: imageBuffer.toString('base64'),
+                data: imageBuffer.toString("base64"),
                 mimeType: mimeType,
               },
             },
@@ -94,7 +92,7 @@ Return your analysis as a JSON object with the following structure:
       },
     });
 
-    const responseText = result.text || '';
+    const responseText = result.text || "";
 
     // Parse the AI response
     let validation;
@@ -104,11 +102,11 @@ Return your analysis as a JSON object with the following structure:
       if (jsonMatch) {
         validation = JSON.parse(jsonMatch[0]);
       } else {
-        console.warn('Could not parse AI response, using fallback');
+        console.warn("Could not parse AI response, using fallback");
         return generateMockValidation();
       }
     } catch (parseError) {
-      console.error('Error parsing AI response:', parseError);
+      console.error("Error parsing AI response:", parseError);
       return generateMockValidation();
     }
 
@@ -116,12 +114,12 @@ Return your analysis as a JSON object with the following structure:
       success: true,
       validation,
       analyzedAt: new Date().toISOString(),
-      source: 'ai',
+      source: "ai",
     });
   } catch (error) {
-    console.error('Error validating shot:', error);
+    console.error("Error validating shot:", error);
     return NextResponse.json(
-      { error: 'Failed to validate shot' },
+      { error: "Failed to validate shot" },
       { status: 500 }
     );
   }
@@ -133,21 +131,21 @@ Return your analysis as a JSON object with the following structure:
 function generateMockValidation() {
   const mockValidation = {
     score: Math.floor(Math.random() * 30) + 70, // Random score between 70-100
-    status: 'good',
-    exposure: 'Good',
-    composition: 'Excellent',
-    focus: 'Acceptable',
-    colorBalance: 'Good',
+    status: "good",
+    exposure: "Good",
+    composition: "Excellent",
+    focus: "Acceptable",
+    colorBalance: "Good",
     suggestions: [
-      'الإضاءة جيدة ولكن يمكن تحسين الـ fill light قليلاً',
-      'الإطار مكون بشكل ممتاز - القاعدة الثلثية مطبقة',
-      'تأكد من ضبط الفوكس على عيني الممثل',
-      'Color temperature متسق مع المشاهد السابقة',
+      "الإضاءة جيدة ولكن يمكن تحسين الـ fill light قليلاً",
+      "الإطار مكون بشكل ممتاز - القاعدة الثلثية مطبقة",
+      "تأكد من ضبط الفوكس على عيني الممثل",
+      "Color temperature متسق مع المشاهد السابقة",
     ],
     technicalDetails: {
-      histogram: 'Balanced',
-      waveform: 'Good dynamic range',
-      vectorscope: 'Colors within broadcast safe',
+      histogram: "Balanced",
+      waveform: "Good dynamic range",
+      vectorscope: "Colors within broadcast safe",
     },
     strengths: [],
     improvements: [],
@@ -157,6 +155,6 @@ function generateMockValidation() {
     success: true,
     validation: mockValidation,
     analyzedAt: new Date().toISOString(),
-    source: 'mock',
+    source: "mock",
   });
 }

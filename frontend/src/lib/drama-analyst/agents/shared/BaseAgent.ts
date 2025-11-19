@@ -47,16 +47,12 @@ export abstract class BaseAgent {
       };
 
       // Execute standard pattern
-      const result = await executeStandardAgentPattern(
-        basePrompt,
-        options,
-        {
-          ...(typeof input.context === 'object' ? input.context : {}),
-          taskType: this.taskType,
-          agentName: this.name,
-          systemPrompt: this.systemPrompt,
-        }
-      );
+      const result = await executeStandardAgentPattern(basePrompt, options, {
+        ...(typeof input.context === "object" ? input.context : {}),
+        taskType: this.taskType,
+        agentName: this.name,
+        systemPrompt: this.systemPrompt,
+      });
 
       // Add agent-specific post-processing if needed
       const processedResult = await this.postProcess(result);
@@ -75,7 +71,9 @@ export abstract class BaseAgent {
       return {
         text: await this.getFallbackResponse(input),
         confidence: 0.3,
-        notes: [`خطأ في التنفيذ: ${error instanceof Error ? error.message : "خطأ غير معروف"}`],
+        notes: [
+          `خطأ في التنفيذ: ${error instanceof Error ? error.message : "خطأ غير معروف"}`,
+        ],
         metadata: {
           ragUsed: false,
           critiqueIterations: 0,

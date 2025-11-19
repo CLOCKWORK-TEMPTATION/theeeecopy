@@ -12,7 +12,7 @@
  */
 export function escapeRegExp(input: string): string {
   // Escape all special regex characters
-  return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /**
@@ -27,7 +27,7 @@ export function escapeRegExp(input: string): string {
  */
 export function createSafeRegExp(
   pattern: string,
-  flags: string = 'g',
+  flags: string = "g",
   maxLength: number = 1000
 ): RegExp {
   // Validate input length to prevent ReDoS
@@ -77,7 +77,7 @@ export function safeCountOccurrences(
   }
 
   try {
-    const flags = caseInsensitive ? 'gi' : 'g';
+    const flags = caseInsensitive ? "gi" : "g";
     const safeRegex = createSafeRegExp(searchTerm, flags);
     const matches = text.match(safeRegex);
     return matches ? matches.length : 0;

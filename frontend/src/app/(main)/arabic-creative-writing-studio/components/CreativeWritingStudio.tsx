@@ -3,8 +3,8 @@
 
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import dynamic from 'next/dynamic';
+import { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
 import {
   CreativePrompt,
   CreativeProject,
@@ -12,60 +12,103 @@ import {
   AppSettings,
   CreativeGenre,
   WritingTechnique,
-} from '@/app/(main)/arabic-creative-writing-studio/types';
-import { GeminiService } from '@/ai/gemini-service';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Loader2 } from 'lucide-react';
+} from "@/app/(main)/arabic-creative-writing-studio/types";
+import { GeminiService } from "@/ai/gemini-service";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
 
 // Lazy load heavy components for better performance
-const PromptLibrary = dynamic(() => import('./PromptLibrary').then(mod => ({ default: mod.PromptLibrary })), {
-  loading: () => <div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>,
-  ssr: false
-});
+const PromptLibrary = dynamic(
+  () =>
+    import("./PromptLibrary").then((mod) => ({ default: mod.PromptLibrary })),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
-const WritingEditor = dynamic(() => import('./WritingEditor').then(mod => ({ default: mod.WritingEditor })), {
-  loading: () => <div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>,
-  ssr: false
-});
+const WritingEditor = dynamic(
+  () =>
+    import("./WritingEditor").then((mod) => ({ default: mod.WritingEditor })),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
-const SettingsPanel = dynamic(() => import('./SettingsPanel').then(mod => ({ default: mod.SettingsPanel })), {
-  loading: () => <div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>,
-  ssr: false
-});
+const SettingsPanel = dynamic(
+  () =>
+    import("./SettingsPanel").then((mod) => ({ default: mod.SettingsPanel })),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
 interface CreativeWritingStudioProps {
   initialSettings?: Partial<AppSettings>;
 }
 
 export const CreativeWritingStudio: React.FC<CreativeWritingStudioProps> = ({
-  initialSettings
+  initialSettings,
 }) => {
   // حالات التطبيق الأساسية
-  const [currentView, setCurrentView] = useState<'home' | 'library' | 'editor' | 'analysis' | 'settings'>('home');
-  const [currentProject, setCurrentProject] = useState<CreativeProject | null>(null);
-  const [selectedPrompt, setSelectedPrompt] = useState<CreativePrompt | null>(null);
+  const [currentView, setCurrentView] = useState<
+    "home" | "library" | "editor" | "analysis" | "settings"
+  >("home");
+  const [currentProject, setCurrentProject] = useState<CreativeProject | null>(
+    null
+  );
+  const [selectedPrompt, setSelectedPrompt] = useState<CreativePrompt | null>(
+    null
+  );
   const [projects, setProjects] = useState<CreativeProject[]>([]);
   const [settings, setSettings] = useState<AppSettings>({
-    language: 'ar',
-    theme: 'dark',
-    textDirection: 'rtl',
-    fontSize: 'medium',
+    language: "ar",
+    theme: "dark",
+    textDirection: "rtl",
+    fontSize: "medium",
     autoSave: true,
     autoSaveInterval: 30000,
-    geminiModel: 'gemini-2.5-pro',
+    geminiModel: "gemini-2.5-pro",
     geminiTemperature: 0.7,
     geminiMaxTokens: 8192,
-    ...initialSettings
+    ...initialSettings,
   });
 
   // خدمات التطبيق
-  const [geminiService, setGeminiService] = useState<GeminiService | null>(null);
+  const [geminiService, setGeminiService] = useState<GeminiService | null>(
+    null
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [notification, setNotification] = useState<{
-    type: 'success' | 'error' | 'warning' | 'info';
+    type: "success" | "error" | "warning" | "info";
     message: string;
   } | null>(null);
 
@@ -78,123 +121,134 @@ export const CreativeWritingStudio: React.FC<CreativeWritingStudioProps> = ({
   }, [settings.geminiApiKey, settings.geminiModel]);
 
   // عرض الإشعارات
-  const showNotification = useCallback((
-    type: 'success' | 'error' | 'warning' | 'info',
-    message: string
-  ) => {
-    setNotification({ type, message });
-    setTimeout(() => setNotification(null), 5000);
-  }, []);
+  const showNotification = useCallback(
+    (type: "success" | "error" | "warning" | "info", message: string) => {
+      setNotification({ type, message });
+      setTimeout(() => setNotification(null), 5000);
+    },
+    []
+  );
 
   // حفظ المشروع
-  const saveProject = useCallback((project: CreativeProject) => {
-    const existingIndex = projects.findIndex(p => p.id === project.id);
-    if (existingIndex >= 0) {
-      const newProjects = [...projects];
-      newProjects[existingIndex] = { ...project, updatedAt: new Date() };
-      setProjects(newProjects);
-    } else {
-      setProjects([...projects, project]);
-    }
-    setCurrentProject(project);
-    showNotification('success', 'تم حفظ المشروع بنجاح 🎉');
-  }, [projects, showNotification]);
+  const saveProject = useCallback(
+    (project: CreativeProject) => {
+      const existingIndex = projects.findIndex((p) => p.id === project.id);
+      if (existingIndex >= 0) {
+        const newProjects = [...projects];
+        newProjects[existingIndex] = { ...project, updatedAt: new Date() };
+        setProjects(newProjects);
+      } else {
+        setProjects([...projects, project]);
+      }
+      setCurrentProject(project);
+      showNotification("success", "تم حفظ المشروع بنجاح 🎉");
+    },
+    [projects, showNotification]
+  );
 
   // إنشاء مشروع جديد
   const createNewProject = useCallback((prompt?: CreativePrompt) => {
     const newProject: CreativeProject = {
       id: `project_${Date.now()}`,
-      title: prompt ? prompt.title : 'مشروع جديد',
-      content: '',
-      promptId: prompt?.id || '',
-      genre: prompt?.genre || 'cross_genre',
+      title: prompt ? prompt.title : "مشروع جديد",
+      content: "",
+      promptId: prompt?.id || "",
+      genre: prompt?.genre || "cross_genre",
       wordCount: 0,
       characterCount: 0,
       paragraphCount: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
       tags: prompt?.tags || [],
-      isCompleted: false
+      isCompleted: false,
     };
 
     setCurrentProject(newProject);
     setSelectedPrompt(prompt || null);
-    setCurrentView('editor');
+    setCurrentView("editor");
   }, []);
 
   // تحليل النص
-  const analyzeText = useCallback(async (text: string): Promise<TextAnalysis | null> => {
-    if (!geminiService) {
-      showNotification('warning', 'يرجى إعداد مفتاح Gemini API أولاً');
-      return null;
-    }
-
-    setLoading(true);
-    try {
-      const response = await geminiService.analyzeText(text);
-      if (response.success) {
-        showNotification('success', 'تم تحليل النص بنجاح 📊');
-        return response.data;
-      } else {
-        showNotification('error', response.error || 'فشل في تحليل النص');
+  const analyzeText = useCallback(
+    async (text: string): Promise<TextAnalysis | null> => {
+      if (!geminiService) {
+        showNotification("warning", "يرجى إعداد مفتاح Gemini API أولاً");
         return null;
       }
-    } catch (error) {
-      showNotification('error', 'حدث خطأ أثناء تحليل النص');
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, [geminiService, showNotification]);
+
+      setLoading(true);
+      try {
+        const response = await geminiService.analyzeText(text);
+        if (response.success) {
+          showNotification("success", "تم تحليل النص بنجاح 📊");
+          return response.data;
+        } else {
+          showNotification("error", response.error || "فشل في تحليل النص");
+          return null;
+        }
+      } catch (error) {
+        showNotification("error", "حدث خطأ أثناء تحليل النص");
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [geminiService, showNotification]
+  );
 
   // تحسين المحفز
-  const enhancePrompt = useCallback(async (
-    prompt: string,
-    genre: CreativeGenre,
-    technique: WritingTechnique
-  ) => {
-    if (!geminiService) {
-      showNotification('warning', 'يرجى إعداد مفتاح Gemini API أولاً');
-      return null;
-    }
-
-    setLoading(true);
-    try {
-      const response = await geminiService.enhancePrompt(prompt, genre, technique);
-      if (response.success) {
-        showNotification('success', 'تم تحسين المحفز بنجاح 🚀');
-        return response.data;
-      } else {
-        showNotification('error', response.error || 'فشل في تحسين المحفز');
+  const enhancePrompt = useCallback(
+    async (
+      prompt: string,
+      genre: CreativeGenre,
+      technique: WritingTechnique
+    ) => {
+      if (!geminiService) {
+        showNotification("warning", "يرجى إعداد مفتاح Gemini API أولاً");
         return null;
       }
-    } catch (error) {
-      showNotification('error', 'حدث خطأ أثناء تحسين المحفز');
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, [geminiService, showNotification]);
+
+      setLoading(true);
+      try {
+        const response = await geminiService.enhancePrompt(
+          prompt,
+          genre,
+          technique
+        );
+        if (response.success) {
+          showNotification("success", "تم تحسين المحفز بنجاح 🚀");
+          return response.data;
+        } else {
+          showNotification("error", response.error || "فشل في تحسين المحفز");
+          return null;
+        }
+      } catch (error) {
+        showNotification("error", "حدث خطأ أثناء تحسين المحفز");
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [geminiService, showNotification]
+  );
 
   // تصدير المشروع
-  const exportProject = useCallback((
-    project: CreativeProject,
-    format: 'txt' | 'json' | 'html' | 'rtf'
-  ) => {
-    let content = '';
-    const filename = `${project.title.replace(/[^a-zA-Z0-9؀-ۿ]/g, '_')}.${format}`;
+  const exportProject = useCallback(
+    (project: CreativeProject, format: "txt" | "json" | "html" | "rtf") => {
+      let content = "";
+      const filename = `${project.title.replace(/[^a-zA-Z0-9؀-ۿ]/g, "_")}.${format}`;
 
-    switch (format) {
-      case 'txt':
-        content = `${project.title}
+      switch (format) {
+        case "txt":
+          content = `${project.title}
 
 ${project.content}`;
-        break;
-      case 'json':
-        content = JSON.stringify(project, null, 2);
-        break;
-      case 'html':
-        content = `
+          break;
+        case "json":
+          content = JSON.stringify(project, null, 2);
+          break;
+        case "html":
+          content = `
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -208,34 +262,42 @@ ${project.content}`;
 </head>
 <body>
     <h1>${project.title}</h1>
-    <div>${project.content.replace(/\n/g, '<br>')}</div>
+    <div>${project.content.replace(/\n/g, "<br>")}</div>
 </body>
 </html>
         `;
-        break;
-      case 'rtf':
-        content = `{\rtf1\ansi\deff0 {\fonttbl {\f0 Times New Roman;}}\f0\fs24 ${project.title}\par ${project.content}}`;
-        break;
-    }
+          break;
+        case "rtf":
+          content = `{\rtf1\ansi\deff0 {\fonttbl {\f0 Times New Roman;}}\f0\fs24 ${project.title}\par ${project.content}}`;
+          break;
+      }
 
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
 
-    showNotification('success', `تم تصدير الملف بصيغة ${format.toUpperCase()} 📤`);
-  }, [showNotification]);
+      showNotification(
+        "success",
+        `تم تصدير الملف بصيغة ${format.toUpperCase()} 📤`
+      );
+    },
+    [showNotification]
+  );
 
   // تحديث الإعدادات
-  const updateSettings = useCallback((newSettings: Partial<AppSettings>) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
-    showNotification('success', 'تم حفظ الإعدادات ⚙️');
-  }, [showNotification]);
+  const updateSettings = useCallback(
+    (newSettings: Partial<AppSettings>) => {
+      setSettings((prev) => ({ ...prev, ...newSettings }));
+      showNotification("success", "تم حفظ الإعدادات ⚙️");
+    },
+    [showNotification]
+  );
 
   // عرض شريط التنقل العلوي
   const renderHeader = () => (
@@ -247,30 +309,46 @@ ${project.content}`;
         </div>
         <nav className="flex space-x-4 space-x-reverse">
           <Button
-            onClick={() => setCurrentView('home')}
-            variant={currentView === 'home' ? 'secondary' : 'ghost'}
-            className={currentView === 'home' ? 'bg-white text-purple-900 hover:bg-white' : 'text-white hover:bg-purple-800'}
+            onClick={() => setCurrentView("home")}
+            variant={currentView === "home" ? "secondary" : "ghost"}
+            className={
+              currentView === "home"
+                ? "bg-white text-purple-900 hover:bg-white"
+                : "text-white hover:bg-purple-800"
+            }
           >
             🏠 الرئيسية
           </Button>
           <Button
-            onClick={() => setCurrentView('library')}
-            variant={currentView === 'library' ? 'secondary' : 'ghost'}
-            className={currentView === 'library' ? 'bg-white text-purple-900 hover:bg-white' : 'text-white hover:bg-purple-800'}
+            onClick={() => setCurrentView("library")}
+            variant={currentView === "library" ? "secondary" : "ghost"}
+            className={
+              currentView === "library"
+                ? "bg-white text-purple-900 hover:bg-white"
+                : "text-white hover:bg-purple-800"
+            }
           >
             📚 مكتبة المحفزات
           </Button>
           <Button
-            onClick={() => setCurrentView('editor')}
-            variant={currentView === 'editor' ? 'secondary' : 'ghost'}
-            className={currentView === 'editor' ? 'bg-white text-purple-900 hover:bg-white' : 'text-white hover:bg-purple-800'}
+            onClick={() => setCurrentView("editor")}
+            variant={currentView === "editor" ? "secondary" : "ghost"}
+            className={
+              currentView === "editor"
+                ? "bg-white text-purple-900 hover:bg-white"
+                : "text-white hover:bg-purple-800"
+            }
           >
             ✍️ المحرر
           </Button>
           <Button
-            onClick={() => setCurrentView('settings')}
-            variant={currentView === 'settings' ? 'secondary' : 'ghost'}
-            className={currentView === 'settings' ? 'bg-white text-purple-900 hover:bg-white' : 'text-white hover:bg-purple-800'}
+            onClick={() => setCurrentView("settings")}
+            variant={currentView === "settings" ? "secondary" : "ghost"}
+            className={
+              currentView === "settings"
+                ? "bg-white text-purple-900 hover:bg-white"
+                : "text-white hover:bg-purple-800"
+            }
           >
             ⚙️ الإعدادات
           </Button>
@@ -284,10 +362,10 @@ ${project.content}`;
     if (!notification) return null;
 
     const variants = {
-      success: 'default' as const,
-      error: 'destructive' as const,
-      warning: 'default' as const,
-      info: 'default' as const
+      success: "default" as const,
+      error: "destructive" as const,
+      warning: "default" as const,
+      info: "default" as const,
     };
 
     return (
@@ -302,7 +380,7 @@ ${project.content}`;
   // عرض المحتوى الرئيسي
   const renderMainContent = () => {
     switch (currentView) {
-      case 'home':
+      case "home":
         return (
           <div className="text-center py-12">
             <h2 className="text-4xl font-bold text-gray-800 mb-6">
@@ -314,12 +392,14 @@ ${project.content}`;
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card
                 className="cursor-pointer hover:shadow-xl transition-shadow"
-                onClick={() => setCurrentView('library')}
+                onClick={() => setCurrentView("library")}
               >
                 <CardContent className="p-6">
                   <div className="text-4xl mb-4">📚</div>
                   <CardTitle className="mb-2">مكتبة المحفزات</CardTitle>
-                  <CardDescription>استكشف مجموعة متنوعة من المحفزات الإبداعية</CardDescription>
+                  <CardDescription>
+                    استكشف مجموعة متنوعة من المحفزات الإبداعية
+                  </CardDescription>
                 </CardContent>
               </Card>
               <Card
@@ -329,7 +409,9 @@ ${project.content}`;
                 <CardContent className="p-6">
                   <div className="text-4xl mb-4">✍️</div>
                   <CardTitle className="mb-2">ابدأ الكتابة</CardTitle>
-                  <CardDescription>أنشئ مشروع جديد وابدأ رحلة الإبداع</CardDescription>
+                  <CardDescription>
+                    أنشئ مشروع جديد وابدأ رحلة الإبداع
+                  </CardDescription>
                 </CardContent>
               </Card>
               <Card>
@@ -350,7 +432,7 @@ ${project.content}`;
           </div>
         );
 
-      case 'library':
+      case "library":
         return (
           <PromptLibrary
             onPromptSelect={(prompt) => {
@@ -362,7 +444,7 @@ ${project.content}`;
           />
         );
 
-      case 'editor':
+      case "editor":
         return (
           <WritingEditor
             project={currentProject}
@@ -376,7 +458,7 @@ ${project.content}`;
           />
         );
 
-      case 'settings':
+      case "settings":
         return (
           <SettingsPanel
             settings={settings}
@@ -385,8 +467,10 @@ ${project.content}`;
               if (geminiService) {
                 const result = await geminiService.testConnection();
                 showNotification(
-                  result.success ? 'success' : 'error',
-                  result.success ? 'تم اختبار الاتصال بنجاح' : result.error || 'فشل اختبار الاتصال'
+                  result.success ? "success" : "error",
+                  result.success
+                    ? "تم اختبار الاتصال بنجاح"
+                    : result.error || "فشل اختبار الاتصال"
                 );
               }
             }}
@@ -399,7 +483,10 @@ ${project.content}`;
   };
 
   return (
-    <div className={`min-h-screen ${settings.theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`} dir={settings.textDirection}>
+    <div
+      className={`min-h-screen ${settings.theme === "dark" ? "bg-gray-900" : "bg-gray-50"}`}
+      dir={settings.textDirection}
+    >
       {renderHeader()}
       {renderNotification()}
       <main className="container mx-auto px-4 py-8">
@@ -408,9 +495,7 @@ ${project.content}`;
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>جاري المعالجة...</DialogTitle>
-                <DialogDescription>
-                  يرجى الانتظار 🔄
-                </DialogDescription>
+                <DialogDescription>يرجى الانتظار 🔄</DialogDescription>
               </DialogHeader>
               <div className="flex justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>

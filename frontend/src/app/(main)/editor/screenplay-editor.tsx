@@ -277,12 +277,20 @@ class ScreenplayClassifier {
     }
 
     // Check action indicators with punctuation
-    if (hasActionWithPunctuation(line, normalized, ScreenplayClassifier.hasSentencePunctuation)) {
+    if (
+      hasActionWithPunctuation(
+        line,
+        normalized,
+        ScreenplayClassifier.hasSentencePunctuation
+      )
+    ) {
       return true;
     }
 
     // Check long lines with action indicators
-    if (isLongLineWithAction(line, normalized, ScreenplayClassifier.wordCount)) {
+    if (
+      isLongLineWithAction(line, normalized, ScreenplayClassifier.wordCount)
+    ) {
       return true;
     }
 
@@ -443,7 +451,10 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
   };
 
   // Get next format on Tab
-  const getNextFormatOnTab = (currentFormat: string, shiftKey: boolean): KeyboardScreenplayFormat | null => {
+  const getNextFormatOnTab = (
+    currentFormat: string,
+    shiftKey: boolean
+  ): KeyboardScreenplayFormat | null => {
     const mainSequence = [
       "scene-header-top-line",
       "action",
@@ -470,7 +481,9 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
         const currentIndex = mainSequence.indexOf(currentFormat);
         if (currentIndex !== -1) {
           if (shiftKey) {
-            return mainSequence[Math.max(0, currentIndex - 1)] as KeyboardScreenplayFormat;
+            return mainSequence[
+              Math.max(0, currentIndex - 1)
+            ] as KeyboardScreenplayFormat;
           } else {
             return mainSequence[
               Math.min(mainSequence.length - 1, currentIndex + 1)
@@ -482,7 +495,9 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
   };
 
   // Get next format on Enter
-  const getNextFormatOnEnter = (currentFormat: string): KeyboardScreenplayFormat | null => {
+  const getNextFormatOnEnter = (
+    currentFormat: string
+  ): KeyboardScreenplayFormat | null => {
     const transitions: { [key: string]: string } = {
       "scene-header-top-line": "scene-header-3",
       "scene-header-3": "action",
@@ -570,21 +585,22 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
   // Post-process formatting to correct misclassifications
   const postProcessFormatting = (htmlResult: string): string => {
     // SECURITY FIX: Sanitize HTML input before processing
-    const sanitizedHtml = htmlResult.replace(/<script[^>]*>.*?<\/script>/gi, '')
-                                   .replace(/javascript:/gi, '')
-                                   .replace(/on\w+\s*=/gi, '');
-    
+    const sanitizedHtml = htmlResult
+      .replace(/<script[^>]*>.*?<\/script>/gi, "")
+      .replace(/javascript:/gi, "")
+      .replace(/on\w+\s*=/gi, "");
+
     // Parse the sanitized HTML result into DOM elements for easier manipulation
     const tempDiv = document.createElement("div");
     // SECURITY FIX: Use textContent instead of innerHTML to prevent XSS
     tempDiv.textContent = sanitizedHtml;
-    
+
     // Create safe DOM structure manually
     const safeDiv = document.createElement("div");
-    const lines = sanitizedHtml.split('\n');
-    lines.forEach(line => {
+    const lines = sanitizedHtml.split("\n");
+    lines.forEach((line) => {
       if (line.trim()) {
-        const p = document.createElement('p');
+        const p = document.createElement("p");
         p.textContent = line;
         safeDiv.appendChild(p);
       }
@@ -693,7 +709,9 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
     }
 
     // Scene header (complex)
-    const sceneHeaderMatch = line.trim().match(/^(مشهد\s*\d+)\s*[-–—:،]?\s*(.*)$/i);
+    const sceneHeaderMatch = line
+      .trim()
+      .match(/^(مشهد\s*\d+)\s*[-–—:،]?\s*(.*)$/i);
     if (sceneHeaderMatch) {
       const sceneHeaderResult = SceneHeaderAgent(line, ctx, getFormatStyles);
       const processed = processSceneHeaderLine(line, ctx, sceneHeaderResult);
@@ -722,7 +740,10 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
 
     // Dialogue or action after character
     if (currentCharacter && !line.includes(":")) {
-      if (ScreenplayClassifier.isLikelyAction(line) || isActionDescription(line)) {
+      if (
+        ScreenplayClassifier.isLikelyAction(line) ||
+        isActionDescription(line)
+      ) {
         return processActionLine(line);
       }
       return processDialogueLine(line);
@@ -762,7 +783,10 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
           currentCharacter = result.currentCharacter;
         }
         if (result.updateContext) {
-          Object.assign(context, applyContextUpdates(context, result.updateContext));
+          Object.assign(
+            context,
+            applyContextUpdates(context, result.updateContext)
+          );
         }
       }
     }
@@ -786,7 +810,7 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
     const tempDiv = document.createElement("div");
     // SECURITY FIX: Use DOMParser for safer HTML parsing
     const parser = new DOMParser();
-    const doc = parser.parseFromString(sanitizedHtml, 'text/html');
+    const doc = parser.parseFromString(sanitizedHtml, "text/html");
 
     const fragment = document.createDocumentFragment();
     while (doc.body.firstChild) {
@@ -804,9 +828,9 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
     const javascriptProtocol = /javascript:/gi;
 
     let sanitized = html
-      .replace(dangerousTags, '')
-      .replace(dangerousAttrs, 'data-removed=')
-      .replace(javascriptProtocol, '');
+      .replace(dangerousTags, "")
+      .replace(dangerousAttrs, "data-removed=")
+      .replace(javascriptProtocol, "");
 
     return sanitized;
   };
@@ -878,13 +902,13 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
   useEffect(() => {
     if (editorRef.current && !editorRef.current.hasChildNodes()) {
       // Create default content safely using DOM methods
-      const defaultDiv = document.createElement('div');
-      defaultDiv.className = 'action';
-      defaultDiv.style.direction = 'rtl';
-      defaultDiv.style.textAlign = 'right';
-      defaultDiv.style.margin = '12px 0';
-      defaultDiv.textContent = 'اضغط هنا لبدء كتابة السيناريو...';
-      
+      const defaultDiv = document.createElement("div");
+      defaultDiv.className = "action";
+      defaultDiv.style.direction = "rtl";
+      defaultDiv.style.textAlign = "right";
+      defaultDiv.style.margin = "12px 0";
+      defaultDiv.textContent = "اضغط هنا لبدء كتابة السيناريو...";
+
       if (!htmlContent) {
         editorRef.current.appendChild(defaultDiv);
       }
@@ -893,10 +917,15 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
 
   // SECURITY FIX: Update content safely using DOM methods instead of innerHTML
   useEffect(() => {
-    if (editorRef.current && htmlContent && htmlContent !== editorRef.current.innerHTML) {
+    if (
+      editorRef.current &&
+      htmlContent &&
+      htmlContent !== editorRef.current.innerHTML
+    ) {
       // Save cursor position
       const selection = window.getSelection();
-      const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+      const range =
+        selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
       const cursorOffset = range ? range.startOffset : 0;
       const cursorNode = range ? range.startContainer : null;
 
@@ -904,26 +933,26 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
       while (editorRef.current.firstChild) {
         editorRef.current.removeChild(editorRef.current.firstChild);
       }
-      
+
       // SECURITY FIX: Parse and sanitize HTML content safely
-      const tempDiv = document.createElement('div');
+      const tempDiv = document.createElement("div");
       // Use DOMParser for safe HTML parsing
       const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlContent, 'text/html');
-      
+      const doc = parser.parseFromString(htmlContent, "text/html");
+
       // Extract text content and create safe elements
-      const bodyContent = doc.body.textContent || '';
-      const lines = bodyContent.split('\n');
-      
-      lines.forEach(line => {
+      const bodyContent = doc.body.textContent || "";
+      const lines = bodyContent.split("\n");
+
+      lines.forEach((line) => {
         if (line.trim()) {
-          const div = document.createElement('div');
+          const div = document.createElement("div");
           div.textContent = line;
-          div.className = 'action'; // Default class
+          div.className = "action"; // Default class
           tempDiv.appendChild(div);
         }
       });
-      
+
       // SECURITY FIX: Move sanitized nodes to editor safely
       while (tempDiv.firstChild) {
         const child = tempDiv.firstChild;
@@ -931,8 +960,8 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
         if (child.nodeType === Node.ELEMENT_NODE) {
           const safeElement = child as Element;
           // Remove any potentially dangerous attributes
-          const allowedAttributes = ['class', 'style'];
-          Array.from(safeElement.attributes).forEach(attr => {
+          const allowedAttributes = ["class", "style"];
+          Array.from(safeElement.attributes).forEach((attr) => {
             if (!allowedAttributes.includes(attr.name.toLowerCase())) {
               safeElement.removeAttribute(attr.name);
             }
@@ -945,7 +974,10 @@ export default function ScreenplayEditor({ onBack }: ScreenplayEditorProps) {
       if (cursorNode && editorRef.current.contains(cursorNode)) {
         try {
           const newRange = document.createRange();
-          newRange.setStart(cursorNode, Math.min(cursorOffset, cursorNode.textContent?.length || 0));
+          newRange.setStart(
+            cursorNode,
+            Math.min(cursorOffset, cursorNode.textContent?.length || 0)
+          );
           newRange.collapse(true);
           selection?.removeAllRanges();
           selection?.addRange(newRange);

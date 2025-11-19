@@ -1,15 +1,21 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { CreativeWritingStudio } from '@/app/(main)/arabic-creative-writing-studio/components/CreativeWritingStudio';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { CreativeWritingStudio } from "@/app/(main)/arabic-creative-writing-studio/components/CreativeWritingStudio";
+import { vi, describe, it, expect, beforeEach } from "vitest";
 
 // Mock the child components
-vi.mock('./PromptLibrary', () => ({
+vi.mock("./PromptLibrary", () => ({
   PromptLibrary: ({ onPromptSelect, onEnhancePrompt, loading }: any) => (
     <div data-testid="prompt-library">
-      <button onClick={() => onPromptSelect({ id: 'test', title: 'Test Prompt' })}>
+      <button
+        onClick={() => onPromptSelect({ id: "test", title: "Test Prompt" })}
+      >
         Select Prompt
       </button>
-      <button onClick={() => onEnhancePrompt('test prompt', 'fantasy', 'character_driven')}>
+      <button
+        onClick={() =>
+          onEnhancePrompt("test prompt", "fantasy", "character_driven")
+        }
+      >
         Enhance Prompt
       </button>
       {loading && <div>Loading...</div>}
@@ -17,20 +23,20 @@ vi.mock('./PromptLibrary', () => ({
   ),
 }));
 
-vi.mock('./WritingEditor', () => ({
+vi.mock("./WritingEditor", () => ({
   WritingEditor: ({ onSave }: any) => (
     <div data-testid="writing-editor">
-      <button onClick={() => onSave({ id: 'test', title: 'Test Project' })}>
+      <button onClick={() => onSave({ id: "test", title: "Test Project" })}>
         Save Project
       </button>
     </div>
   ),
 }));
 
-vi.mock('./SettingsPanel', () => ({
+vi.mock("./SettingsPanel", () => ({
   SettingsPanel: ({ onSettingsUpdate }: any) => (
     <div data-testid="settings-panel">
-      <button onClick={() => onSettingsUpdate({ language: 'ar' })}>
+      <button onClick={() => onSettingsUpdate({ language: "ar" })}>
         Update Settings
       </button>
     </div>
@@ -38,94 +44,100 @@ vi.mock('./SettingsPanel', () => ({
 }));
 
 // Mock GeminiService
-vi.mock('../lib/gemini-service', () => ({
+vi.mock("../lib/gemini-service", () => ({
   GeminiService: class {
-    analyzeText = vi.fn().mockResolvedValue({ success: true, data: { qualityMetrics: {} } });
+    analyzeText = vi
+      .fn()
+      .mockResolvedValue({ success: true, data: { qualityMetrics: {} } });
     testConnection = vi.fn().mockResolvedValue({ success: true });
   },
 }));
 
-describe('CreativeWritingStudio', () => {
+describe("CreativeWritingStudio", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('renders the main interface with navigation', () => {
+  it("renders the main interface with navigation", () => {
     render(<CreativeWritingStudio />);
 
-    expect(screen.getByText('🎨 استوديو الكتابة الإبداعية')).toBeInTheDocument();
-    expect(screen.getByText('🏠 الرئيسية')).toBeInTheDocument();
-    expect(screen.getByText('📚 مكتبة المحفزات')).toBeInTheDocument();
-    expect(screen.getByText('✍️ المحرر')).toBeInTheDocument();
-    expect(screen.getByText('⚙️ الإعدادات')).toBeInTheDocument();
+    expect(
+      screen.getByText("🎨 استوديو الكتابة الإبداعية")
+    ).toBeInTheDocument();
+    expect(screen.getByText("🏠 الرئيسية")).toBeInTheDocument();
+    expect(screen.getByText("📚 مكتبة المحفزات")).toBeInTheDocument();
+    expect(screen.getByText("✍️ المحرر")).toBeInTheDocument();
+    expect(screen.getByText("⚙️ الإعدادات")).toBeInTheDocument();
   });
 
-  it('displays home view by default', () => {
+  it("displays home view by default", () => {
     render(<CreativeWritingStudio />);
 
-    expect(screen.getByText('مرحباً بك في عالم الإبداع! 🌟')).toBeInTheDocument();
-    expect(screen.getByText('مكتبة المحفزات')).toBeInTheDocument();
-    expect(screen.getByText('ابدأ الكتابة')).toBeInTheDocument();
+    expect(
+      screen.getByText("مرحباً بك في عالم الإبداع! 🌟")
+    ).toBeInTheDocument();
+    expect(screen.getByText("مكتبة المحفزات")).toBeInTheDocument();
+    expect(screen.getByText("ابدأ الكتابة")).toBeInTheDocument();
   });
 
-  it('navigates to library view', () => {
+  it("navigates to library view", () => {
     render(<CreativeWritingStudio />);
 
-    fireEvent.click(screen.getByText('📚 مكتبة المحفزات'));
-    expect(screen.getByTestId('prompt-library')).toBeInTheDocument();
+    fireEvent.click(screen.getByText("📚 مكتبة المحفزات"));
+    expect(screen.getByTestId("prompt-library")).toBeInTheDocument();
   });
 
-  it('navigates to settings view', () => {
+  it("navigates to settings view", () => {
     render(<CreativeWritingStudio />);
 
-    fireEvent.click(screen.getByText('⚙️ الإعدادات'));
-    expect(screen.getByTestId('settings-panel')).toBeInTheDocument();
+    fireEvent.click(screen.getByText("⚙️ الإعدادات"));
+    expect(screen.getByTestId("settings-panel")).toBeInTheDocument();
   });
 
-  it('creates new project from home', () => {
+  it("creates new project from home", () => {
     render(<CreativeWritingStudio />);
 
-    fireEvent.click(screen.getByText('ابدأ الكتابة'));
-    expect(screen.getByTestId('writing-editor')).toBeInTheDocument();
+    fireEvent.click(screen.getByText("ابدأ الكتابة"));
+    expect(screen.getByTestId("writing-editor")).toBeInTheDocument();
   });
 
-  it('shows notification when project is saved', async () => {
+  it("shows notification when project is saved", async () => {
     render(<CreativeWritingStudio />);
 
     // Navigate to editor
-    fireEvent.click(screen.getByText('ابدأ الكتابة'));
+    fireEvent.click(screen.getByText("ابدأ الكتابة"));
 
     // Click save
-    fireEvent.click(screen.getByText('Save Project'));
+    fireEvent.click(screen.getByText("Save Project"));
 
     await waitFor(() => {
-      expect(screen.getByText('تم حفظ المشروع بنجاح 🎉')).toBeInTheDocument();
+      expect(screen.getByText("تم حفظ المشروع بنجاح 🎉")).toBeInTheDocument();
     });
   });
 
-  it('handles prompt selection from library', () => {
+  it("handles prompt selection from library", () => {
     render(<CreativeWritingStudio />);
 
     // Navigate to library
-    fireEvent.click(screen.getByText('📚 مكتبة المحفزات'));
+    fireEvent.click(screen.getByText("📚 مكتبة المحفزات"));
 
     // Select prompt
-    fireEvent.click(screen.getByText('Select Prompt'));
+    fireEvent.click(screen.getByText("Select Prompt"));
 
     // Should navigate to editor
-    expect(screen.getByTestId('writing-editor')).toBeInTheDocument();
+    expect(screen.getByTestId("writing-editor")).toBeInTheDocument();
   });
 
-  it('updates settings', () => {
+  it("updates settings", () => {
     render(<CreativeWritingStudio />);
 
     // Navigate to settings
-    fireEvent.click(screen.getByText('⚙️ الإعدادات'));
+    fireEvent.click(screen.getByText("⚙️ الإعدادات"));
 
     // Update settings
-    fireEvent.click(screen.getByText('Update Settings'));
+    fireEvent.click(screen.getByText("Update Settings"));
 
     // Should show notification
-    expect(screen.getByText('تم حفظ الإعدادات ⚙️')).toBeInTheDocument();
+    expect(screen.getByText("تم حفظ الإعدادات ⚙️")).toBeInTheDocument();
   });
 });

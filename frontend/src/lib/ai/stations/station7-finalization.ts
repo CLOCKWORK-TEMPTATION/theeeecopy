@@ -319,9 +319,7 @@ export class Station7Finalization extends BaseStation<
     if (s5.symbolicAnalysis?.consistencyScore)
       scores.push(s5.symbolicAnalysis.consistencyScore * 10);
     if (s5.stylisticAnalysis?.toneAssessment?.toneConsistency) {
-      scores.push(
-        s5.stylisticAnalysis.toneAssessment.toneConsistency * 10
-      );
+      scores.push(s5.stylisticAnalysis.toneAssessment.toneConsistency * 10);
     }
     return scores.length > 0
       ? scores.reduce((a, b) => a + b) / scores.length
@@ -664,11 +662,20 @@ ${allIssues.map((issue, i) => `${i + 1}. ${issue.description} (نوع: ${issue.c
     if (s3?.uncertaintyReport?.confidence)
       stationConfidences.set("station3", s3.uncertaintyReport.confidence);
     if (s4?.uncertaintyReport?.overallConfidence)
-      stationConfidences.set("station4", s4.uncertaintyReport.overallConfidence);
+      stationConfidences.set(
+        "station4",
+        s4.uncertaintyReport.overallConfidence
+      );
     if (s5?.uncertaintyReport?.overallConfidence)
-      stationConfidences.set("station5", s5.uncertaintyReport.overallConfidence);
+      stationConfidences.set(
+        "station5",
+        s5.uncertaintyReport.overallConfidence
+      );
     if (s6?.uncertaintyReport?.overallConfidence)
-      stationConfidences.set("station6", s6.uncertaintyReport.overallConfidence);
+      stationConfidences.set(
+        "station6",
+        s6.uncertaintyReport.overallConfidence
+      );
 
     const confidenceValues = Array.from(stationConfidences.values());
     const overallConfidence =
@@ -717,8 +724,13 @@ ${allIssues.map((issue, i) => `${i + 1}. ${issue.description} (نوع: ${issue.c
   ): string[] {
     const agents = new Set<string>();
     [s1, s3, s4, s5, s6].forEach((station) => {
-      if (station?.metadata?.agentsUsed && Array.isArray(station.metadata.agentsUsed)) {
-        station.metadata.agentsUsed.forEach((agent: string) => agents.add(agent));
+      if (
+        station?.metadata?.agentsUsed &&
+        Array.isArray(station.metadata.agentsUsed)
+      ) {
+        station.metadata.agentsUsed.forEach((agent: string) =>
+          agents.add(agent)
+        );
       }
     });
     return Array.from(agents);
@@ -733,7 +745,10 @@ ${allIssues.map((issue, i) => `${i + 1}. ${issue.description} (نوع: ${issue.c
     s6?: Station6Output
   ): number {
     let total = 0;
-    if (s4?.metadata?.tokensUsed && typeof s4.metadata.tokensUsed === "number") {
+    if (
+      s4?.metadata?.tokensUsed &&
+      typeof s4.metadata.tokensUsed === "number"
+    ) {
       total += s4.metadata.tokensUsed;
     }
     return total;

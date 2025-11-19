@@ -22,9 +22,9 @@ describe("اختبار بسيط للبيئة", () => {
       "/analysis/seven-stations",
       "/development",
       "/editor",
-      "/breakdown"
+      "/breakdown",
     ];
-    
+
     expect(routes).toHaveLength(10);
     expect(routes).toContain("/");
     expect(routes).toContain("/arabic-creative-writing-studio");

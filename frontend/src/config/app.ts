@@ -2,18 +2,18 @@
  * Application-wide configuration and constants
  */
 
-export const APP_NAME = 'النسخة' as const;
-export const APP_NAME_EN = 'The Copy' as const;
+export const APP_NAME = "النسخة" as const;
+export const APP_NAME_EN = "The Copy" as const;
 
 export const ROUTES = {
-  HOME: '/',
-  EDITOR: '/editor',
-  ANALYSIS: '/analysis',
-  DEVELOPMENT: '/development',
-  BRAINSTORM: '/brainstorm',
-  DIRECTORS_STUDIO: '/directors-studio',
-  CINEMATOGRAPHY: '/cinematography-studio',
-  ARABIC_WRITING: '/arabic-creative-writing-studio',
+  HOME: "/",
+  EDITOR: "/editor",
+  ANALYSIS: "/analysis",
+  DEVELOPMENT: "/development",
+  BRAINSTORM: "/brainstorm",
+  DIRECTORS_STUDIO: "/directors-studio",
+  CINEMATOGRAPHY: "/cinematography-studio",
+  ARABIC_WRITING: "/arabic-creative-writing-studio",
 } as const;
 
 export const PAGINATION = {

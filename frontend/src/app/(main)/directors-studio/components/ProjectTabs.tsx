@@ -4,7 +4,10 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CharacterTracker from "@/app/(main)/directors-studio/components/CharacterTracker";
 import SceneCard from "@/app/(main)/directors-studio/components/SceneCard";
-import type { CharacterTrackerProps, SceneCardProps } from "@/app/(main)/directors-studio/helpers/projectSummary";
+import type {
+  CharacterTrackerProps,
+  SceneCardProps,
+} from "@/app/(main)/directors-studio/helpers/projectSummary";
 
 interface ProjectTabsProps {
   scenes: SceneCardProps[];

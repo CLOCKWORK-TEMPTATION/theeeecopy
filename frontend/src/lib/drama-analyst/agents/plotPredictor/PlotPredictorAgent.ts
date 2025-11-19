@@ -43,7 +43,8 @@ ${userInput}
 `;
 
     // إضافة السياق من المحطات السابقة
-    const contextObj = typeof context === 'object' && context !== null ? context : {};
+    const contextObj =
+      typeof context === "object" && context !== null ? context : {};
     const previousStations = (contextObj as any)?.previousStations;
     if (previousStations) {
       prompt += `## السياق من المحطات السابقة:\n`;

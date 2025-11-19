@@ -11,27 +11,32 @@ A performance budget is a set of limits imposed on metrics that affect site perf
 ### Resource Size Budgets
 
 #### JavaScript
+
 - **Total Bundle**: 350 KB (compressed)
 - **Main Bundle**: 250 KB (compressed)
 - **Vendor Bundle**: 200 KB (compressed)
 - **Per Route**: 50 KB (compressed)
 
 #### CSS
+
 - **Total CSS**: 100 KB (compressed)
 - **Critical CSS**: 20 KB (compressed)
 - **Per Page**: 30 KB (compressed)
 
 #### Images
+
 - **Total Images per Page**: 500 KB
 - **Hero/Banner Images**: 150 KB
 - **Thumbnail Images**: 30 KB
 - **Icon Images**: 10 KB
 
 #### Fonts
+
 - **Total Fonts**: 100 KB
 - **Per Font File**: 30 KB
 
 #### Total Page Weight
+
 - **First Load**: 1000 KB (compressed)
 - **Subsequent Loads**: 500 KB (compressed)
 - **Total**: 1500 KB (compressed)
@@ -80,6 +85,7 @@ A performance budget is a set of limits imposed on metrics that affect site perf
 ### Lighthouse Scores
 
 Minimum scores required:
+
 - **Performance**: 90/100
 - **Accessibility**: 95/100
 - **Best Practices**: 95/100
@@ -116,6 +122,7 @@ Performance budgets are automatically checked in the CI/CD pipeline:
 ### GitHub Actions Workflows
 
 #### 1. Performance Budget Workflow
+
 - **File**: `.github/workflows/performance-budget.yml`
 - **Triggers**: PR, push to main, manual
 - **Checks**:
@@ -126,6 +133,7 @@ Performance budgets are automatically checked in the CI/CD pipeline:
   - Performance report generation
 
 #### 2. Lighthouse CI Workflow
+
 - **File**: `.github/workflows/lighthouse-ci.yml`
 - **Triggers**: PR, push to main
 - **Checks**:
@@ -134,6 +142,7 @@ Performance budgets are automatically checked in the CI/CD pipeline:
   - Accessibility, Best Practices, SEO scores
 
 #### 3. Main CI/CD Workflow
+
 - **File**: `frontend/.github/workflows/ci-cd.yml`
 - **Includes**: Performance budget check step
 - **Integration**: Runs after build, before deployment
@@ -141,6 +150,7 @@ Performance budgets are automatically checked in the CI/CD pipeline:
 ### Enforcement Levels
 
 #### Strict (Build Fails)
+
 - LCP exceeds needs improvement threshold
 - CLS exceeds needs improvement threshold
 - Performance score < 90
@@ -148,12 +158,14 @@ Performance budgets are automatically checked in the CI/CD pipeline:
 - Total page weight > 1500 KB
 
 #### Warnings (Build Continues)
+
 - JavaScript bundle > 350 KB
 - CSS bundle > 100 KB
 - Total requests > 50
 - Server response time > 500ms
 
 #### Tracking (Informational)
+
 - Duplicate dependencies count
 - Cache hit rate
 - Individual chunk sizes
@@ -176,11 +188,13 @@ npm run lighthouse
 ### Scripts
 
 #### Check Performance Budget
+
 ```bash
 node scripts/check-performance-budget.js
 ```
 
 This script:
+
 - Analyzes JavaScript bundle size
 - Checks CSS bundle size
 - Validates total page weight
@@ -188,6 +202,7 @@ This script:
 - Generates detailed report
 
 #### Bundle Analysis
+
 ```bash
 npm run analyze
 ```
@@ -197,16 +212,19 @@ Generates an interactive bundle analysis report.
 ## Configuration Files
 
 ### 1. Performance Budget Config
+
 - **File**: `frontend/performance-budget.config.js`
 - **Purpose**: Defines all performance budgets
 - **Used by**: Check script, CI/CD workflows
 
 ### 2. Lighthouse RC
+
 - **File**: `frontend/lighthouserc.json`
 - **Purpose**: Configures Lighthouse CI
 - **Includes**: Performance assertions, Web Vitals thresholds
 
 ### 3. Next.js Bundle Analyzer
+
 - **Integration**: Via `@next/bundle-analyzer`
 - **Usage**: `ANALYZE=true npm run build`
 
@@ -264,6 +282,7 @@ Generates an interactive bundle analysis report.
 ### Performance Reports
 
 After each deployment, review:
+
 1. Bundle size trends
 2. Web Vitals metrics
 3. Lighthouse scores
@@ -272,6 +291,7 @@ After each deployment, review:
 ### Alerts
 
 The CI/CD pipeline will:
+
 - ❌ Fail builds that exceed strict budgets
 - ⚠️ Warn about approaching budget limits
 - ℹ️ Track metrics for monitoring
@@ -288,18 +308,21 @@ The CI/CD pipeline will:
 ### Common Issues
 
 #### JavaScript Bundle Too Large
+
 - Check for duplicate dependencies
 - Review and optimize third-party libraries
 - Implement code splitting
 - Use dynamic imports
 
 #### CSS Bundle Too Large
+
 - Remove unused styles
 - Use CSS modules
 - Implement critical CSS extraction
 - Minify CSS
 
 #### Page Weight Too Heavy
+
 - Optimize images
 - Remove unnecessary assets
 - Implement lazy loading
@@ -315,6 +338,7 @@ The CI/CD pipeline will:
 ## Updates
 
 This performance budget should be reviewed and updated:
+
 - Quarterly, as technology and best practices evolve
 - When major features are added
 - Based on real user metrics and feedback

@@ -3,7 +3,10 @@
 import dynamic from "next/dynamic";
 
 const CinematographyStudio = dynamic(
-  () => import("./components/CinematographyStudio").then((mod) => ({ default: mod.CinematographyStudio })),
+  () =>
+    import("./components/CinematographyStudio").then((mod) => ({
+      default: mod.CinematographyStudio,
+    })),
   {
     loading: () => (
       <div className="min-h-screen flex items-center justify-center">

@@ -23,7 +23,7 @@ export interface DeviceCapabilities {
   maxTouchPoints: number;
 
   // Network info
-  effectiveType: '4g' | '3g' | '2g' | 'slow-2g' | 'unknown';
+  effectiveType: "4g" | "3g" | "2g" | "slow-2g" | "unknown";
   downlink: number; // Mbps
   rtt: number; // milliseconds
   saveData: boolean;
@@ -37,7 +37,13 @@ export interface DeviceCapabilities {
 
   // Performance level (0-10)
   performanceScore: number;
-  deviceType: 'high-end' | 'mid-range' | 'low-end' | 'mobile' | 'tablet' | 'desktop';
+  deviceType:
+    | "high-end"
+    | "mid-range"
+    | "low-end"
+    | "mobile"
+    | "tablet"
+    | "desktop";
 }
 
 export interface ParticleConfig {
@@ -47,7 +53,7 @@ export interface ParticleConfig {
   enableBlur: boolean;
   enableGlow: boolean;
   enableShadows: boolean;
-  textureQuality: 'high' | 'medium' | 'low';
+  textureQuality: "high" | "medium" | "low";
 }
 
 class PerformanceDetector {
@@ -63,29 +69,41 @@ class PerformanceDetector {
   }
 
   private initializeBatteryAPI(): void {
-    if ('getBattery' in navigator) {
+    if ("getBattery" in navigator) {
       (navigator as any).getBattery().then((battery: any) => {
         this.batteryManager = battery;
         this.updateCapabilities();
-        battery.addEventListener('levelchange', () => this.updateCapabilities());
-        battery.addEventListener('chargingchange', () => this.updateCapabilities());
-        battery.addEventListener('chargingtimechange', () => this.updateCapabilities());
-        battery.addEventListener('dischargingtimechange', () => this.updateCapabilities());
+        battery.addEventListener("levelchange", () =>
+          this.updateCapabilities()
+        );
+        battery.addEventListener("chargingchange", () =>
+          this.updateCapabilities()
+        );
+        battery.addEventListener("chargingtimechange", () =>
+          this.updateCapabilities()
+        );
+        battery.addEventListener("dischargingtimechange", () =>
+          this.updateCapabilities()
+        );
       });
     }
   }
 
   private initializeConnectionAPI(): void {
-    if ('connection' in navigator) {
+    if ("connection" in navigator) {
       this.connectionInfo = (navigator as any).connection;
       this.updateCapabilities();
-      this.connectionInfo.addEventListener('change', () => this.updateCapabilities());
+      this.connectionInfo.addEventListener("change", () =>
+        this.updateCapabilities()
+      );
     }
   }
 
   private setupListeners(): void {
-    window.addEventListener('resize', () => this.updateCapabilities());
-    document.addEventListener('visibilitychange', () => this.updateCapabilities());
+    window.addEventListener("resize", () => this.updateCapabilities());
+    document.addEventListener("visibilitychange", () =>
+      this.updateCapabilities()
+    );
   }
 
   private getBatteryInfo() {
@@ -111,7 +129,7 @@ class PerformanceDetector {
   private getNetworkInfo() {
     if (!this.connectionInfo) {
       return {
-        effectiveType: '4g' as const,
+        effectiveType: "4g" as const,
         downlink: 10,
         rtt: 50,
         saveData: false,
@@ -119,7 +137,7 @@ class PerformanceDetector {
     }
 
     return {
-      effectiveType: (this.connectionInfo.effectiveType || '4g') as any,
+      effectiveType: (this.connectionInfo.effectiveType || "4g") as any,
       downlink: this.connectionInfo.downlink || 10,
       rtt: this.connectionInfo.rtt || 50,
       saveData: (this.connectionInfo.saveData || false) as boolean,
@@ -139,9 +157,9 @@ class PerformanceDetector {
     let canUseWebGL2 = false;
 
     try {
-      const canvas = document.createElement('canvas');
-      canUseWebGL = !!canvas.getContext('webgl');
-      canUseWebGL2 = !!canvas.getContext('webgl2');
+      const canvas = document.createElement("canvas");
+      canUseWebGL = !!canvas.getContext("webgl");
+      canUseWebGL2 = !!canvas.getContext("webgl2");
     } catch (e) {
       // WebGL not supported
     }
@@ -150,13 +168,13 @@ class PerformanceDetector {
       maxFrameRate: this.getDeviceRefreshRate(),
       canUseWebGL,
       canUseWebGL2,
-      supportsOffscreenCanvas: typeof OffscreenCanvas !== 'undefined',
-      supportsSharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
+      supportsOffscreenCanvas: typeof OffscreenCanvas !== "undefined",
+      supportsSharedArrayBuffer: typeof SharedArrayBuffer !== "undefined",
     };
   }
 
   private getDeviceRefreshRate(): number {
-    if ('screen' in window && 'refreshRate' in window.screen) {
+    if ("screen" in window && "refreshRate" in window.screen) {
       return (window.screen as any).refreshRate || 60;
     }
     return 60;
@@ -193,11 +211,14 @@ class PerformanceDetector {
     }
 
     // Network
-    if (caps.effectiveType === '4g') {
+    if (caps.effectiveType === "4g") {
       score += 1;
-    } else if (caps.effectiveType === '3g') {
+    } else if (caps.effectiveType === "3g") {
       score -= 1;
-    } else if (caps.effectiveType === '2g' || caps.effectiveType === 'slow-2g') {
+    } else if (
+      caps.effectiveType === "2g" ||
+      caps.effectiveType === "slow-2g"
+    ) {
       score -= 2;
     }
 
@@ -216,15 +237,16 @@ class PerformanceDetector {
     return Math.max(0, Math.min(10, score));
   }
 
-  private getDeviceType(): DeviceCapabilities['deviceType'] {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
+  private getDeviceType(): DeviceCapabilities["deviceType"] {
+    const isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
     const isTablet = /iPad|Android(?!.*Mobi)/i.test(navigator.userAgent);
 
-    if (isTablet) return 'tablet';
-    if (isMobile) return 'mobile';
-    return 'desktop';
+    if (isTablet) return "tablet";
+    if (isMobile) return "mobile";
+    return "desktop";
   }
 
   public updateCapabilities(): DeviceCapabilities {
@@ -242,11 +264,12 @@ class PerformanceDetector {
       deviceType: this.getDeviceType(),
     };
 
-    capabilities.performanceScore = this.calculatePerformanceScore(capabilities);
+    capabilities.performanceScore =
+      this.calculatePerformanceScore(capabilities);
     this.capabilities = capabilities;
 
     // Notify observers
-    this.observers.forEach(observer => observer(capabilities));
+    this.observers.forEach((observer) => observer(capabilities));
 
     return capabilities;
   }
@@ -274,7 +297,7 @@ class PerformanceDetector {
       enableBlur: true,
       enableGlow: true,
       enableShadows: true,
-      textureQuality: 'high',
+      textureQuality: "high",
     };
 
     // Adjust based on performance score
@@ -285,7 +308,7 @@ class PerformanceDetector {
         maxParticles: 800,
         particleSize: 20,
         updateFrequency: 120,
-        textureQuality: 'high',
+        textureQuality: "high",
       };
     } else if (caps.performanceScore >= 7) {
       // Mid-range devices
@@ -294,7 +317,7 @@ class PerformanceDetector {
         maxParticles: 400,
         particleSize: 15,
         updateFrequency: 60,
-        textureQuality: 'high',
+        textureQuality: "high",
       };
     } else if (caps.performanceScore >= 5) {
       // Average devices
@@ -303,7 +326,7 @@ class PerformanceDetector {
         maxParticles: 250,
         particleSize: 12,
         updateFrequency: 30,
-        textureQuality: 'medium',
+        textureQuality: "medium",
       };
     } else if (caps.performanceScore >= 3) {
       // Low-end devices
@@ -314,7 +337,7 @@ class PerformanceDetector {
         updateFrequency: 24,
         enableShadows: false,
         enableGlow: false,
-        textureQuality: 'low',
+        textureQuality: "low",
       };
     } else {
       // Very low-end devices
@@ -326,7 +349,7 @@ class PerformanceDetector {
         enableBlur: false,
         enableShadows: false,
         enableGlow: false,
-        textureQuality: 'low',
+        textureQuality: "low",
       };
     }
   }
@@ -340,7 +363,7 @@ class PerformanceDetector {
     }
 
     // Disable on very slow networks
-    if (caps.effectiveType === '2g' || caps.effectiveType === 'slow-2g') {
+    if (caps.effectiveType === "2g" || caps.effectiveType === "slow-2g") {
       return true;
     }
 
@@ -350,7 +373,7 @@ class PerformanceDetector {
     }
 
     // Disable when user prefers reduced motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return true;
     }
 

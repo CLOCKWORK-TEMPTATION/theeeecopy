@@ -1,7 +1,7 @@
 const { NextConfig } = require("next");
 
 // Remote image patterns configuration
-const remoteImagePatterns = process.env.NEXT_IMAGE_REMOTE_PATTERNS 
+const remoteImagePatterns = process.env.NEXT_IMAGE_REMOTE_PATTERNS
   ? JSON.parse(process.env.NEXT_IMAGE_REMOTE_PATTERNS)
   : [
       {
@@ -104,7 +104,7 @@ const nextConfig = {
   async headers() {
     // Dynamic CSP based on CDN configuration
     const cdnDomain = cdnUrl ? new URL(cdnUrl).hostname : null;
-    const cdnCsp = cdnDomain ? ` ${cdnUrl}` : '';
+    const cdnCsp = cdnDomain ? ` ${cdnUrl}` : "";
 
     return [
       {
@@ -233,8 +233,6 @@ const nextConfig = {
     ];
   },
 
-
-
   images: {
     remotePatterns: remoteImagePatterns,
   },
@@ -257,8 +255,8 @@ const nextConfig = {
         os: false,
         dgram: false,
         async_hooks: false,
-        'node:async_hooks': false,
-        'graceful-fs': false,
+        "node:async_hooks": false,
+        "graceful-fs": false,
       };
     }
     return config;
@@ -270,22 +268,24 @@ const { withSentryConfig } = require("@sentry/nextjs");
 
 const shouldUseSentry = false; // Temporarily disabled due to version conflict
 
-const sentryConfig = shouldUseSentry ? {
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
-  silent: !process.env.CI,
-  widenClientFileUpload: true,
-  reactComponentAnnotation: {
-    enabled: true,
-  },
-  hideSourceMaps: process.env.NODE_ENV === 'production',
-  disableLogger: true,
-  automaticVercelMonitors: true,
-  tunnelRoute: "/monitoring",
-  sourcemaps: {
-    disable: false,
-  },
-} : null;
+const sentryConfig = shouldUseSentry
+  ? {
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      silent: !process.env.CI,
+      widenClientFileUpload: true,
+      reactComponentAnnotation: {
+        enabled: true,
+      },
+      hideSourceMaps: process.env.NODE_ENV === "production",
+      disableLogger: true,
+      automaticVercelMonitors: true,
+      tunnelRoute: "/monitoring",
+      sourcemaps: {
+        disable: false,
+      },
+    }
+  : null;
 
 // Export config with Sentry wrapper if configured
 const configWithAnalyzer = withBundleAnalyzer(nextConfig);

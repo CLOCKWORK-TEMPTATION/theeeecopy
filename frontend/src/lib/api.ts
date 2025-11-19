@@ -15,13 +15,16 @@ import type {
   AnalyzeScriptResponse,
   ShotSuggestionResponse,
   ChatResponse,
-} from './api-types';
+} from "./api-types";
 
 /**
  * API functions for AI services
  */
 
-export async function analyzeScript(projectId: string, script: string): Promise<ApiResponse<AnalyzeScriptResponse>> {
+export async function analyzeScript(
+  projectId: string,
+  script: string
+): Promise<ApiResponse<AnalyzeScriptResponse>> {
   const response = await fetch("/api/cineai/analyze", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -53,7 +56,11 @@ export async function getShotSuggestion(
   return response.json();
 }
 
-export async function chatWithAI(message: string, projectId?: string, context?: Record<string, unknown>): Promise<ApiResponse<ChatResponse>> {
+export async function chatWithAI(
+  message: string,
+  projectId?: string,
+  context?: Record<string, unknown>
+): Promise<ApiResponse<ChatResponse>> {
   const response = await fetch("/api/ai/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -80,7 +87,9 @@ export async function getProject(id: string): Promise<ApiResponse<Project>> {
   return response.json();
 }
 
-export async function createProject(data: CreateProjectInput): Promise<ApiResponse<Project>> {
+export async function createProject(
+  data: CreateProjectInput
+): Promise<ApiResponse<Project>> {
   const response = await fetch("/api/projects", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -90,7 +99,10 @@ export async function createProject(data: CreateProjectInput): Promise<ApiRespon
   return response.json();
 }
 
-export async function updateProject(id: string, data: UpdateProjectInput): Promise<ApiResponse<Project>> {
+export async function updateProject(
+  id: string,
+  data: UpdateProjectInput
+): Promise<ApiResponse<Project>> {
   const response = await fetch(`/api/projects/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -107,13 +119,18 @@ export async function deleteProject(id: string): Promise<ApiResponse<void>> {
 }
 
 // Scene API functions
-export async function getProjectScenes(projectId: string): Promise<ApiResponse<Scene[]>> {
+export async function getProjectScenes(
+  projectId: string
+): Promise<ApiResponse<Scene[]>> {
   const response = await fetch(`/api/projects/${projectId}/scenes`);
   if (!response.ok) throw new Error("Failed to fetch scenes");
   return response.json();
 }
 
-export async function createScene(projectId: string, data: CreateSceneInput): Promise<ApiResponse<Scene>> {
+export async function createScene(
+  projectId: string,
+  data: CreateSceneInput
+): Promise<ApiResponse<Scene>> {
   const response = await fetch(`/api/projects/${projectId}/scenes`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -123,7 +140,10 @@ export async function createScene(projectId: string, data: CreateSceneInput): Pr
   return response.json();
 }
 
-export async function updateScene(sceneId: string, data: UpdateSceneInput): Promise<ApiResponse<Scene>> {
+export async function updateScene(
+  sceneId: string,
+  data: UpdateSceneInput
+): Promise<ApiResponse<Scene>> {
   const response = await fetch(`/api/scenes/${sceneId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -140,13 +160,18 @@ export async function deleteScene(sceneId: string): Promise<ApiResponse<void>> {
 }
 
 // Character API functions
-export async function getProjectCharacters(projectId: string): Promise<ApiResponse<Character[]>> {
+export async function getProjectCharacters(
+  projectId: string
+): Promise<ApiResponse<Character[]>> {
   const response = await fetch(`/api/projects/${projectId}/characters`);
   if (!response.ok) throw new Error("Failed to fetch characters");
   return response.json();
 }
 
-export async function createCharacter(projectId: string, data: CreateCharacterInput): Promise<ApiResponse<Character>> {
+export async function createCharacter(
+  projectId: string,
+  data: CreateCharacterInput
+): Promise<ApiResponse<Character>> {
   const response = await fetch(`/api/projects/${projectId}/characters`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -156,7 +181,10 @@ export async function createCharacter(projectId: string, data: CreateCharacterIn
   return response.json();
 }
 
-export async function updateCharacter(characterId: string, data: UpdateCharacterInput): Promise<ApiResponse<Character>> {
+export async function updateCharacter(
+  characterId: string,
+  data: UpdateCharacterInput
+): Promise<ApiResponse<Character>> {
   const response = await fetch(`/api/characters/${characterId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -166,20 +194,29 @@ export async function updateCharacter(characterId: string, data: UpdateCharacter
   return response.json();
 }
 
-export async function deleteCharacter(characterId: string): Promise<ApiResponse<void>> {
-  const response = await fetch(`/api/characters/${characterId}`, { method: "DELETE" });
+export async function deleteCharacter(
+  characterId: string
+): Promise<ApiResponse<void>> {
+  const response = await fetch(`/api/characters/${characterId}`, {
+    method: "DELETE",
+  });
   if (!response.ok) throw new Error("Failed to delete character");
   return response.json();
 }
 
 // Shot API functions
-export async function getSceneShots(sceneId: string): Promise<ApiResponse<Shot[]>> {
+export async function getSceneShots(
+  sceneId: string
+): Promise<ApiResponse<Shot[]>> {
   const response = await fetch(`/api/scenes/${sceneId}/shots`);
   if (!response.ok) throw new Error("Failed to fetch shots");
   return response.json();
 }
 
-export async function createShot(sceneId: string, data: CreateShotInput): Promise<ApiResponse<Shot>> {
+export async function createShot(
+  sceneId: string,
+  data: CreateShotInput
+): Promise<ApiResponse<Shot>> {
   const response = await fetch(`/api/scenes/${sceneId}/shots`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -189,7 +226,10 @@ export async function createShot(sceneId: string, data: CreateShotInput): Promis
   return response.json();
 }
 
-export async function updateShot(shotId: string, data: UpdateShotInput): Promise<ApiResponse<Shot>> {
+export async function updateShot(
+  shotId: string,
+  data: UpdateShotInput
+): Promise<ApiResponse<Shot>> {
   const response = await fetch(`/api/shots/${shotId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

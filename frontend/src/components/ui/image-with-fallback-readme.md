@@ -23,7 +23,7 @@ import { ImageWithFallback } from "@/components/ui/image-with-fallback";
   alt="وصف الصورة"
   width={300}
   height={200}
-/>
+/>;
 ```
 
 ### مع fallback مخصص

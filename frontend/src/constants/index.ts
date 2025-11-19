@@ -4,43 +4,44 @@
 
 // Task categories and types
 export const TaskCategory = {
-  CHARACTER: 'character',
-  SCENE: 'scene',
-  SCRIPT: 'script',
-  GENERAL: 'general',
-  INTEGRATED: 'integrated',
-  CORE: 'core',
-  PREDICTIVE: 'predictive',
-  ADVANCED_MODULES: 'advanced_modules',
-  ANALYSIS: 'analysis',
-  CREATIVE: 'creative',
+  CHARACTER: "character",
+  SCENE: "scene",
+  SCRIPT: "script",
+  GENERAL: "general",
+  INTEGRATED: "integrated",
+  CORE: "core",
+  PREDICTIVE: "predictive",
+  ADVANCED_MODULES: "advanced_modules",
+  ANALYSIS: "analysis",
+  CREATIVE: "creative",
 } as const;
 
-export type TaskCategory = typeof TaskCategory[keyof typeof TaskCategory];
+export type TaskCategory = (typeof TaskCategory)[keyof typeof TaskCategory];
 
 export const TaskType = {
-  CHARACTER: 'character',
-  SCENE: 'scene',
-  SCRIPT: 'script',
-  GENERAL: 'general',
-  INTEGRATED: 'integrated',
-  CORE: 'core',
-  PREDICTIVE: 'predictive',
-  ADVANCED_MODULES: 'advanced_modules',
-  ANALYSIS: 'analysis',
-  CREATIVE: 'creative',
+  CHARACTER: "character",
+  SCENE: "scene",
+  SCRIPT: "script",
+  GENERAL: "general",
+  INTEGRATED: "integrated",
+  CORE: "core",
+  PREDICTIVE: "predictive",
+  ADVANCED_MODULES: "advanced_modules",
+  ANALYSIS: "analysis",
+  CREATIVE: "creative",
 } as const;
 
-export type TaskType = typeof TaskType[keyof typeof TaskType];
+export type TaskType = (typeof TaskType)[keyof typeof TaskType];
 
 // Enhancement levels
 export const EnhancementLevel = {
-  MINIMAL: 'minimal',
-  MODERATE: 'moderate',
-  EXTENSIVE: 'extensive',
+  MINIMAL: "minimal",
+  MODERATE: "moderate",
+  EXTENSIVE: "extensive",
 } as const;
 
-export type EnhancementLevel = typeof EnhancementLevel[keyof typeof EnhancementLevel];
+export type EnhancementLevel =
+  (typeof EnhancementLevel)[keyof typeof EnhancementLevel];
 
 // API Response types
 export interface ApiResponse<T = any> {
@@ -58,7 +59,7 @@ export interface Project {
   userId?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  status?: 'active' | 'archived' | 'draft';
+  status?: "active" | "archived" | "draft";
 }
 
 export interface Scene {
@@ -110,16 +111,16 @@ export interface ExecutionResult {
 }
 
 // Default values
-export const DEFAULT_AI_MODEL = 'gemini-pro';
+export const DEFAULT_AI_MODEL = "gemini-pro";
 export const DEFAULT_TEMPERATURE = 0.7;
 export const DEFAULT_MAX_TOKENS = 2048;
 
 // API Endpoints
 export const API_ENDPOINTS = {
-  PROJECTS: '/api/projects',
-  SCENES: '/api/scenes',
-  CHARACTERS: '/api/characters',
-  SHOTS: '/api/shots',
-  ANALYZE: '/api/analyze',
-  CHAT: '/api/chat',
+  PROJECTS: "/api/projects",
+  SCENES: "/api/scenes",
+  CHARACTERS: "/api/characters",
+  SHOTS: "/api/shots",
+  ANALYZE: "/api/analyze",
+  CHAT: "/api/chat",
 } as const;

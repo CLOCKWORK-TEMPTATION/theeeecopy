@@ -20,12 +20,15 @@ export interface GeminiServiceBoundary {
   /**
    * Generate text content with typed validation
    */
-  generateText(prompt: string, options?: {
-    temperature?: number;
-    maxTokens?: number;
-    systemInstruction?: string;
-    context?: string;
-  }): Promise<string>;
+  generateText(
+    prompt: string,
+    options?: {
+      temperature?: number;
+      maxTokens?: number;
+      systemInstruction?: string;
+      context?: string;
+    }
+  ): Promise<string>;
 
   /**
    * Generate and validate character analysis
@@ -95,7 +98,11 @@ export function createGeminiServiceBoundary(
       }
       const response = await service.generate<{ raw: string }>(request);
 
-      if (typeof response.content === "object" && response.content !== null && "raw" in response.content) {
+      if (
+        typeof response.content === "object" &&
+        response.content !== null &&
+        "raw" in response.content
+      ) {
         return (response.content as { raw: string }).raw;
       }
 

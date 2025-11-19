@@ -188,7 +188,10 @@ export function matchesBulletCharacterPattern(text: string): {
 /**
  * Check if dialogue should be converted to action
  */
-export function shouldConvertDialogueToAction(text: string, wordCount: (text: string) => number): boolean {
+export function shouldConvertDialogueToAction(
+  text: string,
+  wordCount: (text: string) => number
+): boolean {
   const actionPatterns = [
     /^\s*[-–—]?\s*(?:[ي|ت][\u0600-\u06FF]+|نرى|ننظر|نسمع|نلاحظ|يبدو|يظهر|يبدأ|ينتهي|يستمر|يتوقف|يتحرك|يحدث|يكون|يوجد|توجد|يظهر|تظهر)/,
     /^\s*[-–—]\s*.+/,

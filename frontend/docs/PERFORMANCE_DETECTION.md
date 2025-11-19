@@ -7,24 +7,28 @@ The Performance Detection system automatically adapts the application's visual e
 ## Features
 
 ### 🔋 Battery Detection
+
 - Monitors device battery level
 - Detects charging status
 - Automatically reduces effects when battery is low
 - Disables animations in power-saving mode
 
 ### 🖥️ Hardware Detection
+
 - Detects CPU cores
 - Monitors available RAM
 - Identifies GPU capabilities
 - Adapts to maximum refresh rate
 
 ### 🌐 Network Detection
+
 - Monitors connection type (2G, 3G, 4G, 5G)
 - Tracks download speed
 - Detects data-saver mode
 - Adjusts asset quality accordingly
 
 ### ✨ Adaptive Particle System
+
 - Dynamic particle count (50-800 particles)
 - Variable frame rates (12-120 FPS)
 - Quality settings (low, medium, high)
@@ -35,7 +39,9 @@ The Performance Detection system automatically adapts the application's visual e
 ### Core Components
 
 #### `src/lib/performance-detection.ts`
+
 Main utility module that provides:
+
 - Device capability detection
 - Battery status monitoring
 - Network condition tracking
@@ -43,14 +49,16 @@ Main utility module that provides:
 
 ```typescript
 // Example usage
-import { performanceDetector } from '@/lib/performance-detection';
+import { performanceDetector } from "@/lib/performance-detection";
 
 const capabilities = performanceDetector.getCapabilities();
 const config = performanceDetector.getParticleConfig();
 ```
 
 #### `src/hooks/usePerformanceDetection.ts`
+
 React hooks for component integration:
+
 - `usePerformanceDetection()` - Main hook with all capabilities
 - `useBatteryStatus()` - Battery-specific hook
 - `useNetworkCondition()` - Network-specific hook
@@ -59,7 +67,9 @@ React hooks for component integration:
 - `useAdaptiveFrameRate()` - Adaptive FPS
 
 #### `src/lib/particle-system.ts`
+
 Optimized particle system with performance adaptation:
+
 - `OptimizedParticleSystem` - Canvas-based particles
 - `ThreeJSParticleSystem` - WebGL-based particles
 - Automatic quality adjustment
@@ -207,6 +217,7 @@ export function AnimatedComponent() {
 ## Performance Profiles
 
 ### High-End Devices (Score: 9-10)
+
 - **Specs**: 8+ cores, 8GB+ RAM, 5G/WiFi
 - **Particles**: 800
 - **Frame Rate**: 120 FPS
@@ -214,6 +225,7 @@ export function AnimatedComponent() {
 - **Effects**: All enabled (glow, blur, shadows)
 
 ### Mid-Range Devices (Score: 7-8)
+
 - **Specs**: 4-6 cores, 4-8GB RAM, 4G
 - **Particles**: 400
 - **Frame Rate**: 60 FPS
@@ -221,6 +233,7 @@ export function AnimatedComponent() {
 - **Effects**: All enabled
 
 ### Low-End Devices (Score: 3-6)
+
 - **Specs**: 2-4 cores, 2-4GB RAM, 3G
 - **Particles**: 150
 - **Frame Rate**: 24 FPS
@@ -228,6 +241,7 @@ export function AnimatedComponent() {
 - **Effects**: Glow and blur disabled
 
 ### Very Low-End Devices (Score: 0-2)
+
 - **Specs**: 1-2 cores, <2GB RAM, 2G
 - **Particles**: 50
 - **Frame Rate**: 12 FPS
@@ -237,16 +251,19 @@ export function AnimatedComponent() {
 ## Battery Modes
 
 ### Normal Mode
+
 - Battery level: > 50%
 - Full particle system enabled
 - All effects active
 
 ### Battery Saver Mode
+
 - Battery level: 20-50%
 - Particle count reduced by 30%
 - Frame rate capped at 45 FPS
 
 ### Critical Mode
+
 - Battery level: < 20%
 - Particle count reduced by 70%
 - Particles disabled if below 15%
@@ -255,16 +272,19 @@ export function AnimatedComponent() {
 ## Network Adaptation
 
 ### Fast Network (4G/5G)
+
 - Highest quality assets
 - 800 particles maximum
 - 120 FPS target
 
 ### Moderate Network (3G)
+
 - Medium quality assets
 - 400 particles
 - 60 FPS target
 
 ### Slow Network (2G/Slow-2G)
+
 - Lowest quality assets
 - Particles disabled
 - 24 FPS target
@@ -286,7 +306,7 @@ interface DeviceCapabilities {
   cpuCores: number;
   deviceMemory: number;
   maxTouchPoints: number;
-  effectiveType: '4g' | '3g' | '2g' | 'slow-2g' | 'unknown';
+  effectiveType: "4g" | "3g" | "2g" | "slow-2g" | "unknown";
   downlink: number;
   rtt: number;
   saveData: boolean;
@@ -296,7 +316,13 @@ interface DeviceCapabilities {
   supportsOffscreenCanvas: boolean;
   supportsSharedArrayBuffer: boolean;
   performanceScore: number; // 0-10
-  deviceType: 'high-end' | 'mid-range' | 'low-end' | 'mobile' | 'tablet' | 'desktop';
+  deviceType:
+    | "high-end"
+    | "mid-range"
+    | "low-end"
+    | "mobile"
+    | "tablet"
+    | "desktop";
 }
 ```
 
@@ -312,13 +338,14 @@ interface ParticleConfig {
   enableBlur: boolean;
   enableGlow: boolean;
   enableShadows: boolean;
-  textureQuality: 'high' | 'medium' | 'low';
+  textureQuality: "high" | "medium" | "low";
 }
 ```
 
 ### `performanceDetector.shouldDisableParticles()`
 
 Returns `true` if particles should be disabled:
+
 - Battery < 15% and not charging
 - Very slow network (2G/Slow-2G)
 - Performance score < 2
@@ -327,6 +354,7 @@ Returns `true` if particles should be disabled:
 ### `performanceDetector.shouldReduceQuality()`
 
 Returns `true` if quality should be reduced:
+
 - Performance score <= 5
 
 ### `performanceDetector.getTargetFrameRate()`
@@ -339,7 +367,7 @@ Subscribe to capability changes:
 
 ```typescript
 const unsubscribe = performanceDetector.subscribe((capabilities) => {
-  console.log('Capabilities changed:', capabilities);
+  console.log("Capabilities changed:", capabilities);
 });
 
 // Later, unsubscribe
@@ -349,18 +377,22 @@ unsubscribe();
 ## Browser Compatibility
 
 ### Fully Supported
+
 - Chrome 51+
 - Firefox 55+
 - Safari 11+
 - Edge 79+
 
 ### Partially Supported
+
 - Device Memory API: Chrome 63+, Edge 79+
 - Battery Status API: Chrome 39-52 (deprecated)
 - Network Information API: Chrome 61+, Android Browser
 
 ### Fallback Behavior
+
 When APIs are unavailable, the system defaults to:
+
 - Battery: Assumed fully charged (100%)
 - Network: Assumed 4G connection
 - CPU: Defaults to 4 cores
@@ -406,8 +438,8 @@ Enable verbose logging:
 const { capabilities, config } = usePerformanceDetection();
 
 useEffect(() => {
-  console.log('[Debug] Capabilities:', capabilities);
-  console.log('[Debug] Particle Config:', config);
+  console.log("[Debug] Capabilities:", capabilities);
+  console.log("[Debug] Particle Config:", config);
 }, [capabilities, config]);
 ```
 
@@ -455,6 +487,7 @@ useEffect(() => {
 ### 5. Test on Real Devices
 
 Test on actual devices with various specs:
+
 - Modern flagship (high-end)
 - Mid-range Android phone
 - Budget Android phone
@@ -493,11 +526,13 @@ Test on actual devices with various specs:
 ## Performance Impact
 
 ### Overhead
+
 - Detection system: ~2ms on startup, <0.1ms per update
 - Particle adaptation: 0 overhead (automatic)
 - React hooks: Minimal (<0.5ms per render)
 
 ### Memory Usage
+
 - Detection module: ~50KB
 - Per component instance: <5KB
 - Cached configurations: <1KB

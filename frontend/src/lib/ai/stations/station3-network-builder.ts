@@ -707,12 +707,19 @@ class ConflictInferenceEngine {
     return {
       name: "الصراع الرئيسي",
       description,
-      involvedChars: this.extractCharactersFromDescription(description, characters),
+      involvedChars: this.extractCharactersFromDescription(
+        description,
+        characters
+      ),
     };
   }
 
   private buildConflictFromData(
-    conflictData: { name: string; description: string; involvedChars: string[] },
+    conflictData: {
+      name: string;
+      description: string;
+      involvedChars: string[];
+    },
     charNameToId: Map<string, string>,
     characters: Character[]
   ): Conflict | null {
@@ -733,7 +740,10 @@ class ConflictInferenceEngine {
       scope: this.inferConflictScope(conflictData.description),
       phase: ConflictPhase.EMERGING,
       strength: this.inferConflictStrength(conflictData.description),
-      relatedRelationships: this.findRelatedRelationships(involvedIds, characters),
+      relatedRelationships: this.findRelatedRelationships(
+        involvedIds,
+        characters
+      ),
       pivotPoints: [],
       timestamps: [new Date()],
       metadata: {

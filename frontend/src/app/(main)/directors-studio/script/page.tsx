@@ -35,7 +35,9 @@ export default function ScriptPage() {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["project", currentProjectId] });
+      queryClient.invalidateQueries({
+        queryKey: ["project", currentProjectId],
+      });
     },
   });
 
@@ -143,9 +145,7 @@ export default function ScriptPage() {
               />
 
               {updateScriptMutation.isSuccess && (
-                <p className="text-sm text-green-600 mt-2">
-                  تم الحفظ بنجاح!
-                </p>
+                <p className="text-sm text-green-600 mt-2">تم الحفظ بنجاح!</p>
               )}
 
               {analyzeScriptMutation.isSuccess && (
@@ -181,7 +181,10 @@ export default function ScriptPage() {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">عدد الكلمات:</span>
                 <span className="font-semibold">
-                  {scriptContent.split(/\s+/).filter(Boolean).length.toLocaleString()}
+                  {scriptContent
+                    .split(/\s+/)
+                    .filter(Boolean)
+                    .length.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between text-sm">

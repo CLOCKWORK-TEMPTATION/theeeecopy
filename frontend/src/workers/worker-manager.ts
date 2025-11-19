@@ -8,13 +8,13 @@ import type {
   UpdateParticlesMessage,
   UpdateParticlesResult,
   ParticleData,
-  WorkerPool
-} from '@/workers/types';
+  WorkerPool,
+} from "@/workers/types";
 
 export class ParticleWorkerManager {
   private workerPool: WorkerPool = {
     generatorWorker: null,
-    physicsWorker: null
+    physicsWorker: null,
   };
 
   /**
@@ -24,17 +24,17 @@ export class ParticleWorkerManager {
     try {
       // Initialize particle generator worker
       this.workerPool.generatorWorker = new Worker(
-        new URL('./particle-generator.worker.ts', import.meta.url),
-        { type: 'module' }
+        new URL("./particle-generator.worker.ts", import.meta.url),
+        { type: "module" }
       );
 
       // Initialize particle physics worker
       this.workerPool.physicsWorker = new Worker(
-        new URL('./particle-physics.worker.ts', import.meta.url),
-        { type: 'module' }
+        new URL("./particle-physics.worker.ts", import.meta.url),
+        { type: "module" }
       );
     } catch (error) {
-      console.error('Failed to initialize workers:', error);
+      console.error("Failed to initialize workers:", error);
       throw error;
     }
   }
@@ -43,12 +43,12 @@ export class ParticleWorkerManager {
    * Generate particles using Web Worker
    */
   generateParticles(
-    config: GenerateParticlesMessage['config'],
+    config: GenerateParticlesMessage["config"],
     onProgress?: (progress: number, count: number) => void
   ): Promise<ParticleData> {
     return new Promise((resolve, reject) => {
       if (!this.workerPool.generatorWorker) {
-        reject(new Error('Generator worker not initialized'));
+        reject(new Error("Generator worker not initialized"));
         return;
       }
 
@@ -57,32 +57,32 @@ export class ParticleWorkerManager {
       const handleMessage = (event: MessageEvent<ParticleGenerationResult>) => {
         const result = event.data;
 
-        if (result.type === 'progress') {
+        if (result.type === "progress") {
           if (onProgress) {
             onProgress(result.progress, result.count);
           }
-        } else if (result.type === 'complete') {
-          worker.removeEventListener('message', handleMessage);
+        } else if (result.type === "complete") {
+          worker.removeEventListener("message", handleMessage);
           resolve({
             positions: result.positions,
             velocities: result.velocities,
             originalPositions: result.originalPositions,
             colors: result.colors,
             phases: result.phases,
-            count: result.count
+            count: result.count,
           });
-        } else if (result.type === 'error') {
-          worker.removeEventListener('message', handleMessage);
+        } else if (result.type === "error") {
+          worker.removeEventListener("message", handleMessage);
           reject(new Error(result.error));
         }
       };
 
-      worker.addEventListener('message', handleMessage);
+      worker.addEventListener("message", handleMessage);
 
       // Send generation request
       const message: GenerateParticlesMessage = {
-        type: 'generate',
-        config
+        type: "generate",
+        config,
       };
       worker.postMessage(message);
     });
@@ -91,16 +91,14 @@ export class ParticleWorkerManager {
   /**
    * Update particle positions and colors using Web Worker
    */
-  updateParticles(
-    data: UpdateParticlesMessage
-  ): Promise<{
+  updateParticles(data: UpdateParticlesMessage): Promise<{
     positions: Float32Array;
     velocities: Float32Array;
     colors: Float32Array;
   }> {
     return new Promise((resolve, reject) => {
       if (!this.workerPool.physicsWorker) {
-        reject(new Error('Physics worker not initialized'));
+        reject(new Error("Physics worker not initialized"));
         return;
       }
 
@@ -109,26 +107,26 @@ export class ParticleWorkerManager {
       const handleMessage = (event: MessageEvent<UpdateParticlesResult>) => {
         const result = event.data;
 
-        if (result.type === 'updated') {
-          worker.removeEventListener('message', handleMessage);
+        if (result.type === "updated") {
+          worker.removeEventListener("message", handleMessage);
           resolve({
             positions: result.positions,
             velocities: result.velocities,
-            colors: result.colors
+            colors: result.colors,
           });
-        } else if (result.type === 'error') {
-          worker.removeEventListener('message', handleMessage);
+        } else if (result.type === "error") {
+          worker.removeEventListener("message", handleMessage);
           reject(new Error(result.error));
         }
       };
 
-      worker.addEventListener('message', handleMessage);
+      worker.addEventListener("message", handleMessage);
 
       // Send update request with transferable objects
       worker.postMessage(data, [
         data.positions.buffer,
         data.velocities.buffer,
-        data.colors.buffer
+        data.colors.buffer,
       ]);
     });
   }

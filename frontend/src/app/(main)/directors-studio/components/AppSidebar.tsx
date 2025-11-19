@@ -12,15 +12,15 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { 
-  Film, 
-  FileText, 
-  Layers, 
-  Users, 
-  Camera, 
+import {
+  Film,
+  FileText,
+  Layers,
+  Users,
+  Camera,
   Sparkles,
   Settings,
-  HelpCircle
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -74,13 +74,18 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-right">القائمة الرئيسية</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-right">
+            القائمة الرئيسية
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild data-testid={`nav-${item.url}`}>
-                    <a href={item.url} className="flex items-center justify-end gap-3">
+                    <a
+                      href={item.url}
+                      className="flex items-center justify-end gap-3"
+                    >
                       <span>{item.title}</span>
                       <item.icon className="w-4 h-4" />
                     </a>
@@ -93,11 +98,19 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4 border-t space-y-2">
-        <Button variant="ghost" className="w-full justify-end" data-testid="button-settings">
+        <Button
+          variant="ghost"
+          className="w-full justify-end"
+          data-testid="button-settings"
+        >
           <span className="mr-2">الإعدادات</span>
           <Settings className="w-4 h-4" />
         </Button>
-        <Button variant="ghost" className="w-full justify-end" data-testid="button-help">
+        <Button
+          variant="ghost"
+          className="w-full justify-end"
+          data-testid="button-help"
+        >
           <span className="mr-2">المساعدة</span>
           <HelpCircle className="w-4 h-4" />
         </Button>

@@ -11,9 +11,7 @@ export default function DirectorsStudioLayout({
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="container mx-auto px-4 py-8">
-        {children}
-      </div>
+      <div className="container mx-auto px-4 py-8">{children}</div>
       <Toaster />
     </QueryClientProvider>
   );

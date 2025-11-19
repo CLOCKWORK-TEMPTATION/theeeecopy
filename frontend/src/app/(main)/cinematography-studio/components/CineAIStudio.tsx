@@ -1,18 +1,26 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 // Import tool components
-import PreProductionTools from '@/app/(main)/cinematography-studio/components/tools/PreProductionTools';
-import ProductionTools from '@/app/(main)/cinematography-studio/components/tools/ProductionTools';
-import PostProductionTools from '@/app/(main)/cinematography-studio/components/tools/PostProductionTools';
+import PreProductionTools from "@/app/(main)/cinematography-studio/components/tools/PreProductionTools";
+import ProductionTools from "@/app/(main)/cinematography-studio/components/tools/ProductionTools";
+import PostProductionTools from "@/app/(main)/cinematography-studio/components/tools/PostProductionTools";
 
 export const CineAIStudio: React.FC = () => {
-  const [currentPhase, setCurrentPhase] = useState<'pre' | 'production' | 'post'>('pre');
+  const [currentPhase, setCurrentPhase] = useState<
+    "pre" | "production" | "post"
+  >("pre");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
@@ -23,8 +31,12 @@ export const CineAIStudio: React.FC = () => {
             <span className="text-6xl">🎥</span>
             <div className="text-center">
               <h1 className="text-4xl font-bold mb-2">CineAI Studio</h1>
-              <p className="text-xl text-gray-300">استوديو مديري التصوير السينمائي</p>
-              <p className="text-sm text-gray-400 mt-1">AI-Powered Cinematography Assistant</p>
+              <p className="text-xl text-gray-300">
+                استوديو مديري التصوير السينمائي
+              </p>
+              <p className="text-sm text-gray-400 mt-1">
+                AI-Powered Cinematography Assistant
+              </p>
             </div>
           </div>
           <div className="flex justify-center space-x-2 space-x-reverse">
@@ -50,20 +62,25 @@ export const CineAIStudio: React.FC = () => {
           {/* Welcome Card */}
           <Card className="mb-8 border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
             <CardHeader>
-              <CardTitle className="text-3xl">مرحباً بك في استوديو CineAI 🎬</CardTitle>
+              <CardTitle className="text-3xl">
+                مرحباً بك في استوديو CineAI 🎬
+              </CardTitle>
               <CardDescription className="text-lg">
                 أدوات متقدمة لمديري التصوير في جميع مراحل الإنتاج السينمائي
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-700 mb-4">
-                CineAI يوفر لك مجموعة شاملة من الأدوات المدعومة بالذكاء الاصطناعي لمساعدتك في:
+                CineAI يوفر لك مجموعة شاملة من الأدوات المدعومة بالذكاء
+                الاصطناعي لمساعدتك في:
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex items-start space-x-3 space-x-reverse">
                   <span className="text-3xl">📋</span>
                   <div>
-                    <h4 className="font-semibold text-blue-900">ما قبل الإنتاج</h4>
+                    <h4 className="font-semibold text-blue-900">
+                      ما قبل الإنتاج
+                    </h4>
                     <p className="text-sm text-gray-600">التخطيط والاستعداد</p>
                   </div>
                 </div>
@@ -77,8 +94,12 @@ export const CineAIStudio: React.FC = () => {
                 <div className="flex items-start space-x-3 space-x-reverse">
                   <span className="text-3xl">✨</span>
                   <div>
-                    <h4 className="font-semibold text-blue-900">ما بعد الإنتاج</h4>
-                    <p className="text-sm text-gray-600">المونتاج والإخراج النهائي</p>
+                    <h4 className="font-semibold text-blue-900">
+                      ما بعد الإنتاج
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      المونتاج والإخراج النهائي
+                    </p>
                   </div>
                 </div>
               </div>
@@ -88,15 +109,24 @@ export const CineAIStudio: React.FC = () => {
           {/* Main Tabs */}
           <Tabs defaultValue="pre-production" className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="pre-production" onClick={() => setCurrentPhase('pre')}>
+              <TabsTrigger
+                value="pre-production"
+                onClick={() => setCurrentPhase("pre")}
+              >
                 <span className="mr-2">📋</span>
                 ما قبل الإنتاج
               </TabsTrigger>
-              <TabsTrigger value="production" onClick={() => setCurrentPhase('production')}>
+              <TabsTrigger
+                value="production"
+                onClick={() => setCurrentPhase("production")}
+              >
                 <span className="mr-2">🎬</span>
                 الإنتاج
               </TabsTrigger>
-              <TabsTrigger value="post-production" onClick={() => setCurrentPhase('post')}>
+              <TabsTrigger
+                value="post-production"
+                onClick={() => setCurrentPhase("post")}
+              >
                 <span className="mr-2">✨</span>
                 ما بعد الإنتاج
               </TabsTrigger>

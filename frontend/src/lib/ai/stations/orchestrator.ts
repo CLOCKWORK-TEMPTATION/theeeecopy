@@ -139,9 +139,7 @@ export class StationsOrchestrator {
           1,
           "Text Analysis",
           async () => {
-            const station1 = new Station1TextAnalysis(
-              this.geminiService
-            );
+            const station1 = new Station1TextAnalysis(this.geminiService);
             const result = await station1.run({
               text: fullText,
               projectName,
@@ -167,9 +165,7 @@ export class StationsOrchestrator {
             if (!stationOutputs.station1) {
               throw new Error("Station 1 output is required for Station 2");
             }
-            const station2 = new Station2ConceptualAnalysis(
-              this.geminiService
-            );
+            const station2 = new Station2ConceptualAnalysis(this.geminiService);
             const result = await station2.run({
               text: fullText,
               station1Output: stationOutputs.station1,
@@ -197,9 +193,7 @@ export class StationsOrchestrator {
                 "Station 1 and 2 outputs are required for Station 3"
               );
             }
-            const station3 = new Station3NetworkBuilder(
-              this.geminiService
-            );
+            const station3 = new Station3NetworkBuilder(this.geminiService);
             const result = await station3.run({
               text: fullText,
               station1Output: stationOutputs.station1,
@@ -510,7 +504,6 @@ export class StationsOrchestrator {
 
     return null;
   }
-
 
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));

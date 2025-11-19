@@ -8,20 +8,31 @@
  * - Dynamic quality adjustment
  */
 
-import { getDeviceCapabilities, getParticleLODConfig, PerformanceMonitor } from '@/components/device-detection';
+import {
+  getDeviceCapabilities,
+  getParticleLODConfig,
+  PerformanceMonitor,
+} from "@/components/device-detection";
 
 /**
  * Enhanced requestIdleCallback with fallback
  */
-export const requestIdle = (callback: (deadline: any) => void, options?: any): number => {
-  if (typeof requestIdleCallback !== 'undefined') {
+export const requestIdle = (
+  callback: (deadline: any) => void,
+  options?: any
+): number => {
+  if (typeof requestIdleCallback !== "undefined") {
     return requestIdleCallback(callback, options);
   } else {
     // Fallback to setTimeout
-    return setTimeout(() => callback({
-      timeRemaining: () => Math.max(0, 50), // Simulate 50ms remaining time
-      didTimeout: false
-    }), options?.timeout || 0) as any;
+    return setTimeout(
+      () =>
+        callback({
+          timeRemaining: () => Math.max(0, 50), // Simulate 50ms remaining time
+          didTimeout: false,
+        }),
+      options?.timeout || 0
+    ) as any;
   }
 };
 
@@ -29,7 +40,7 @@ export const requestIdle = (callback: (deadline: any) => void, options?: any): n
  * Cancel idle callback
  */
 export const cancelIdle = (id: number): void => {
-  if (typeof cancelIdleCallback !== 'undefined') {
+  if (typeof cancelIdleCallback !== "undefined") {
     cancelIdleCallback(id);
   } else {
     clearTimeout(id);
@@ -56,24 +67,26 @@ export class BatchProcessor {
     return new Promise((resolve, reject) => {
       try {
         const batch = this.items.splice(0, this.batchSize);
-        
+
         if (batch.length === 0) {
           resolve();
           return;
         }
 
-        requestIdle(() => {
-          try {
-            // Process batch
-            for (const item of batch) {
-              // Process individual item here
+        requestIdle(
+          () => {
+            try {
+              // Process batch
+              for (const item of batch) {
+                // Process individual item here
+              }
+              resolve();
+            } catch (error) {
+              reject(error);
             }
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        }, { timeout: 100 });
-
+          },
+          { timeout: 100 }
+        );
       } catch (error) {
         reject(error);
       }
@@ -113,10 +126,7 @@ export function applySparkEffect(
     const dz = particle.pz - intersection.z;
     const distSq = dx * dx + dy * dy + dz * dz;
 
-    if (
-      distSq < config.effectRadius * config.effectRadius &&
-      distSq > 0.0001
-    ) {
+    if (distSq < config.effectRadius * config.effectRadius && distSq > 0.0001) {
       const dist = Math.sqrt(distSq);
       const force = (1 - dist / config.effectRadius) * config.repelStrength * 3;
       return {
@@ -128,7 +138,7 @@ export function applySparkEffect(
 
     return velocity;
   } catch (error) {
-    console.warn('خطأ في تأثير الشرر:', error);
+    console.warn("خطأ في تأثير الشرر:", error);
     return velocity;
   }
 }
@@ -166,7 +176,7 @@ export function applyWaveEffect(
 
     return velocity;
   } catch (error) {
-    console.warn('خطأ في تأثير الموجة:', error);
+    console.warn("خطأ في تأثير الموجة:", error);
     return velocity;
   }
 }
@@ -218,7 +228,7 @@ export function applyVortexEffect(
 
     return velocity;
   } catch (error) {
-    console.warn('خطأ في تأثير الدوامة:', error);
+    console.warn("خطأ في تأثير الدوامة:", error);
     return velocity;
   }
 }
@@ -250,7 +260,7 @@ export function applyDefaultEffect(
 
     return velocity;
   } catch (error) {
-    console.warn('خطأ في التأثير الافتراضي:', error);
+    console.warn("خطأ في التأثير الافتراضي:", error);
     return velocity;
   }
 }
@@ -284,7 +294,7 @@ export function calculateWaveColor(
 
     return { r: 1, g: 1, b: 1 };
   } catch (error) {
-    console.warn('خطأ في حساب لون الموجة:', error);
+    console.warn("خطأ في حساب لون الموجة:", error);
     return { r: 1, g: 1, b: 1 };
   }
 }
@@ -317,7 +327,7 @@ export function calculateVortexColor(
 
     return { r: 1, g: 1, b: 1 };
   } catch (error) {
-    console.warn('خطأ في حساب لون الدوامة:', error);
+    console.warn("خطأ في حساب لون الدوامة:", error);
     return { r: 1, g: 1, b: 1 };
   }
 }
@@ -332,7 +342,7 @@ export function getOptimizedParticleConfig() {
   return {
     capabilities,
     lodConfig,
-    shouldUseSimplifiedPhysics: capabilities.performanceTier === 'low',
+    shouldUseSimplifiedPhysics: capabilities.performanceTier === "low",
     shouldSkipFrames: capabilities.isLowPowerMode,
   };
 }

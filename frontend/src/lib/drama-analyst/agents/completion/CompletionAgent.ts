@@ -6,7 +6,10 @@ import {
 } from "../shared/standardAgentPattern";
 import { COMPLETION_AGENT_CONFIG } from "./agent";
 import { COMPLETION_MODE_INSTRUCTIONS } from "./instructions";
-import { safeCountOccurrences, safeCountMultipleTerms } from "@/lib/security/safe-regexp";
+import {
+  safeCountOccurrences,
+  safeCountMultipleTerms,
+} from "@/lib/security/safe-regexp";
 
 /**
  * Completion Agent - وكيل استكمال السرد
@@ -32,7 +35,8 @@ export class CompletionAgent extends BaseAgent {
     const { input: taskInput, context } = input;
 
     // Extract relevant context
-    const contextObj = typeof context === 'object' && context !== null ? context : {};
+    const contextObj =
+      typeof context === "object" && context !== null ? context : {};
     const originalText = (contextObj as any)?.originalText || "";
     const previousCompletions = (contextObj as any)?.previousCompletions || [];
     const completionScope = (contextObj as any)?.completionScope || "paragraph";
@@ -272,7 +276,10 @@ export class CompletionAgent extends BaseAgent {
   protected override async getFallbackResponse(
     input: StandardAgentInput
   ): Promise<string> {
-    const contextObj = typeof input.context === 'object' && input.context !== null ? input.context : {};
+    const contextObj =
+      typeof input.context === "object" && input.context !== null
+        ? input.context
+        : {};
     const originalText = (contextObj as any)?.originalText || "";
     const scope = (contextObj as any)?.completionScope || "paragraph";
 

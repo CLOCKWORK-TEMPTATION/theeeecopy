@@ -31,11 +31,15 @@ export interface KeyboardShortcut {
 export function handleTabKey(
   event: React.KeyboardEvent,
   currentFormat: ScreenplayFormat,
-  getNextFormatOnTab: (format: ScreenplayFormat, shiftKey: boolean) => ScreenplayFormat | null,
+  getNextFormatOnTab: (
+    format: ScreenplayFormat,
+    shiftKey: boolean
+  ) => ScreenplayFormat | null,
   applyFormatToCurrentLine: (format: ScreenplayFormat) => void
 ): void {
   event.preventDefault();
-  const nextFormat = getNextFormatOnTab(currentFormat, event.shiftKey) || "action";
+  const nextFormat =
+    getNextFormatOnTab(currentFormat, event.shiftKey) || "action";
   applyFormatToCurrentLine(nextFormat);
 }
 
@@ -80,8 +84,14 @@ export function createShortcutHandlers(
   handlers.set("Y", () => formatText("redo"));
 
   // File operations
-  handlers.set("s", () => onSave?.() || console.log("Save functionality would go here"));
-  handlers.set("S", () => onSave?.() || console.log("Save functionality would go here"));
+  handlers.set(
+    "s",
+    () => onSave?.() || console.log("Save functionality would go here")
+  );
+  handlers.set(
+    "S",
+    () => onSave?.() || console.log("Save functionality would go here")
+  );
   handlers.set("a", () => formatText("selectAll"));
   handlers.set("A", () => formatText("selectAll"));
   handlers.set("p", () => formatText("print"));

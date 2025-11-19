@@ -91,11 +91,11 @@ module.exports = {
 
   // Lighthouse Score Budgets (0-1 scale)
   lighthouseScores: {
-    performance: 0.90, // 90/100 minimum
+    performance: 0.9, // 90/100 minimum
     accessibility: 0.95, // 95/100 minimum
     bestPractices: 0.95, // 95/100 minimum
     seo: 0.95, // 95/100 minimum
-    pwa: 0.80, // 80/100 minimum (if applicable)
+    pwa: 0.8, // 80/100 minimum (if applicable)
   },
 
   // Network Request Budgets
@@ -156,23 +156,23 @@ module.exports = {
   enforcement: {
     // Fail build if exceeded
     strict: [
-      'webVitals.lcp.needsImprovement',
-      'webVitals.cls.needsImprovement',
-      'lighthouseScores.performance',
-      'lighthouseScores.accessibility',
-      'resourceSizes.pageWeight.total',
+      "webVitals.lcp.needsImprovement",
+      "webVitals.cls.needsImprovement",
+      "lighthouseScores.performance",
+      "lighthouseScores.accessibility",
+      "resourceSizes.pageWeight.total",
     ],
     // Warn but don't fail
     warnings: [
-      'resourceSizes.javascript.total',
-      'resourceSizes.css.total',
-      'networkRequests.total',
-      'timings.serverResponseTime',
+      "resourceSizes.javascript.total",
+      "resourceSizes.css.total",
+      "networkRequests.total",
+      "timings.serverResponseTime",
     ],
     // Track but don't enforce (for monitoring)
     tracking: [
-      'bundleAnalysis.maxDuplicateDependencies',
-      'cachePerformance.minCacheHitRate',
+      "bundleAnalysis.maxDuplicateDependencies",
+      "cachePerformance.minCacheHitRate",
     ],
   },
 };

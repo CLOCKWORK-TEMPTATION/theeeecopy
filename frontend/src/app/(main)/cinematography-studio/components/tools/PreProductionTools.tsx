@@ -1,17 +1,23 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 const PreProductionTools: React.FC = () => {
-  const [script, setScript] = useState('');
+  const [script, setScript] = useState("");
   const [shotList, setShotList] = useState<any[]>([]);
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleGenerateShotList = async () => {
@@ -21,10 +27,34 @@ const PreProductionTools: React.FC = () => {
     // Simulated AI response for now
     setTimeout(() => {
       const mockShots = [
-        { id: 1, type: 'Wide Shot', description: 'Establishing shot of the location', camera: 'Static', lighting: 'Natural' },
-        { id: 2, type: 'Medium Shot', description: 'Character enters frame', camera: 'Dolly in', lighting: 'Three-point' },
-        { id: 3, type: 'Close-up', description: 'Character emotional reaction', camera: 'Handheld', lighting: 'Soft key' },
-        { id: 4, type: 'Over-the-shoulder', description: 'Conversation shot', camera: 'Static', lighting: 'Balanced' },
+        {
+          id: 1,
+          type: "Wide Shot",
+          description: "Establishing shot of the location",
+          camera: "Static",
+          lighting: "Natural",
+        },
+        {
+          id: 2,
+          type: "Medium Shot",
+          description: "Character enters frame",
+          camera: "Dolly in",
+          lighting: "Three-point",
+        },
+        {
+          id: 3,
+          type: "Close-up",
+          description: "Character emotional reaction",
+          camera: "Handheld",
+          lighting: "Soft key",
+        },
+        {
+          id: 4,
+          type: "Over-the-shoulder",
+          description: "Conversation shot",
+          camera: "Static",
+          lighting: "Balanced",
+        },
       ];
       setShotList(mockShots);
       setLoading(false);
@@ -61,7 +91,7 @@ const PreProductionTools: React.FC = () => {
             disabled={loading || !script.trim()}
             className="w-full"
           >
-            {loading ? '🔄 جاري التوليد...' : '🎬 توليد قائمة اللقطات'}
+            {loading ? "🔄 جاري التوليد..." : "🎬 توليد قائمة اللقطات"}
           </Button>
 
           {/* Shot List Results */}
@@ -77,8 +107,12 @@ const PreProductionTools: React.FC = () => {
                           <Badge>{shot.type}</Badge>
                           <Badge variant="outline">{shot.camera}</Badge>
                         </div>
-                        <p className="text-sm text-gray-700">{shot.description}</p>
-                        <p className="text-xs text-gray-500 mt-1">Lighting: {shot.lighting}</p>
+                        <p className="text-sm text-gray-700">
+                          {shot.description}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Lighting: {shot.lighting}
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -102,7 +136,9 @@ const PreProductionTools: React.FC = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="location-input">وصف الموقع / Location Description</Label>
+            <Label htmlFor="location-input">
+              وصف الموقع / Location Description
+            </Label>
             <Input
               id="location-input"
               value={location}

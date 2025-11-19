@@ -9,7 +9,12 @@ interface UploadDockProps {
   maxSize?: number;
 }
 
-export function UploadDock({ onUpload, onFileUpload, accept, maxSize }: UploadDockProps) {
+export function UploadDock({
+  onUpload,
+  onFileUpload,
+  accept,
+  maxSize,
+}: UploadDockProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {

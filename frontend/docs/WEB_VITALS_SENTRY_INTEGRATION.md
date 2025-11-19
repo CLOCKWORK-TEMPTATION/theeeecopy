@@ -10,18 +10,18 @@ Web Vitals are Google's initiative to provide unified guidance for quality signa
 
 ### Core Web Vitals Metrics
 
-| Metric | Description | Good | Needs Improvement | Poor |
-|--------|-------------|------|-------------------|------|
-| **LCP** (Largest Contentful Paint) | Loading performance - time to render largest content element | ≤ 2.5s | 2.5s - 4s | > 4s |
-| **INP** (Interaction to Next Paint) | Responsiveness - time from user interaction to visual feedback | ≤ 200ms | 200ms - 500ms | > 500ms |
-| **CLS** (Cumulative Layout Shift) | Visual stability - unexpected layout shifts | ≤ 0.1 | 0.1 - 0.25 | > 0.25 |
+| Metric                              | Description                                                    | Good    | Needs Improvement | Poor    |
+| ----------------------------------- | -------------------------------------------------------------- | ------- | ----------------- | ------- |
+| **LCP** (Largest Contentful Paint)  | Loading performance - time to render largest content element   | ≤ 2.5s  | 2.5s - 4s         | > 4s    |
+| **INP** (Interaction to Next Paint) | Responsiveness - time from user interaction to visual feedback | ≤ 200ms | 200ms - 500ms     | > 500ms |
+| **CLS** (Cumulative Layout Shift)   | Visual stability - unexpected layout shifts                    | ≤ 0.1   | 0.1 - 0.25        | > 0.25  |
 
 ### Additional Metrics
 
-| Metric | Description | Good | Needs Improvement | Poor |
-|--------|-------------|------|-------------------|------|
-| **FCP** (First Contentful Paint) | Time to first content render | ≤ 1.8s | 1.8s - 3s | > 3s |
-| **TTFB** (Time to First Byte) | Server response time | ≤ 800ms | 800ms - 1800ms | > 1800ms |
+| Metric                           | Description                  | Good    | Needs Improvement | Poor     |
+| -------------------------------- | ---------------------------- | ------- | ----------------- | -------- |
+| **FCP** (First Contentful Paint) | Time to first content render | ≤ 1.8s  | 1.8s - 3s         | > 3s     |
+| **TTFB** (Time to First Byte)    | Server response time         | ≤ 800ms | 800ms - 1800ms    | > 1800ms |
 
 ## Implementation
 
@@ -36,19 +36,23 @@ import * as Sentry from "@sentry/react";
 
 function sendToSentry(metric) {
   // Send as Sentry measurement
-  Sentry.setMeasurement(metric.name, metric.value, 'millisecond');
+  Sentry.setMeasurement(metric.name, metric.value, "millisecond");
 
   // Add breadcrumb for context
   Sentry.addBreadcrumb({
     category: "web-vitals",
     message: `${metric.name}: ${metric.value}ms (${metric.rating})`,
-    level: metric.rating === 'good' ? 'info' :
-           metric.rating === 'needs-improvement' ? 'warning' : 'error',
+    level:
+      metric.rating === "good"
+        ? "info"
+        : metric.rating === "needs-improvement"
+          ? "warning"
+          : "error",
   });
 
   // Report poor metrics as events
-  if (metric.rating === 'poor') {
-    Sentry.captureMessage(`Poor Web Vital: ${metric.name}`, 'warning');
+  if (metric.rating === "poor") {
+    Sentry.captureMessage(`Poor Web Vital: ${metric.name}`, "warning");
   }
 }
 ```
@@ -98,7 +102,7 @@ export default function RootLayout({ children }) {
 ### Resource Size Budgets
 
 | Resource Type | Budget (KB) |
-|---------------|-------------|
+| ------------- | ----------- |
 | JavaScript    | 350         |
 | CSS           | 50          |
 | Images        | 500         |
@@ -108,25 +112,26 @@ export default function RootLayout({ children }) {
 
 ### Timing Budgets
 
-| Metric | Budget (ms) |
-|--------|-------------|
-| First Contentful Paint | 1800 |
-| Largest Contentful Paint | 2500 |
-| Total Blocking Time | 200 |
-| Speed Index | 3400 |
-| Time to Interactive | 3800 |
-| Cumulative Layout Shift | 0.1 |
+| Metric                   | Budget (ms) |
+| ------------------------ | ----------- |
+| First Contentful Paint   | 1800        |
+| Largest Contentful Paint | 2500        |
+| Total Blocking Time      | 200         |
+| Speed Index              | 3400        |
+| Time to Interactive      | 3800        |
+| Cumulative Layout Shift  | 0.1         |
 
 ### Lighthouse Quality Standards
 
-| Category | Minimum Score |
-|----------|---------------|
-| Performance | 90% |
-| Accessibility | 95% |
-| Best Practices | 95% |
-| SEO | 95% |
+| Category       | Minimum Score |
+| -------------- | ------------- |
+| Performance    | 90%           |
+| Accessibility  | 95%           |
+| Best Practices | 95%           |
+| SEO            | 95%           |
 
 These budgets and standards are enforced in:
+
 - **Lighthouse CI**: `lighthouserc.json`
 - **CI/CD Pipeline**: `.github/workflows/ci.yml`
 
@@ -152,6 +157,7 @@ The CI/CD pipeline includes automated performance checks:
 ### Lighthouse CI
 
 Lighthouse runs on every PR to validate:
+
 - Performance score ≥ 85%
 - All Core Web Vitals within "Good" thresholds
 - Resource budgets not exceeded
@@ -222,6 +228,7 @@ Web Vitals are logged to console in development:
 ### Production Monitoring
 
 In production, metrics are:
+
 1. Sent to Sentry as measurements
 2. Added as breadcrumbs for context
 3. Reported as events if rating is 'poor'
@@ -229,24 +236,28 @@ In production, metrics are:
 ## Best Practices
 
 ### 1. Improve LCP
+
 - Optimize images (WebP, lazy loading)
 - Use CDN for static assets
 - Implement code splitting
 - Reduce server response time
 
 ### 2. Improve INP
+
 - Minimize JavaScript execution
 - Use web workers for heavy computations
 - Implement virtual scrolling for long lists
 - Debounce/throttle event handlers
 
 ### 3. Improve CLS
+
 - Reserve space for images/ads
 - Avoid inserting content above existing content
 - Use CSS animations instead of layout changes
 - Set dimensions for media elements
 
 ### 4. General Optimizations
+
 - Enable HTTP/2 or HTTP/3
 - Use compression (Brotli/Gzip)
 - Implement proper caching strategies
@@ -257,14 +268,16 @@ In production, metrics are:
 ### Metrics Not Appearing in Sentry
 
 1. Check Sentry DSN is configured:
+
    ```bash
    echo $NEXT_PUBLIC_SENTRY_DSN
    ```
 
 2. Verify Sentry is initialized:
+
    ```typescript
    import * as Sentry from "@sentry/react";
-   console.log('Sentry initialized:', !!Sentry.getCurrentHub());
+   console.log("Sentry initialized:", !!Sentry.getCurrentHub());
    ```
 
 3. Check browser console for errors
@@ -274,6 +287,7 @@ In production, metrics are:
 If CI fails due to budget violations:
 
 1. Run bundle analyzer locally:
+
    ```bash
    cd frontend
    ANALYZE=true npm run build
@@ -298,6 +312,7 @@ If CI fails due to budget violations:
 ## Changelog
 
 ### 2025-11-07
+
 - ✅ Integrated Web Vitals with Sentry
 - ✅ Added INP metric (replaces FID)
 - ✅ Implemented performance budgets in CI/CD

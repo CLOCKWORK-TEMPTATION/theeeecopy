@@ -1,9 +1,15 @@
 "use client";
 
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export const DirectorsStudio: React.FC = () => {
   return (
@@ -26,10 +32,16 @@ export const DirectorsStudio: React.FC = () => {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-3xl mb-2">🚧 قيد التطوير</CardTitle>
-                  <CardDescription className="text-lg">Under Development</CardDescription>
+                  <CardTitle className="text-3xl mb-2">
+                    🚧 قيد التطوير
+                  </CardTitle>
+                  <CardDescription className="text-lg">
+                    Under Development
+                  </CardDescription>
                 </div>
-                <Badge variant="outline" className="text-lg px-4 py-2">قريباً</Badge>
+                <Badge variant="outline" className="text-lg px-4 py-2">
+                  قريباً
+                </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -46,42 +58,54 @@ export const DirectorsStudio: React.FC = () => {
                     <span className="text-2xl">📝</span>
                     <div>
                       <strong className="text-lg">تحليل السيناريو:</strong>
-                      <p className="text-gray-600">أدوات تحليل متقدمة للسيناريوهات والبنية الدرامية</p>
+                      <p className="text-gray-600">
+                        أدوات تحليل متقدمة للسيناريوهات والبنية الدرامية
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3 space-x-reverse">
                     <span className="text-2xl">🎭</span>
                     <div>
                       <strong className="text-lg">إدارة الممثلين:</strong>
-                      <p className="text-gray-600">أدوات لإدارة أداء الممثلين وملاحظات الإخراج</p>
+                      <p className="text-gray-600">
+                        أدوات لإدارة أداء الممثلين وملاحظات الإخراج
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3 space-x-reverse">
                     <span className="text-2xl">🎨</span>
                     <div>
                       <strong className="text-lg">لوحة القصة:</strong>
-                      <p className="text-gray-600">إنشاء وتحرير لوحات القصة (Storyboards)</p>
+                      <p className="text-gray-600">
+                        إنشاء وتحرير لوحات القصة (Storyboards)
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3 space-x-reverse">
                     <span className="text-2xl">📅</span>
                     <div>
                       <strong className="text-lg">جدولة التصوير:</strong>
-                      <p className="text-gray-600">تخطيط وإدارة جداول التصوير والإنتاج</p>
+                      <p className="text-gray-600">
+                        تخطيط وإدارة جداول التصوير والإنتاج
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3 space-x-reverse">
                     <span className="text-2xl">🎞️</span>
                     <div>
                       <strong className="text-lg">المونتاج المبدئي:</strong>
-                      <p className="text-gray-600">أدوات لتصور المونتاج وإيقاع الفيلم</p>
+                      <p className="text-gray-600">
+                        أدوات لتصور المونتاج وإيقاع الفيلم
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3 space-x-reverse">
                     <span className="text-2xl">🎯</span>
                     <div>
                       <strong className="text-lg">رؤية المخرج:</strong>
-                      <p className="text-gray-600">مساحة عمل لتوثيق وتطوير الرؤية الإخراجية</p>
+                      <p className="text-gray-600">
+                        مساحة عمل لتوثيق وتطوير الرؤية الإخراجية
+                      </p>
                     </div>
                   </li>
                 </ul>
@@ -97,7 +121,9 @@ export const DirectorsStudio: React.FC = () => {
           </Card>
 
           <div className="mt-8 text-center text-gray-600">
-            <p>للاستفسارات أو المساهمة في التطوير، يرجى التواصل مع فريق التطوير</p>
+            <p>
+              للاستفسارات أو المساهمة في التطوير، يرجى التواصل مع فريق التطوير
+            </p>
           </div>
         </div>
       </main>

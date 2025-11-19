@@ -4,8 +4,8 @@
  * Provides caching layer for API responses with Redis
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { getCached, setCached, invalidateCache } from '@/lib/redis';
+import { NextRequest, NextResponse } from "next/server";
+import { getCached, setCached, invalidateCache } from "@/lib/redis";
 
 export interface CacheOptions {
   /** Cache key prefix */
@@ -21,7 +21,10 @@ export interface CacheOptions {
 /**
  * Generates a cache key from request
  */
-function generateCacheKey(request: NextRequest, prefix: string = 'api'): string {
+function generateCacheKey(
+  request: NextRequest,
+  prefix: string = "api"
+): string {
   const url = new URL(request.url);
   const pathname = url.pathname;
   const search = url.search;
@@ -40,9 +43,9 @@ export function withCache<T = any>(
 ) {
   return async (request: NextRequest): Promise<NextResponse<T>> => {
     const {
-      keyPrefix = 'api',
+      keyPrefix = "api",
       ttl = 3600, // 1 hour default
-      shouldCache = () => request.method === 'GET',
+      shouldCache = () => request.method === "GET",
       keyGenerator = (req) => generateCacheKey(req, keyPrefix),
     } = options;
 
@@ -60,8 +63,8 @@ export function withCache<T = any>(
       if (cached) {
         return NextResponse.json(cached, {
           headers: {
-            'X-Cache': 'HIT',
-            'Cache-Control': `public, s-maxage=${ttl}, stale-while-revalidate=${ttl * 2}`,
+            "X-Cache": "HIT",
+            "Cache-Control": `public, s-maxage=${ttl}, stale-while-revalidate=${ttl * 2}`,
           },
         }) as NextResponse<T>;
       }
@@ -75,8 +78,8 @@ export function withCache<T = any>(
         await setCached(cacheKey, data, { ttl });
         return NextResponse.json(data, {
           headers: {
-            'X-Cache': 'MISS',
-            'Cache-Control': `public, s-maxage=${ttl}, stale-while-revalidate=${ttl * 2}`,
+            "X-Cache": "MISS",
+            "Cache-Control": `public, s-maxage=${ttl}, stale-while-revalidate=${ttl * 2}`,
           },
         }) as NextResponse<T>;
       }
@@ -88,7 +91,7 @@ export function withCache<T = any>(
 
       // Add cache miss header
       const headers = new Headers(response.headers);
-      headers.set('X-Cache', 'MISS');
+      headers.set("X-Cache", "MISS");
 
       return new NextResponse(response.body, {
         status: response.status,

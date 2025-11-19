@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   useEffect(() => {
     // Log error to console or send to error tracking service (e.g., Sentry)
-    console.error('Error boundary caught:', error)
-  }, [error])
+    console.error("Error boundary caught:", error);
+  }, [error]);
 
   return (
     <main className="mx-auto max-w-xl p-6">
@@ -24,18 +24,16 @@ export default function Error({
         </p>
         {error.message && (
           <details className="mb-6 rounded border bg-muted p-4 text-sm">
-            <summary className="cursor-pointer font-medium">تفاصيل الخطأ</summary>
+            <summary className="cursor-pointer font-medium">
+              تفاصيل الخطأ
+            </summary>
             <p className="mt-2 text-muted-foreground">{error.message}</p>
           </details>
         )}
-        <Button
-          onClick={reset}
-          className="w-full sm:w-auto"
-          variant="default"
-        >
+        <Button onClick={reset} className="w-full sm:w-auto" variant="default">
           إعادة المحاولة
         </Button>
       </div>
     </main>
-  )
+  );
 }

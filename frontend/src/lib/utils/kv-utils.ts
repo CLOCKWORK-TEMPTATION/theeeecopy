@@ -21,13 +21,13 @@ export function unflatten(flat: Record<string, string>): Record<string, any> {
   const result: Record<string, any> = {};
 
   // SECURITY: Dangerous keys that could lead to prototype pollution
-  const DANGEROUS_KEYS = ['__proto__', 'constructor', 'prototype'];
+  const DANGEROUS_KEYS = ["__proto__", "constructor", "prototype"];
 
   for (const [key, value] of Object.entries(flat)) {
     const parts = key.split(".");
 
     // SECURITY FIX: Validate parts to prevent prototype pollution
-    if (parts.some(part => DANGEROUS_KEYS.includes(part))) {
+    if (parts.some((part) => DANGEROUS_KEYS.includes(part))) {
       console.warn(`[Security] Skipping potentially dangerous key: ${key}`);
       continue;
     }

@@ -7,7 +7,7 @@ export default function ImageExample() {
   return (
     <div className="p-8 space-y-4">
       <h2 className="text-2xl font-bold mb-4">أمثلة ImageWithFallback</h2>
-      
+
       <div className="space-y-8">
         {/* مثال 1: صورة عادية */}
         <div>

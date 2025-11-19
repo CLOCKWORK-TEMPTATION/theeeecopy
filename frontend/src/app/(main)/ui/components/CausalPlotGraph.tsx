@@ -237,10 +237,7 @@ export function CausalPlotGraph({
           {/* Nodes */}
           <g>
             {nodes.map((node, index) => (
-              <g
-                key={node.id}
-                style={{ opacity: 1 }}
-              >
+              <g key={node.id} style={{ opacity: 1 }}>
                 <circle
                   cx={`${node.x}%`}
                   cy={`${node.y}%`}

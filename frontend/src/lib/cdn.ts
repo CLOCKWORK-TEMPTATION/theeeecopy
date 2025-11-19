@@ -10,8 +10,8 @@
  * Get the CDN URL from environment variables
  * الحصول على رابط CDN من متغيرات البيئة
  */
-const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL || '';
-const ENABLE_CDN = process.env.NEXT_PUBLIC_ENABLE_CDN === 'true';
+const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL || "";
+const ENABLE_CDN = process.env.NEXT_PUBLIC_ENABLE_CDN === "true";
 
 /**
  * Get the full URL for a static asset
@@ -30,12 +30,12 @@ const ENABLE_CDN = process.env.NEXT_PUBLIC_ENABLE_CDN === 'true';
  */
 export function getAssetUrl(path: string): string {
   // Ensure path starts with /
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
   // If CDN is enabled and URL is configured, use CDN
   if (ENABLE_CDN && CDN_URL) {
     // Remove trailing slash from CDN URL if present
-    const cdnBase = CDN_URL.endsWith('/') ? CDN_URL.slice(0, -1) : CDN_URL;
+    const cdnBase = CDN_URL.endsWith("/") ? CDN_URL.slice(0, -1) : CDN_URL;
     return `${cdnBase}${normalizedPath}`;
   }
 
@@ -77,7 +77,7 @@ export function getFontUrl(fontName: string): string {
  */
 export function getImageUrl(imagePath: string): string {
   // If path already starts with /images, use it as is
-  if (imagePath.startsWith('/images/')) {
+  if (imagePath.startsWith("/images/")) {
     return getAssetUrl(imagePath);
   }
 
@@ -120,7 +120,7 @@ export function isCdnEnabled(): boolean {
  * @returns The CDN base URL or empty string if not configured
  */
 export function getCdnBaseUrl(): string {
-  return ENABLE_CDN ? CDN_URL : '';
+  return ENABLE_CDN ? CDN_URL : "";
 }
 
 /**
@@ -142,19 +142,19 @@ export function getCdnBaseUrl(): string {
  */
 export function preloadAsset(
   path: string,
-  type: 'image' | 'font' | 'style' | 'script' = 'image'
+  type: "image" | "font" | "style" | "script" = "image"
 ): void {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") return;
 
   const url = getAssetUrl(path);
-  const link = document.createElement('link');
-  link.rel = 'preload';
+  const link = document.createElement("link");
+  link.rel = "preload";
   link.href = url;
   link.as = type;
 
   // Add crossorigin for fonts
-  if (type === 'font') {
-    link.crossOrigin = 'anonymous';
+  if (type === "font") {
+    link.crossOrigin = "anonymous";
   }
 
   document.head.appendChild(link);

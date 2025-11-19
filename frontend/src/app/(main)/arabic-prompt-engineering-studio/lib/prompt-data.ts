@@ -5,18 +5,18 @@ import type {
   PromptTemplate,
   PromptCategory,
   TemplateVariable,
-} from '@/app/(main)/arabic-prompt-engineering-studio/types';
+} from "@/app/(main)/arabic-prompt-engineering-studio/types";
 
 /**
  * Default prompt templates library
  */
 export const defaultPromptTemplates: PromptTemplate[] = [
   {
-    id: 'creative-writing-ar',
-    name: 'كتابة إبداعية عربية',
-    description: 'قالب لإنشاء prompts للكتابة الإبداعية بالعربية',
-    category: 'creative_writing',
-    language: 'ar',
+    id: "creative-writing-ar",
+    name: "كتابة إبداعية عربية",
+    description: "قالب لإنشاء prompts للكتابة الإبداعية بالعربية",
+    category: "creative_writing",
+    language: "ar",
     template: `اكتب نصاً إبداعياً باللغة العربية حول الموضوع التالي:
 
 الموضوع: {{topic}}
@@ -30,60 +30,60 @@ export const defaultPromptTemplates: PromptTemplate[] = [
 - اجعل النص {{style}}`,
     variables: [
       {
-        name: 'topic',
-        description: 'الموضوع الرئيسي للنص',
+        name: "topic",
+        description: "الموضوع الرئيسي للنص",
         required: true,
-        type: 'string',
+        type: "string",
       },
       {
-        name: 'genre',
-        description: 'النوع الأدبي (قصة، مقال، شعر، إلخ)',
+        name: "genre",
+        description: "النوع الأدبي (قصة، مقال، شعر، إلخ)",
         required: false,
-        defaultValue: 'قصة',
-        type: 'string',
+        defaultValue: "قصة",
+        type: "string",
       },
       {
-        name: 'length',
-        description: 'الطول المطلوب (قصير، متوسط، طويل)',
+        name: "length",
+        description: "الطول المطلوب (قصير، متوسط، طويل)",
         required: false,
-        defaultValue: 'متوسط',
-        type: 'string',
+        defaultValue: "متوسط",
+        type: "string",
       },
       {
-        name: 'tone',
-        description: 'الطابع المطلوب (جدي، فكاهي، درامي، إلخ)',
+        name: "tone",
+        description: "الطابع المطلوب (جدي، فكاهي، درامي، إلخ)",
         required: false,
-        defaultValue: 'متوازن',
-        type: 'string',
+        defaultValue: "متوازن",
+        type: "string",
       },
       {
-        name: 'focus',
-        description: 'ما يجب التركيز عليه',
+        name: "focus",
+        description: "ما يجب التركيز عليه",
         required: false,
-        type: 'string',
+        type: "string",
       },
       {
-        name: 'style',
-        description: 'نمط الكتابة',
+        name: "style",
+        description: "نمط الكتابة",
         required: false,
-        defaultValue: 'طبيعي وسلس',
-        type: 'string',
+        defaultValue: "طبيعي وسلس",
+        type: "string",
       },
     ],
     examples: [
-      'موضوع: الحلم والواقع، النوع: قصة قصيرة، الطول: متوسط',
-      'موضوع: التكنولوجيا والمجتمع، النوع: مقال، الطول: طويل',
+      "موضوع: الحلم والواقع، النوع: قصة قصيرة، الطول: متوسط",
+      "موضوع: التكنولوجيا والمجتمع، النوع: مقال، الطول: طويل",
     ],
-    tags: ['كتابة', 'إبداع', 'عربي'],
+    tags: ["كتابة", "إبداع", "عربي"],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    id: 'text-analysis-ar',
-    name: 'تحليل النصوص',
-    description: 'قالب لتحليل النصوص العربية',
-    category: 'analysis',
-    language: 'ar',
+    id: "text-analysis-ar",
+    name: "تحليل النصوص",
+    description: "قالب لتحليل النصوص العربية",
+    category: "analysis",
+    language: "ar",
     template: `حلل النص التالي بشكل شامل:
 
 النص:
@@ -97,23 +97,23 @@ export const defaultPromptTemplates: PromptTemplate[] = [
 5. ما التوصيات للتحسين؟`,
     variables: [
       {
-        name: 'text',
-        description: 'النص المراد تحليله',
+        name: "text",
+        description: "النص المراد تحليله",
         required: true,
-        type: 'string',
+        type: "string",
       },
     ],
     examples: [],
-    tags: ['تحليل', 'نصوص', 'عربي'],
+    tags: ["تحليل", "نصوص", "عربي"],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    id: 'translation-ar-en',
-    name: 'ترجمة عربي-إنجليزي',
-    description: 'قالب لترجمة النصوص من العربية إلى الإنجليزية',
-    category: 'translation',
-    language: 'ar',
+    id: "translation-ar-en",
+    name: "ترجمة عربي-إنجليزي",
+    description: "قالب لترجمة النصوص من العربية إلى الإنجليزية",
+    category: "translation",
+    language: "ar",
     template: `ترجم النص التالي من العربية إلى الإنجليزية مع الحفاظ على:
 - المعنى الأصلي
 - السياق الثقافي
@@ -127,36 +127,36 @@ export const defaultPromptTemplates: PromptTemplate[] = [
 {{instructions}}`,
     variables: [
       {
-        name: 'text',
-        description: 'النص المراد ترجمته',
+        name: "text",
+        description: "النص المراد ترجمته",
         required: true,
-        type: 'string',
+        type: "string",
       },
       {
-        name: 'preserveFormat',
-        description: 'الحفاظ على التنسيق',
+        name: "preserveFormat",
+        description: "الحفاظ على التنسيق",
         required: false,
-        defaultValue: '- التنسيق الأصلي',
-        type: 'string',
+        defaultValue: "- التنسيق الأصلي",
+        type: "string",
       },
       {
-        name: 'instructions',
-        description: 'تعليمات إضافية',
+        name: "instructions",
+        description: "تعليمات إضافية",
         required: false,
-        type: 'string',
+        type: "string",
       },
     ],
     examples: [],
-    tags: ['ترجمة', 'عربي', 'إنجليزي'],
+    tags: ["ترجمة", "عربي", "إنجليزي"],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    id: 'summarization-ar',
-    name: 'تلخيص النصوص',
-    description: 'قالب لتلخيص النصوص العربية',
-    category: 'summarization',
-    language: 'ar',
+    id: "summarization-ar",
+    name: "تلخيص النصوص",
+    description: "قالب لتلخيص النصوص العربية",
+    category: "summarization",
+    language: "ar",
     template: `لخص النص التالي بشكل مختصر ودقيق:
 
 النص:
@@ -171,33 +171,33 @@ export const defaultPromptTemplates: PromptTemplate[] = [
 - {{additionalInstructions}}`,
     variables: [
       {
-        name: 'text',
-        description: 'النص المراد تلخيصه',
+        name: "text",
+        description: "النص المراد تلخيصه",
         required: true,
-        type: 'string',
+        type: "string",
       },
       {
-        name: 'length',
-        description: 'طول الملخص (قصير جداً، قصير، متوسط)',
+        name: "length",
+        description: "طول الملخص (قصير جداً، قصير، متوسط)",
         required: false,
-        defaultValue: 'متوسط',
-        type: 'string',
+        defaultValue: "متوسط",
+        type: "string",
       },
       {
-        name: 'focus',
-        description: 'الجوانب التي يجب التركيز عليها',
+        name: "focus",
+        description: "الجوانب التي يجب التركيز عليها",
         required: false,
-        type: 'string',
+        type: "string",
       },
       {
-        name: 'additionalInstructions',
-        description: 'تعليمات إضافية',
+        name: "additionalInstructions",
+        description: "تعليمات إضافية",
         required: false,
-        type: 'string',
+        type: "string",
       },
     ],
     examples: [],
-    tags: ['تلخيص', 'نصوص'],
+    tags: ["تلخيص", "نصوص"],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -223,7 +223,7 @@ export function getTemplatesByCategory(
  * Get templates by language
  */
 export function getTemplatesByLanguage(
-  language: 'ar' | 'en'
+  language: "ar" | "en"
 ): PromptTemplate[] {
   return defaultPromptTemplates.filter((t) => t.language === language);
 }
@@ -239,17 +239,15 @@ export function renderTemplate(
 
   for (const variable of template.variables) {
     const value =
-      variables[variable.name] ||
-      variable.defaultValue ||
-      `[${variable.name}]`;
+      variables[variable.name] || variable.defaultValue || `[${variable.name}]`;
     result = result.replace(
-      new RegExp(`\\{\\{${variable.name}\\}\\}`, 'g'),
+      new RegExp(`\\{\\{${variable.name}\\}\\}`, "g"),
       value
     );
   }
 
   // Remove any remaining template variables
-  result = result.replace(/\{\{[\w]+\}\}/g, '');
+  result = result.replace(/\{\{[\w]+\}\}/g, "");
 
   return result;
 }
@@ -292,4 +290,3 @@ export function extractTemplateVariables(text: string): string[] {
 
   return variables;
 }
-

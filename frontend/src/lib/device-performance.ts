@@ -16,7 +16,7 @@
  * ```
  */
 
-export type PerformanceTier = 'high' | 'medium' | 'low' | 'minimal';
+export type PerformanceTier = "high" | "medium" | "low" | "minimal";
 
 export interface DeviceCapabilities {
   /** Number of logical CPU cores */
@@ -75,13 +75,13 @@ const PERFORMANCE_CONFIGS: Record<PerformanceTier, PerformanceConfig> = {
 
 export class DevicePerformanceDetector {
   private capabilities: DeviceCapabilities | null = null;
-  private performanceTier: PerformanceTier = 'medium';
+  private performanceTier: PerformanceTier = "medium";
 
   /**
    * Initialize the detector and gather device capabilities
    */
   async initialize(): Promise<void> {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return;
     }
 
@@ -103,14 +103,14 @@ export class DevicePerformanceDetector {
       }
     } catch (error) {
       // Battery API not available or denied - not critical
-      console.debug('Battery API not available:', error);
+      console.debug("Battery API not available:", error);
     }
 
     this.capabilities = capabilities;
     this.performanceTier = this.calculatePerformanceTier(capabilities);
 
-    console.log('[DevicePerformance] Detected capabilities:', capabilities);
-    console.log('[DevicePerformance] Performance tier:', this.performanceTier);
+    console.log("[DevicePerformance] Detected capabilities:", capabilities);
+    console.log("[DevicePerformance] Performance tier:", this.performanceTier);
   }
 
   /**
@@ -171,7 +171,7 @@ export class DevicePerformanceDetector {
    * Get hardware concurrency (CPU cores)
    */
   private getHardwareConcurrency(): number {
-    if (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) {
+    if (typeof navigator !== "undefined" && navigator.hardwareConcurrency) {
       return navigator.hardwareConcurrency;
     }
     return 4; // Default fallback
@@ -181,7 +181,7 @@ export class DevicePerformanceDetector {
    * Get device memory in GB
    */
   private getDeviceMemory(): number | undefined {
-    if (typeof navigator !== 'undefined') {
+    if (typeof navigator !== "undefined") {
       // @ts-ignore - deviceMemory is not in all TypeScript definitions
       return navigator.deviceMemory;
     }
@@ -192,11 +192,11 @@ export class DevicePerformanceDetector {
    * Check if user prefers reduced motion
    */
   private getPrefersReducedMotion(): boolean {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return false;
     }
 
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
   /**
@@ -206,7 +206,7 @@ export class DevicePerformanceDetector {
     level: number;
     charging: boolean;
   } | null> {
-    if (typeof navigator === 'undefined') {
+    if (typeof navigator === "undefined") {
       return null;
     }
 
@@ -280,19 +280,19 @@ export class DevicePerformanceDetector {
 
     // Reduced motion check
     if (capabilities.prefersReducedMotion) {
-      return 'minimal';
+      return "minimal";
     }
 
     // Determine tier based on score
     // Max possible score: 70 points
     if (score >= 55) {
-      return 'high';
+      return "high";
     } else if (score >= 35) {
-      return 'medium';
+      return "medium";
     } else if (score >= 20) {
-      return 'low';
+      return "low";
     } else {
-      return 'minimal';
+      return "minimal";
     }
   }
 
@@ -302,7 +302,7 @@ export class DevicePerformanceDetector {
   async monitorBatteryChanges(
     onTierChange: (newTier: PerformanceTier) => void
   ): Promise<() => void> {
-    if (typeof navigator === 'undefined') {
+    if (typeof navigator === "undefined") {
       return () => {};
     }
 
@@ -325,9 +325,9 @@ export class DevicePerformanceDetector {
           const newTier = this.calculatePerformanceTier(this.capabilities);
           if (newTier !== this.performanceTier) {
             console.log(
-              '[DevicePerformance] Tier changed:',
+              "[DevicePerformance] Tier changed:",
               this.performanceTier,
-              '->',
+              "->",
               newTier
             );
             this.performanceTier = newTier;
@@ -336,13 +336,13 @@ export class DevicePerformanceDetector {
         }
       };
 
-      battery.addEventListener('levelchange', handleBatteryChange);
-      battery.addEventListener('chargingchange', handleBatteryChange);
+      battery.addEventListener("levelchange", handleBatteryChange);
+      battery.addEventListener("chargingchange", handleBatteryChange);
 
       // Return cleanup function
       return () => {
-        battery.removeEventListener('levelchange', handleBatteryChange);
-        battery.removeEventListener('chargingchange', handleBatteryChange);
+        battery.removeEventListener("levelchange", handleBatteryChange);
+        battery.removeEventListener("chargingchange", handleBatteryChange);
       };
     } catch {
       return () => {};

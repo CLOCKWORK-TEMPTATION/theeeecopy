@@ -1,8 +1,12 @@
 // Seven Stations Pipeline Orchestrator
 // Coordinates the execution of the Seven Stations AI analysis pipeline
 
-import { pipelineExecutor, type PipelineStep, type PipelineExecution } from './executor';
-import type { AnalysisType } from '@/types/enums';
+import {
+  pipelineExecutor,
+  type PipelineStep,
+  type PipelineExecution,
+} from "./executor";
+import type { AnalysisType } from "@/types/enums";
 
 // Station interface for pipeline execution
 interface Station {
@@ -16,13 +20,48 @@ interface Station {
 
 // Define the Seven Stations
 const SEVEN_STATIONS: Station[] = [
-  { id: 'station-1', name: 'Station 1', description: 'Text Analysis', type: 'characters' },
-  { id: 'station-2', name: 'Station 2', description: 'Conceptual Analysis', type: 'themes' },
-  { id: 'station-3', name: 'Station 3', description: 'Network Builder', type: 'structure' },
-  { id: 'station-4', name: 'Station 4', description: 'Efficiency Optimizer', type: 'screenplay' },
-  { id: 'station-5', name: 'Station 5', description: 'Dynamic Analysis', type: 'detailed' },
-  { id: 'station-6', name: 'Station 6', description: 'Diagnostics and Treatment', type: 'full' },
-  { id: 'station-7', name: 'Station 7', description: 'Finalization', type: 'full' },
+  {
+    id: "station-1",
+    name: "Station 1",
+    description: "Text Analysis",
+    type: "characters",
+  },
+  {
+    id: "station-2",
+    name: "Station 2",
+    description: "Conceptual Analysis",
+    type: "themes",
+  },
+  {
+    id: "station-3",
+    name: "Station 3",
+    description: "Network Builder",
+    type: "structure",
+  },
+  {
+    id: "station-4",
+    name: "Station 4",
+    description: "Efficiency Optimizer",
+    type: "screenplay",
+  },
+  {
+    id: "station-5",
+    name: "Station 5",
+    description: "Dynamic Analysis",
+    type: "detailed",
+  },
+  {
+    id: "station-6",
+    name: "Station 6",
+    description: "Diagnostics and Treatment",
+    type: "full",
+  },
+  {
+    id: "station-7",
+    name: "Station 7",
+    description: "Finalization",
+    type: "full",
+  },
 ];
 
 function getAllStations(): Station[] {
@@ -69,7 +108,7 @@ export class SevenStationsOrchestrator {
       overallSuccess: false,
       totalDuration: 0,
       startTime: new Date(),
-      progress: 0
+      progress: 0,
     };
 
     this.activeExecutions.set(executionId, execution);
@@ -79,8 +118,8 @@ export class SevenStationsOrchestrator {
       const availableStations = getAllStations();
 
       // Filter stations based on options
-      let stationsToRun = availableStations.filter((station: Station) =>
-        !options.skipStations?.includes(station.id)
+      let stationsToRun = availableStations.filter(
+        (station: Station) => !options.skipStations?.includes(station.id)
       );
 
       // Prioritize stations if specified
@@ -103,10 +142,10 @@ export class SevenStationsOrchestrator {
           temperature: 0.7,
           topK: 40,
           topP: 0.95,
-          maxOutputTokens: 2048
+          maxOutputTokens: 2048,
         },
         timeout: options.timeout || 60000, // 1 minute default
-        retries: 2
+        retries: 2,
       }));
 
       // Execute pipeline
@@ -117,18 +156,22 @@ export class SevenStationsOrchestrator {
       );
 
       // Convert results to Seven Stations format
-      execution.stations = Array.from(pipelineResult.results.entries()).map(([stepId, result]) => {
-        const station = availableStations.find((s: Station) => s.id === stepId)!;
-        return {
-          stationId: stepId,
-          stationName: station.name,
-          result: result.data,
-          success: result.success,
-          duration: result.duration
-        };
-      });
+      execution.stations = Array.from(pipelineResult.results.entries()).map(
+        ([stepId, result]) => {
+          const station = availableStations.find(
+            (s: Station) => s.id === stepId
+          )!;
+          return {
+            stationId: stepId,
+            stationName: station.name,
+            result: result.data,
+            success: result.success,
+            duration: result.duration,
+          };
+        }
+      );
 
-      execution.overallSuccess = pipelineResult.status === 'completed';
+      execution.overallSuccess = pipelineResult.status === "completed";
       execution.totalDuration = pipelineResult.endTime
         ? pipelineResult.endTime.getTime() - pipelineResult.startTime.getTime()
         : Date.now() - execution.startTime.getTime();
@@ -136,12 +179,11 @@ export class SevenStationsOrchestrator {
         execution.endTime = pipelineResult.endTime;
       }
       execution.progress = 100;
-
     } catch (error) {
       execution.overallSuccess = false;
       execution.endTime = new Date();
       execution.totalDuration = Date.now() - execution.startTime.getTime();
-      console.error('Seven Stations pipeline failed:', error);
+      console.error("Seven Stations pipeline failed:", error);
     }
 
     return execution;
@@ -155,7 +197,7 @@ export class SevenStationsOrchestrator {
       description: station.description,
       type: station.type,
       capabilities: station.capabilities,
-      estimatedDuration: station.estimatedDuration
+      estimatedDuration: station.estimatedDuration,
     }));
   }
 
@@ -181,13 +223,13 @@ export class SevenStationsOrchestrator {
   // Get active executions
   getActiveExecutions(): SevenStationsExecution[] {
     return Array.from(this.activeExecutions.values()).filter(
-      execution => !execution.endTime
+      (execution) => !execution.endTime
     );
   }
 
   // Clean up old executions (older than specified hours)
   cleanupOldExecutions(maxAgeHours: number = 24): number {
-    const cutoffTime = Date.now() - (maxAgeHours * 60 * 60 * 1000);
+    const cutoffTime = Date.now() - maxAgeHours * 60 * 60 * 1000;
     let removed = 0;
 
     for (const [id, execution] of this.activeExecutions.entries()) {
@@ -222,7 +264,11 @@ export async function runPipelineWithInterfaces(
   // Current implementation: basic pipeline execution
   // Production TODO: Add interface validation, state management, and monitoring
   const orchestrator = new SevenStationsOrchestrator();
-  return orchestrator.runSevenStationsPipeline('default', content, options || {});
+  return orchestrator.runSevenStationsPipeline(
+    "default",
+    content,
+    options || {}
+  );
 }
 
 // Export singleton instance

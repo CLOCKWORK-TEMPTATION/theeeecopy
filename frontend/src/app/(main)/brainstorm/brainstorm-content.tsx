@@ -116,8 +116,6 @@ export default function BrainstormContent() {
   const [sessionActive, setSessionActive] = useState(false);
   const [brief, setBrief] = useState("");
 
-
-
   // Initialize agents
   useEffect(() => {
     const initialAgents = agentDefinitions.map((def, idx) => ({
@@ -283,8 +281,9 @@ export default function BrainstormContent() {
                     <Button
                       key={phase.id}
                       variant={activePhase === phase.id ? "default" : "outline"}
-                      className={`p-4 h-auto flex items-center gap-3 ${activePhase === phase.id ? "ring-2 ring-blue-500" : ""
-                        }`}
+                      className={`p-4 h-auto flex items-center gap-3 ${
+                        activePhase === phase.id ? "ring-2 ring-blue-500" : ""
+                      }`}
                       onClick={() => setActivePhase(phase.id)}
                     >
                       {phase.icon}

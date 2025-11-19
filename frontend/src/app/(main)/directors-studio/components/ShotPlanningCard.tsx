@@ -91,7 +91,7 @@ const ShotPlanningCard = memo(function ShotPlanningCard({
         const firstSuggestion = result.data.suggestions[0];
         setAiSuggestion({
           suggestion: firstSuggestion.description,
-          reasoning: firstSuggestion.reasoning || '',
+          reasoning: firstSuggestion.reasoning || "",
         });
       }
     } catch (error) {

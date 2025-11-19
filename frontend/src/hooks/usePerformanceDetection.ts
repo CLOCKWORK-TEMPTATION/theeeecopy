@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   performanceDetector,
   type DeviceCapabilities,
   type ParticleConfig,
-} from '@/lib/performance-detection';
+} from "@/lib/performance-detection";
 
 /**
  * Hook for detecting and monitoring device performance capabilities
@@ -32,8 +32,12 @@ import {
  * ```
  */
 export function usePerformanceDetection() {
-  const [capabilities, setCapabilities] = useState<DeviceCapabilities | null>(null);
-  const [particleConfig, setParticleConfig] = useState<ParticleConfig | null>(null);
+  const [capabilities, setCapabilities] = useState<DeviceCapabilities | null>(
+    null
+  );
+  const [particleConfig, setParticleConfig] = useState<ParticleConfig | null>(
+    null
+  );
   const [shouldDisable, setShouldDisable] = useState(false);
   const [shouldReduceQuality, setShouldReduceQuality] = useState(false);
   const [targetFrameRate, setTargetFrameRate] = useState(60);
@@ -67,26 +71,26 @@ export function usePerformanceDetection() {
   }, []);
 
   const getPerformanceLabel = useCallback((): string => {
-    if (!capabilities) return 'Unknown';
+    if (!capabilities) return "Unknown";
 
     const score = capabilities.performanceScore;
-    if (score >= 9) return 'Excellent';
-    if (score >= 7) return 'Good';
-    if (score >= 5) return 'Average';
-    if (score >= 3) return 'Low';
-    return 'Very Low';
+    if (score >= 9) return "Excellent";
+    if (score >= 7) return "Good";
+    if (score >= 5) return "Average";
+    if (score >= 3) return "Low";
+    return "Very Low";
   }, [capabilities]);
 
   const getBatteryLabel = useCallback((): string => {
-    if (!capabilities || !capabilities.hasBattery) return 'N/A';
+    if (!capabilities || !capabilities.hasBattery) return "N/A";
 
     const level = Math.round(capabilities.batteryLevel * 100);
-    const status = capabilities.isCharging ? '(charging)' : '(discharging)';
+    const status = capabilities.isCharging ? "(charging)" : "(discharging)";
     return `${level}% ${status}`;
   }, [capabilities]);
 
   const getNetworkLabel = useCallback((): string => {
-    if (!capabilities) return 'Unknown';
+    if (!capabilities) return "Unknown";
     return capabilities.effectiveType.toUpperCase();
   }, [capabilities]);
 
@@ -102,15 +106,16 @@ export function usePerformanceDetection() {
 
     // Device info
     performanceScore: capabilities?.performanceScore ?? 0,
-    isMobile: capabilities?.deviceType === 'mobile',
-    isTablet: capabilities?.deviceType === 'tablet',
-    isDesktop: capabilities?.deviceType === 'desktop',
+    isMobile: capabilities?.deviceType === "mobile",
+    isTablet: capabilities?.deviceType === "tablet",
+    isDesktop: capabilities?.deviceType === "desktop",
 
     // Battery info
     batteryLevel: capabilities?.batteryLevel ?? 1,
     isCharging: capabilities?.isCharging ?? false,
     hasBattery: capabilities?.hasBattery ?? false,
-    isBatteryLow: (capabilities?.batteryLevel ?? 1) < 0.2 && !capabilities?.isCharging,
+    isBatteryLow:
+      (capabilities?.batteryLevel ?? 1) < 0.2 && !capabilities?.isCharging,
 
     // Hardware info
     cpuCores: capabilities?.cpuCores ?? 4,
@@ -118,7 +123,7 @@ export function usePerformanceDetection() {
     maxTouchPoints: capabilities?.maxTouchPoints ?? 0,
 
     // Network info
-    effectiveNetworkType: capabilities?.effectiveType ?? '4g',
+    effectiveNetworkType: capabilities?.effectiveType ?? "4g",
     networkDownlink: capabilities?.downlink ?? 10,
     networkRTT: capabilities?.rtt ?? 50,
     saveDataMode: capabilities?.saveData ?? false,
@@ -219,8 +224,8 @@ export function useNetworkCondition() {
   const perf = usePerformanceDetection();
 
   const isSlowConnection =
-    perf.effectiveNetworkType === '2g' ||
-    perf.effectiveNetworkType === 'slow-2g' ||
+    perf.effectiveNetworkType === "2g" ||
+    perf.effectiveNetworkType === "slow-2g" ||
     perf.saveDataMode;
 
   return {
@@ -253,11 +258,11 @@ export function useShouldReduceAnimations() {
   const shouldReduce =
     perf.shouldDisable ||
     perf.isBatteryLow ||
-    perf.effectiveNetworkType === '2g' ||
-    perf.effectiveNetworkType === 'slow-2g' ||
+    perf.effectiveNetworkType === "2g" ||
+    perf.effectiveNetworkType === "slow-2g" ||
     perf.performanceScore < 3 ||
-    (typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    (typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   return shouldReduce;
 }

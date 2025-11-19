@@ -1,2 +1,2 @@
 // Re-export from actual location
-export * from '@/components/particle-letters.constants';
+export * from "@/components/particle-letters.constants";

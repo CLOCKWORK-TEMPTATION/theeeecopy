@@ -8,9 +8,11 @@ import ProjectManager from "@/app/(main)/directors-studio/components/ProjectMana
 
 export default function DashboardHero() {
   const scrollToUpload = () => {
-    const uploadElement = document.querySelector('[data-testid="card-script-upload"]');
+    const uploadElement = document.querySelector(
+      '[data-testid="card-script-upload"]'
+    );
     if (uploadElement) {
-      uploadElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      uploadElement.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
 
@@ -26,22 +28,25 @@ export default function DashboardHero() {
         quality={85}
       />
       <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/60 to-black/40" />
-      
+
       <div className="relative h-full flex flex-col justify-center items-end px-12 text-white">
         <div className="max-w-2xl text-right space-y-6">
           <div className="flex items-center justify-end gap-2">
-            <h1 className="text-5xl font-bold font-serif">مساعد الإخراج السينمائي</h1>
+            <h1 className="text-5xl font-bold font-serif">
+              مساعد الإخراج السينمائي
+            </h1>
             <Film className="w-12 h-12" />
           </div>
-          
+
           <p className="text-xl text-white/90 leading-relaxed">
-            مساعد ذكاء اصطناعي متكامل يساعدك في جميع مراحل الإنتاج السينمائي من تحليل السيناريو إلى تخطيط اللقطات والمشاهد
+            مساعد ذكاء اصطناعي متكامل يساعدك في جميع مراحل الإنتاج السينمائي من
+            تحليل السيناريو إلى تخطيط اللقطات والمشاهد
           </p>
-          
+
           <div className="flex flex-wrap gap-4 justify-end pt-4">
             <ProjectManager />
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="outline"
               className="backdrop-blur-md bg-white/10 border-white/30 text-white hover:bg-white/20"
               onClick={scrollToUpload}

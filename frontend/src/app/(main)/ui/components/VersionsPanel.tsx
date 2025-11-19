@@ -16,7 +16,11 @@ interface VersionsPanelProps {
   onRestore?: (id: string) => void;
 }
 
-export function VersionsPanel({ versions = [], onVersionSelect, onRestore }: VersionsPanelProps) {
+export function VersionsPanel({
+  versions = [],
+  onVersionSelect,
+  onRestore,
+}: VersionsPanelProps) {
   return (
     <div className="space-y-3">
       <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -37,7 +41,9 @@ export function VersionsPanel({ versions = [], onVersionSelect, onRestore }: Ver
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">{version.name}</p>
-                  <p className="text-sm text-muted-foreground">{version.date}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {version.date}
+                  </p>
                 </div>
                 <Button
                   size="sm"

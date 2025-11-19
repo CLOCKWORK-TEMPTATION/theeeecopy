@@ -414,7 +414,7 @@ export class CharacterVoiceAgent extends BaseAgent {
 
     // Add original notes
     if (output.notes) {
-      notes.push(...output.notes.filter(note => !notes.includes(note)));
+      notes.push(...output.notes.filter((note) => !notes.includes(note)));
     }
 
     return notes;

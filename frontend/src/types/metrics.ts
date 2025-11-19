@@ -117,7 +117,7 @@ export interface DashboardSummary {
 }
 
 export interface HealthStatus {
-  status: 'healthy' | 'degraded' | 'critical';
+  status: "healthy" | "degraded" | "critical";
   isUnderPressure: boolean;
   timestamp: string;
   resources: ResourceMetrics;
@@ -130,7 +130,7 @@ export interface HealthStatus {
 }
 
 export interface PerformanceAlert {
-  severity: 'info' | 'warning' | 'critical';
+  severity: "info" | "warning" | "critical";
   message: string;
   metric: string;
   value: number;
@@ -149,7 +149,7 @@ export interface PerformanceReport {
     errorRate: number;
     cacheHitRatio: number;
     queueThroughput: number;
-    systemHealth: 'healthy' | 'degraded' | 'critical';
+    systemHealth: "healthy" | "degraded" | "critical";
   };
   recommendations: string[];
   alerts: PerformanceAlert[];

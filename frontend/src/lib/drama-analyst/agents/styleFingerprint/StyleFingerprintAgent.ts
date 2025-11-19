@@ -165,7 +165,7 @@ export class StyleFingerprintAgent extends BaseAgent {
 
   // SECURITY FIX: Escape special regex characters to prevent ReDoS attacks
   private escapeRegExp(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
   private async assessAnalyticalDepth(text: string): Promise<number> {
@@ -184,14 +184,11 @@ export class StyleFingerprintAgent extends BaseAgent {
       "نجد",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const termCount = analyticalTerms.reduce(
-      (count, term) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const occurrences = text.split(term).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const termCount = analyticalTerms.reduce((count, term) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const occurrences = text.split(term).length - 1;
+      return count + occurrences;
+    }, 0);
     score += Math.min(0.25, termCount * 0.02);
 
     const technicalTerms = [
@@ -204,14 +201,11 @@ export class StyleFingerprintAgent extends BaseAgent {
       "الدلالة",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const techCount = technicalTerms.reduce(
-      (count, term) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const occurrences = text.split(term).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const techCount = technicalTerms.reduce((count, term) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const occurrences = text.split(term).length - 1;
+      return count + occurrences;
+    }, 0);
     score += Math.min(0.15, techCount * 0.03);
 
     if (text.length > 1500) score += 0.1;
@@ -262,14 +256,11 @@ export class StyleFingerprintAgent extends BaseAgent {
       "مثلاً",
     ];
     // SECURITY FIX: Use safe string matching to prevent ReDoS
-    const evidenceCount = evidenceWords.reduce(
-      (count, word) => {
-        // Use simple string matching instead of regex to prevent ReDoS
-        const occurrences = text.split(word).length - 1;
-        return count + occurrences;
-      },
-      0
-    );
+    const evidenceCount = evidenceWords.reduce((count, word) => {
+      // Use simple string matching instead of regex to prevent ReDoS
+      const occurrences = text.split(word).length - 1;
+      return count + occurrences;
+    }, 0);
     score += Math.min(0.25, evidenceCount * 0.05);
 
     const hasDirectQuotes = (text.match(/["«][^"»]{10,}["»]/g) || []).length;

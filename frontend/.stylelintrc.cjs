@@ -1,22 +1,19 @@
 module.exports = {
-  extends: [
-    'stylelint-config-standard',
-    'stylelint-config-tailwindcss/base',
-  ],
-  plugins: ['stylelint-order'],
+  extends: ["stylelint-config-standard", "stylelint-config-tailwindcss/base"],
+  plugins: ["stylelint-order"],
   rules: {
-    'at-rule-no-unknown': [
+    "at-rule-no-unknown": [
       true,
       {
         ignoreAtRules: [
-          'tailwind',
-          'apply',
-          'variants',
-          'responsive',
-          'screen',
+          "tailwind",
+          "apply",
+          "variants",
+          "responsive",
+          "screen",
         ],
       },
     ],
-    'order/properties-order': [],
+    "order/properties-order": [],
   },
 };

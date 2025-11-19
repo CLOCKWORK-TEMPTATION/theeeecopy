@@ -15,9 +15,7 @@ function StatCard({ title, value, icon, description }: StatCardProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-        <div className="p-2 rounded-md bg-primary/10 text-primary">
-          {icon}
-        </div>
+        <div className="p-2 rounded-md bg-primary/10 text-primary">{icon}</div>
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
@@ -45,10 +43,13 @@ export default function ProjectStats({
   totalScenes,
   totalCharacters,
   totalShots,
-  completedScenes
+  completedScenes,
 }: ProjectStatsProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4" data-testid="project-stats">
+    <div
+      className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+      data-testid="project-stats"
+    >
       <StatCard
         title="إجمالي المشاهد"
         value={totalScenes}

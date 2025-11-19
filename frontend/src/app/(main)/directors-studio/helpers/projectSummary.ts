@@ -6,29 +6,39 @@ export type SceneCardProps = ComponentProps<typeof SceneCard>;
 export type CharacterTrackerProps = ComponentProps<typeof CharacterTracker>;
 
 export type ProjectCharacterInput = ReadonlyArray<
-  Omit<CharacterTrackerProps["characters"][number], "consistencyStatus" | "lastSeen"> & {
-    consistencyStatus?: CharacterTrackerProps["characters"][number]["consistencyStatus"] | null;
+  Omit<
+    CharacterTrackerProps["characters"][number],
+    "consistencyStatus" | "lastSeen"
+  > & {
+    consistencyStatus?:
+      | CharacterTrackerProps["characters"][number]["consistencyStatus"]
+      | null;
     lastSeen?: string | null;
   }
 >;
 
 export function prepareCharacterList(
-  characters?: ProjectCharacterInput,
+  characters?: ProjectCharacterInput
 ): CharacterTrackerProps["characters"] {
   if (!characters) {
     return [];
   }
 
-  const fallbackStatus: CharacterTrackerProps["characters"][number]["consistencyStatus"] = "good";
+  const fallbackStatus: CharacterTrackerProps["characters"][number]["consistencyStatus"] =
+    "good";
 
   return characters.map((character) => ({
     ...character,
-    consistencyStatus: (character.consistencyStatus ?? fallbackStatus) as CharacterTrackerProps["characters"][number]["consistencyStatus"],
+    consistencyStatus: (character.consistencyStatus ??
+      fallbackStatus) as CharacterTrackerProps["characters"][number]["consistencyStatus"],
     lastSeen: character.lastSeen ?? "غير محدد",
   }));
 }
 
-export function hasActiveProject(projectId: string | null, scenes: SceneCardProps[]): boolean {
+export function hasActiveProject(
+  projectId: string | null,
+  scenes: SceneCardProps[]
+): boolean {
   return Boolean(projectId) && scenes.length > 0;
 }
 
@@ -41,10 +51,15 @@ export interface ProjectStatsSummary {
 
 export function calculateProjectStats(
   scenes: SceneCardProps[],
-  characters: CharacterTrackerProps["characters"],
+  characters: CharacterTrackerProps["characters"]
 ): ProjectStatsSummary {
-  const completedScenes = scenes.filter((scene) => scene.status === "completed").length;
-  const totalShots = scenes.reduce((sum, scene) => sum + (scene.shotCount ?? 0), 0);
+  const completedScenes = scenes.filter(
+    (scene) => scene.status === "completed"
+  ).length;
+  const totalShots = scenes.reduce(
+    (sum, scene) => sum + (scene.shotCount ?? 0),
+    0
+  );
 
   return {
     totalScenes: scenes.length,

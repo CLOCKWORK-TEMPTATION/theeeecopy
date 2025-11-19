@@ -32,7 +32,8 @@ export class CreativeAgent extends BaseAgent {
     const { input: taskInput, context } = input;
 
     // Extract relevant context
-    const contextObj = typeof context === 'object' && context !== null ? context : {};
+    const contextObj =
+      typeof context === "object" && context !== null ? context : {};
     const originalText = (contextObj as any)?.originalText || "";
     const developmentFocus = (contextObj as any)?.developmentFocus || "general";
     const creativeConstraints = (contextObj as any)?.constraints || [];
@@ -338,7 +339,7 @@ export class CreativeAgent extends BaseAgent {
 
     // Add original notes if any
     if (output.notes) {
-      notes.push(...output.notes.filter(note => !notes.includes(note)));
+      notes.push(...output.notes.filter((note) => !notes.includes(note)));
     }
 
     return notes;
@@ -367,7 +368,9 @@ export class CreativeAgent extends BaseAgent {
   protected override async getFallbackResponse(
     input: StandardAgentInput
   ): Promise<string> {
-    const focus = (typeof input.context === 'object' && input.context?.developmentFocus) || "general";
+    const focus =
+      (typeof input.context === "object" && input.context?.developmentFocus) ||
+      "general";
 
     return `تحليل إبداعي:
 لتطوير ${this.translateFocus(focus)} في النص المقدم، يمكن التركيز على تعزيز العناصر الأساسية وإضافة عمق أكبر.

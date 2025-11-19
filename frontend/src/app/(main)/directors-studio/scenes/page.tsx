@@ -2,7 +2,13 @@
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import SceneFormDialog from "@/app/(main)/directors-studio/components/SceneFormDialog";
@@ -109,17 +115,20 @@ export default function ScenesPage() {
               <CardContent>
                 <div className="space-y-2 text-sm">
                   <div>
-                    <span className="font-semibold">الموقع:</span> {scene.location}
+                    <span className="font-semibold">الموقع:</span>{" "}
+                    {scene.location}
                   </div>
                   <div>
-                    <span className="font-semibold">الوقت:</span> {scene.timeOfDay}
+                    <span className="font-semibold">الوقت:</span>{" "}
+                    {scene.timeOfDay}
                   </div>
                   <div>
                     <span className="font-semibold">الشخصيات:</span>{" "}
                     {scene.characters.join(", ")}
                   </div>
                   <div>
-                    <span className="font-semibold">عدد اللقطات:</span> {scene.shotCount}
+                    <span className="font-semibold">عدد اللقطات:</span>{" "}
+                    {scene.shotCount}
                   </div>
                   <div>
                     <span className="font-semibold">الحالة:</span>{" "}
@@ -128,20 +137,22 @@ export default function ScenesPage() {
                         scene.status === "completed"
                           ? "bg-green-100 text-green-800"
                           : scene.status === "in-progress"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-gray-100 text-gray-800"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-gray-100 text-gray-800"
                       }`}
                     >
                       {scene.status === "planned"
                         ? "مخطط"
                         : scene.status === "in-progress"
-                        ? "قيد التنفيذ"
-                        : "مكتمل"}
+                          ? "قيد التنفيذ"
+                          : "مكتمل"}
                     </span>
                   </div>
                   {scene.description && (
                     <div className="pt-2">
-                      <p className="text-muted-foreground">{scene.description}</p>
+                      <p className="text-muted-foreground">
+                        {scene.description}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -183,17 +194,20 @@ export default function ScenesPage() {
               <CardContent>
                 <div className="space-y-2 text-sm">
                   <div>
-                    <span className="font-semibold">الموقع:</span> {scene.location}
+                    <span className="font-semibold">الموقع:</span>{" "}
+                    {scene.location}
                   </div>
                   <div>
-                    <span className="font-semibold">الوقت:</span> {scene.timeOfDay}
+                    <span className="font-semibold">الوقت:</span>{" "}
+                    {scene.timeOfDay}
                   </div>
                   <div>
                     <span className="font-semibold">الشخصيات:</span>{" "}
                     {scene.characters.join(", ")}
                   </div>
                   <div>
-                    <span className="font-semibold">عدد اللقطات:</span> {scene.shotCount}
+                    <span className="font-semibold">عدد اللقطات:</span>{" "}
+                    {scene.shotCount}
                   </div>
                   <div>
                     <span className="font-semibold">الحالة:</span>{" "}
@@ -202,20 +216,22 @@ export default function ScenesPage() {
                         scene.status === "completed"
                           ? "bg-green-100 text-green-800"
                           : scene.status === "in-progress"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-gray-100 text-gray-800"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-gray-100 text-gray-800"
                       }`}
                     >
                       {scene.status === "planned"
                         ? "مخطط"
                         : scene.status === "in-progress"
-                        ? "قيد التنفيذ"
-                        : "مكتمل"}
+                          ? "قيد التنفيذ"
+                          : "مكتمل"}
                     </span>
                   </div>
                   {scene.description && (
                     <div className="pt-2">
-                      <p className="text-muted-foreground">{scene.description}</p>
+                      <p className="text-muted-foreground">
+                        {scene.description}
+                      </p>
                     </div>
                   )}
                 </div>

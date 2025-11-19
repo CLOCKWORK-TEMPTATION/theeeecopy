@@ -28,7 +28,7 @@ export function AssetsShelf({
   onAssetClick,
   onAssetSelect,
   onAssetDownload,
-  viewMode
+  viewMode,
 }: AssetsShelfProps) {
   return (
     <div className="space-y-3">

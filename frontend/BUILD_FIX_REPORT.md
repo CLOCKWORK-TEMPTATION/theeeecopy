@@ -11,18 +11,21 @@
 ### المشكلة الرئيسية: غياب QueryClientProvider
 
 **الخطأ القاتل:**
+
 ```
 Error occurred prerendering page "/metrics-dashboard".
 Error: No QueryClient set, use QueryClientProvider to set one
 ```
 
 **السبب:**
+
 - صفحة `/metrics-dashboard` تستخدم مكونات تعتمد على **React Query (TanStack Query)**
 - هذه المكونات تستدعي `useQuery` و hooks أخرى من React Query
 - لا يوجد `QueryClientProvider` في الـ Root Layout لتوفير QueryClient
 - أثناء عملية البناء (Build/Prerendering)، يحاول Next.js تحضير الصفحة، فيفشل لعدم وجود الـ Provider
 
 **التأثير:**
+
 - 🚫 فشل البناء بالكامل في مرحلة Prerendering
 - ❌ لا يمكن النشر على Vercel أو أي بيئة إنتاجية
 - 📊 صفحة المقاييس والبيانات لا تعمل
@@ -34,12 +37,13 @@ Error: No QueryClient set, use QueryClientProvider to set one
 ### 1️⃣ إنشاء ملف Providers (`src/app/providers.tsx`)
 
 **ما الذي تم إنجازه:**
-```tsx
-'use client';
 
-import { ReactNode } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from '@/components/ui/toaster';
+```tsx
+"use client";
+
+import { ReactNode } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +71,7 @@ export function Providers({ children }: { children: ReactNode }) {
 ```
 
 **المميزات:**
+
 - ✅ وضع العلامة `'use client'` لأنه يستخدم Context API
 - ✅ QueryClient مستقر ولا ينشأ مع كل إعادة تصيير
 - ✅ إعدادات افتراضية معقولة للـ Queries والـ Mutations
@@ -77,14 +82,16 @@ export function Providers({ children }: { children: ReactNode }) {
 ### 2️⃣ تحديث Root Layout (`src/app/layout.tsx`)
 
 **التغييرات:**
+
 ```tsx
 import type { Metadata } from "next";
 import "../styles/globals.css";
-import { Providers } from "./providers";  // ← استيراد جديد
+import { Providers } from "./providers"; // ← استيراد جديد
 
 export const metadata: Metadata = {
   title: "النسخة - منصة الإبداع السينمائي",
-  description: "منصة متكاملة للكتابة الإبداعية والتحليل الدرامي مدعومة بالذكاء الاصطناعي",
+  description:
+    "منصة متكاملة للكتابة الإبداعية والتحليل الدرامي مدعومة بالذكاء الاصطناعي",
 };
 
 export const revalidate = 86400;
@@ -96,11 +103,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <head>
-        {/* ... fonts ... */}
-      </head>
+      <head>{/* ... fonts ... */}</head>
       <body className="antialiased">
-        <Providers>  {/* ← تغليف جديد */}
+        <Providers>
+          {" "}
+          {/* ← تغليف جديد */}
           {children}
         </Providers>
       </body>
@@ -110,6 +117,7 @@ export default function RootLayout({
 ```
 
 **فوائد التغيير:**
+
 - ✅ جميع الصفحات والمكونات الآن لديها إمكانية استخدام React Query
 - ✅ لا حاجة للـ `force-dynamic` على صفحات فردية
 - ✅ يدعم الـ ISR والـ Prerendering بسلاسة
@@ -119,13 +127,14 @@ export default function RootLayout({
 ### 3️⃣ تحديث صفحة Metrics Dashboard (`src/app/(main)/metrics-dashboard/page.tsx`)
 
 **قبل:**
+
 ```tsx
-'use client';
+"use client";
 
 import SystemMetricsDashboard from "@/components/ui/system-metrics-dashboard";
 
 // Force dynamic rendering - requires QueryClient at runtime
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function MetricsDashboardPage() {
   return <SystemMetricsDashboard />;
@@ -133,6 +142,7 @@ export default function MetricsDashboardPage() {
 ```
 
 **بعد:**
+
 ```tsx
 /**
  * System Metrics Dashboard Page
@@ -140,7 +150,7 @@ export default function MetricsDashboardPage() {
  * Comprehensive system monitoring dashboard
  */
 
-'use client';
+"use client";
 
 import SystemMetricsDashboard from "@/components/ui/system-metrics-dashboard";
 
@@ -150,6 +160,7 @@ export default function MetricsDashboardPage() {
 ```
 
 **التحسينات:**
+
 - ✅ إزالة `export const dynamic = 'force-dynamic'`
 - ✅ الآن تعمل مع Prerendering العادي
 - ✅ أداء أفضل وقابلية التخزين المؤقت
@@ -174,6 +185,7 @@ Route (app)                                 Size  First Load JS  Revalidate
 ```
 
 **الحالات:**
+
 - `○` = Prerendered as static content ✅
 - `ƒ` = Server-rendered on demand
 - `✓` = جميع الصفحات تم توليدها بنجاح
@@ -233,6 +245,7 @@ Warning: 'error' is defined but never used.
 ```
 
 **التوصيات:**
+
 - [ ] مراجعة المتغيرات غير المستخدمة
 - [ ] استخدام `_error` إذا كان متعمداً
 - [ ] تفعيل `no-unused-vars` بصرامة أكثر
@@ -240,11 +253,13 @@ Warning: 'error' is defined but never used.
 ### ⚠️ مشاكل Sentry المحتملة
 
 تم ذكر خطأ في السجل الأصلي:
+
 ```
 '_optionalChain' is not exported from '@sentry/core'
 ```
 
 **الحالة الحالية:**
+
 ```json
 "@sentry/nextjs": "^10.25.0",
 "@sentry/react": "^10.25.0",
@@ -252,6 +267,7 @@ Warning: 'error' is defined but never used.
 ```
 
 **التوصيات:**
+
 ```bash
 # تحديث Sentry
 pnpm update @sentry/nextjs @sentry/react @sentry/cli
@@ -323,14 +339,17 @@ pnpm e2e
 ## 📚 المراجع والموارد
 
 ### React Query (TanStack Query)
+
 - 📖 [Official Docs](https://tanstack.com/query/latest)
 - 📖 [Next.js Integration](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults)
 
 ### Next.js App Router
+
 - 📖 [Providers Pattern](https://nextjs.org/docs/app/building-your-application/rendering/client-components#context-providers)
 - 📖 [Build & Prerendering](https://nextjs.org/docs/app/building-your-application/deploying#prerendering)
 
 ### Project Documentation
+
 - 📄 `AGENTS.md` - معايير الكود الشاملة
 - 📄 `README.md` - توثيق المشروع الرئيسي
 - 📄 `backend/BACKEND_DOCUMENTATION.md` - توثيق الخلفية
@@ -340,18 +359,22 @@ pnpm e2e
 ## 💬 الخلاصة
 
 ### المشكلة الأساسية:
+
 ❌ تم استخدام React Query بدون توفير `QueryClientProvider` في الـ Root Level
 
 ### الحل:
+
 ✅ إنشاء ملف `providers.tsx` يحتوي على QueryClientProvider وتغليف التطبيق به
 
 ### النتيجة:
+
 - 🟢 البناء نجح بدون أخطاء
 - 🟢 جميع 29 صفحة تم توليدها بنجاح
 - 🟢 صفحة `/metrics-dashboard` الآن تعمل بسلاسة
 - 🟢 جاهز للنشر على الإنتاج
 
 ### الوقت المتوقع لتطبيق الحل:
+
 ⏱️ **~ 5 دقائق فقط** لتطبيق التغييرات الثلاثة
 
 ---

@@ -412,11 +412,7 @@ class WebVitalsService {
 
         // Create a measure between start and end marks
         try {
-          performance.measure(
-            `⚛ ${componentName} render`,
-            startMark,
-            endMark
-          );
+          performance.measure(`⚛ ${componentName} render`, startMark, endMark);
 
           // Clean up marks to avoid memory leaks
           performance.clearMarks(startMark);

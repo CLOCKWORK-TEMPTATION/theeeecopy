@@ -5,20 +5,20 @@
  * Checks if bundle sizes are within defined budgets
  */
 
-const fs = require('fs');
-const path = require('path');
-const { promisify } = require('util');
-const { gzip } = require('zlib');
+const fs = require("fs");
+const path = require("path");
+const { promisify } = require("util");
+const { gzip } = require("zlib");
 
 const gzipAsync = promisify(gzip);
 const readFileAsync = promisify(fs.readFile);
 
 // Load performance budget configuration
-const budgetPath = path.join(__dirname, '..', 'performance-budget.json');
-const budget = JSON.parse(fs.readFileSync(budgetPath, 'utf8'));
+const budgetPath = path.join(__dirname, "..", "performance-budget.json");
+const budget = JSON.parse(fs.readFileSync(budgetPath, "utf8"));
 
 // Next.js build output directory
-const buildDir = path.join(__dirname, '..', '.next');
+const buildDir = path.join(__dirname, "..", ".next");
 
 /**
  * Get file size in KB
@@ -35,12 +35,12 @@ function parseSizeToBytes(sizeStr) {
   if (!match) return 0;
 
   const value = parseFloat(match[1]);
-  const unit = (match[2] || 'KB').toUpperCase();
+  const unit = (match[2] || "KB").toUpperCase();
 
   const multipliers = {
-    'KB': 1024,
-    'MB': 1024 * 1024,
-    'GB': 1024 * 1024 * 1024,
+    KB: 1024,
+    MB: 1024 * 1024,
+    GB: 1024 * 1024 * 1024,
   };
 
   return value * (multipliers[unit] || 1024);
@@ -70,7 +70,7 @@ function findFiles(dir, pattern) {
     try {
       const files = fs.readdirSync(currentDir);
 
-      files.forEach(file => {
+      files.forEach((file) => {
         const fullPath = path.join(currentDir, file);
         const stat = fs.statSync(fullPath);
 
@@ -78,12 +78,12 @@ function findFiles(dir, pattern) {
           traverse(fullPath);
         } else {
           // Simple pattern matching
-          if (pattern.includes('**')) {
+          if (pattern.includes("**")) {
             const regex = new RegExp(
               pattern
-                .replace(/\*\*/g, '.*')
-                .replace(/\*/g, '[^/]*')
-                .replace(/\./g, '\\.')
+                .replace(/\*\*/g, ".*")
+                .replace(/\*/g, "[^/]*")
+                .replace(/\./g, "\\.")
             );
             if (regex.test(fullPath)) {
               results.push(fullPath);
@@ -112,7 +112,7 @@ async function checkBudget(budgetRule) {
     return {
       passed: true,
       name: budgetRule.name,
-      message: 'No files found',
+      message: "No files found",
       files: [],
     };
   }
@@ -151,7 +151,7 @@ async function checkBudget(budgetRule) {
     budget: budgetRule.maxSize,
     totalSize: getFileSizeKB(totalSize),
     gzipped: budgetRule.gzip || false,
-    files: results.filter(r => r.exceeds),
+    files: results.filter((r) => r.exceeds),
   };
 }
 
@@ -159,10 +159,12 @@ async function checkBudget(budgetRule) {
  * Main function
  */
 async function main() {
-  console.log('🔍 Checking performance budgets...\n');
+  console.log("🔍 Checking performance budgets...\n");
 
   if (!fs.existsSync(buildDir)) {
-    console.error('❌ Build directory not found. Please run `pnpm build` first.');
+    console.error(
+      "❌ Build directory not found. Please run `pnpm build` first."
+    );
     process.exit(1);
   }
 
@@ -179,38 +181,40 @@ async function main() {
   }
 
   // Print results
-  console.log('📊 Budget Check Results:\n');
+  console.log("📊 Budget Check Results:\n");
 
   for (const result of results) {
-    const icon = result.passed ? '✅' : '❌';
-    const gzipText = result.gzipped ? ' (gzipped)' : '';
+    const icon = result.passed ? "✅" : "❌";
+    const gzipText = result.gzipped ? " (gzipped)" : "";
 
     console.log(`${icon} ${result.name}`);
     if (result.files.length > 0) {
       console.log(`   Budget: ${result.budget}${gzipText}`);
       console.log(`   Total: ${result.totalSize} KB${gzipText}`);
-      console.log('   Exceeded files:');
-      result.files.forEach(file => {
+      console.log("   Exceeded files:");
+      result.files.forEach((file) => {
         console.log(`     - ${file.file}: ${file.size} KB`);
       });
     } else {
-      console.log(`   ${result.message || `Total: ${result.totalSize} KB${gzipText}`}`);
+      console.log(
+        `   ${result.message || `Total: ${result.totalSize} KB${gzipText}`}`
+      );
     }
-    console.log('');
+    console.log("");
   }
 
   // Summary
   if (allPassed) {
-    console.log('✅ All performance budgets passed!');
+    console.log("✅ All performance budgets passed!");
     process.exit(0);
   } else {
-    console.log('❌ Some performance budgets exceeded!');
-    console.log('   Please optimize bundle sizes or update budgets.');
+    console.log("❌ Some performance budgets exceeded!");
+    console.log("   Please optimize bundle sizes or update budgets.");
     process.exit(1);
   }
 }
 
-main().catch(error => {
-  console.error('Error:', error);
+main().catch((error) => {
+  console.error("Error:", error);
   process.exit(1);
 });

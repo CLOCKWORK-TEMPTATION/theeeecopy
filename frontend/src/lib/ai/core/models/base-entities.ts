@@ -73,7 +73,7 @@ export interface Scene {
 export interface ThematicElement {
   id: string;
   name: string;
-  category: 'theme' | 'motif' | 'symbol';
+  category: "theme" | "motif" | "symbol";
   description: string;
   occurrences: Array<{
     location: string;
@@ -201,12 +201,13 @@ export interface DebateResult {
 export function createCharacter(data: Partial<Character>): Character {
   const character: Character = {
     id: data.id || `char_${Date.now()}`,
-    name: data.name || 'Unknown Character',
+    name: data.name || "Unknown Character",
   };
 
   if (data.role !== undefined) character.role = data.role;
   if (data.traits !== undefined) character.traits = data.traits;
-  if (data.relationships !== undefined) character.relationships = data.relationships;
+  if (data.relationships !== undefined)
+    character.relationships = data.relationships;
   if (data.arc !== undefined) character.arc = data.arc;
 
   return character;
@@ -221,18 +222,20 @@ export function createConflict(data: Partial<Conflict>): Conflict {
   if (data.subject !== undefined) conflict.subject = data.subject;
   if (data.strength !== undefined) conflict.strength = data.strength;
   if (data.scope !== undefined) conflict.scope = data.scope;
-  if (data.involvedCharacters !== undefined) conflict.involvedCharacters = data.involvedCharacters;
+  if (data.involvedCharacters !== undefined)
+    conflict.involvedCharacters = data.involvedCharacters;
   if (data.timestamps !== undefined) conflict.timestamps = data.timestamps;
   if (data.description !== undefined) conflict.description = data.description;
-  if (data.participants !== undefined) conflict.participants = data.participants;
+  if (data.participants !== undefined)
+    conflict.participants = data.participants;
 
   return conflict;
 }
 
 export function createRelationship(data: Partial<Relationship>): Relationship {
   const relationship: Relationship = {
-    source: data.source || '',
-    target: data.target || '',
+    source: data.source || "",
+    target: data.target || "",
   };
 
   if (data.id !== undefined) relationship.id = data.id;
@@ -242,7 +245,9 @@ export function createRelationship(data: Partial<Relationship>): Relationship {
   return relationship;
 }
 
-export function createNetworkSnapshot(data: Partial<NetworkSnapshot>): NetworkSnapshot {
+export function createNetworkSnapshot(
+  data: Partial<NetworkSnapshot>
+): NetworkSnapshot {
   return {
     timestamp: data.timestamp || new Date(),
     characters: data.characters || [],
@@ -251,7 +256,7 @@ export function createNetworkSnapshot(data: Partial<NetworkSnapshot>): NetworkSn
     metrics: data.metrics || {
       density: 0,
       centrality: {},
-      clustering: 0
-    }
+      clustering: 0,
+    },
   };
 }

@@ -43,7 +43,7 @@ export interface UncertaintyQuantificationEngine {
 export interface DiagnosticIssue {
   id: string;
   type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   description: string;
   location?: string;
   suggestions: string[];
@@ -51,8 +51,14 @@ export interface DiagnosticIssue {
 
 export interface Recommendation {
   id: string;
-  priority: 'low' | 'medium' | 'high' | 'immediate';
-  category: 'character' | 'dialogue' | 'theme' | 'plot' | 'structure' | 'pacing';
+  priority: "low" | "medium" | "high" | "immediate";
+  category:
+    | "character"
+    | "dialogue"
+    | "theme"
+    | "plot"
+    | "structure"
+    | "pacing";
   title: string;
   description: string;
   rationale: string;

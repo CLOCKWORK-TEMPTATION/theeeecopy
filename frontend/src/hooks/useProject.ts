@@ -60,17 +60,22 @@ export function useCreateCharacter() {
     mutationFn: (data: { projectId: string } & CreateCharacterRequest) =>
       api.createCharacter(data.projectId, data),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/projects", variables.projectId, "characters"] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/projects", variables.projectId, "characters"],
+      });
     },
   });
 }
 
 export function useUpdateCharacter() {
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateCharacterRequest }) => api.updateCharacter(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateCharacterRequest }) =>
+      api.updateCharacter(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ predicate: (query) =>
-        query.queryKey[0] === "/api/projects" && query.queryKey[2] === "characters"
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "/api/projects" &&
+          query.queryKey[2] === "characters",
       });
     },
   });
@@ -80,8 +85,10 @@ export function useDeleteCharacter() {
   return useMutation({
     mutationFn: (id: string) => api.deleteCharacter(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ predicate: (query) => 
-        query.queryKey[0] === "/api/projects" && query.queryKey[2] === "characters"
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "/api/projects" &&
+          query.queryKey[2] === "characters",
       });
     },
   });
@@ -98,10 +105,13 @@ export function useCreateProject() {
 
 export function useUpdateProject() {
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateProjectRequest }) => api.updateProject(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateProjectRequest }) =>
+      api.updateProject(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/projects", variables.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/projects", variables.id],
+      });
     },
   });
 }
@@ -117,12 +127,23 @@ export function useDeleteProject() {
 
 export function useAnalyzeScript() {
   return useMutation({
-    mutationFn: ({ projectId, script }: { projectId: string; script: string }) =>
-      api.analyzeScript(projectId, script),
+    mutationFn: ({
+      projectId,
+      script,
+    }: {
+      projectId: string;
+      script: string;
+    }) => api.analyzeScript(projectId, script),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/projects", variables.projectId] });
-      queryClient.invalidateQueries({ queryKey: ["/api/projects", variables.projectId, "scenes"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/projects", variables.projectId, "characters"] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/projects", variables.projectId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/projects", variables.projectId, "scenes"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/projects", variables.projectId, "characters"],
+      });
     },
   });
 }
@@ -138,14 +159,22 @@ export function useCreateScene() {
       return res.json();
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/projects", variables.projectId, "scenes"] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/projects", variables.projectId, "scenes"],
+      });
     },
   });
 }
 
 export function useUpdateScene() {
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: UpdateSceneRequest }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: UpdateSceneRequest;
+    }) => {
       const res = await fetch(`/api/scenes/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -154,8 +183,10 @@ export function useUpdateScene() {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ predicate: (query) =>
-        query.queryKey[0] === "/api/projects" && query.queryKey[2] === "scenes"
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "/api/projects" &&
+          query.queryKey[2] === "scenes",
       });
     },
   });
@@ -168,8 +199,10 @@ export function useDeleteScene() {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ predicate: (query) => 
-        query.queryKey[0] === "/api/projects" && query.queryKey[2] === "scenes"
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "/api/projects" &&
+          query.queryKey[2] === "scenes",
       });
     },
   });
@@ -197,7 +230,9 @@ export function useCreateShot() {
       return res.json();
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/scenes", variables.sceneId, "shots"] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/scenes", variables.sceneId, "shots"],
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
     },
   });
@@ -205,7 +240,13 @@ export function useCreateShot() {
 
 export function useUpdateShot() {
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: UpdateShotRequest }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: UpdateShotRequest;
+    }) => {
       const res = await fetch(`/api/shots/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -214,11 +255,14 @@ export function useUpdateShot() {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ predicate: (query) =>
-        query.queryKey[0] === "/api/scenes" && query.queryKey[2] === "shots"
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "/api/scenes" && query.queryKey[2] === "shots",
       });
-      queryClient.invalidateQueries({ predicate: (query) =>
-        query.queryKey[0] === "/api/projects" && query.queryKey[2] === "scenes"
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "/api/projects" &&
+          query.queryKey[2] === "scenes",
       });
     },
   });
@@ -231,11 +275,14 @@ export function useDeleteShot() {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ predicate: (query) => 
-        query.queryKey[0] === "/api/scenes" && query.queryKey[2] === "shots"
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "/api/scenes" && query.queryKey[2] === "shots",
       });
-      queryClient.invalidateQueries({ predicate: (query) => 
-        query.queryKey[0] === "/api/projects" && query.queryKey[2] === "scenes"
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "/api/projects" &&
+          query.queryKey[2] === "scenes",
       });
     },
   });

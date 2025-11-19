@@ -3,7 +3,10 @@
 import dynamic from "next/dynamic";
 
 const ActorAiArabicStudio = dynamic(
-  () => import("./components/ActorAiArabicStudio").then((mod) => ({ default: mod.ActorAiArabicStudio })),
+  () =>
+    import("./components/ActorAiArabicStudio").then((mod) => ({
+      default: mod.ActorAiArabicStudio,
+    })),
   {
     loading: () => (
       <div className="min-h-screen flex items-center justify-center">

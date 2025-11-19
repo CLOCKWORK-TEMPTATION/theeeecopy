@@ -28,17 +28,21 @@ function unflatten(flat) {
   const result = Object.create(null);
   for (const [key, value] of Object.entries(flat)) {
     // SECURITY FIX: Validate key to prevent prototype pollution
-    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+    if (key === "__proto__" || key === "constructor" || key === "prototype") {
       console.warn(`SECURITY: Skipping dangerous key: ${key}`);
       continue;
     }
-    
+
     const parts = key.split(".");
     let current = result;
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
       // SECURITY FIX: Check for dangerous property names
-      if (part === '__proto__' || part === 'constructor' || part === 'prototype') {
+      if (
+        part === "__proto__" ||
+        part === "constructor" ||
+        part === "prototype"
+      ) {
         console.warn(`SECURITY: Skipping dangerous property: ${part}`);
         break;
       }
@@ -47,7 +51,11 @@ function unflatten(flat) {
     }
     const lastKey = parts[parts.length - 1];
     // SECURITY FIX: Final check for dangerous keys
-    if (lastKey === '__proto__' || lastKey === 'constructor' || lastKey === 'prototype') {
+    if (
+      lastKey === "__proto__" ||
+      lastKey === "constructor" ||
+      lastKey === "prototype"
+    ) {
       console.warn(`SECURITY: Skipping dangerous final key: ${lastKey}`);
       continue;
     }

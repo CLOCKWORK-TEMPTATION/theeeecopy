@@ -454,7 +454,9 @@ ${claim}
     })
   );
 
-  const unsupportedClaims = checkedClaims.filter((c: { claim: string; supported: boolean }) => !c.supported);
+  const unsupportedClaims = checkedClaims.filter(
+    (c: { claim: string; supported: boolean }) => !c.supported
+  );
   const detected = unsupportedClaims.length > 0;
 
   let correctedText = text;
@@ -508,7 +510,10 @@ export async function executeStandardAgentPattern(
     // Step 1: RAG
     let finalPrompt = taskPrompt;
     if (mergedOptions.enableRAG && context?.originalText) {
-      const ragContext = await performRAG(taskPrompt, context.originalText as string);
+      const ragContext = await performRAG(
+        taskPrompt,
+        context.originalText as string
+      );
       finalPrompt = buildPromptWithRAG(taskPrompt, ragContext);
       metadata.ragUsed = ragContext.chunks.length > 0;
       if (metadata.ragUsed) {
@@ -526,7 +531,7 @@ export async function executeStandardAgentPattern(
       const critiqueResult = await performSelfCritique(
         currentText,
         finalPrompt,
-        'gemini-1.5-flash',
+        "gemini-1.5-flash",
         mergedOptions.temperature || 0.3,
         mergedOptions.maxIterations || 3
       );
@@ -543,7 +548,7 @@ export async function executeStandardAgentPattern(
       const constitutionalResult = await performConstitutionalCheck(
         currentText,
         taskPrompt,
-        'gemini-1.5-flash',
+        "gemini-1.5-flash",
         mergedOptions.temperature || 0.3
       );
       currentText = constitutionalResult.correctedText;
@@ -562,7 +567,7 @@ export async function executeStandardAgentPattern(
       const uncertaintyMetrics = await measureUncertainty(
         currentText,
         finalPrompt,
-        'gemini-1.5-flash',
+        "gemini-1.5-flash",
         mergedOptions.temperature || 0.3
       );
       metadata.uncertaintyScore = uncertaintyMetrics.score;
@@ -579,7 +584,7 @@ export async function executeStandardAgentPattern(
       const hallucinationResult = await detectHallucinations(
         currentText,
         taskPrompt,
-        'gemini-1.5-flash'
+        "gemini-1.5-flash"
       );
       metadata.hallucinationDetected = hallucinationResult.detected;
       if (hallucinationResult.detected) {

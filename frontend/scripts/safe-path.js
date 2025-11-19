@@ -5,8 +5,8 @@
  * remain within the project directory
  */
 
-const path = require('path');
-const fs = require('fs');
+const path = require("path");
+const fs = require("fs");
 
 /**
  * Safely resolves a path relative to a base directory
@@ -19,27 +19,29 @@ const fs = require('fs');
  */
 function safeResolve(basePath, ...userPaths) {
   // Validate inputs
-  if (!basePath || typeof basePath !== 'string') {
-    throw new Error('SECURITY: Base path must be a non-empty string');
+  if (!basePath || typeof basePath !== "string") {
+    throw new Error("SECURITY: Base path must be a non-empty string");
   }
-  
+
   // Validate each user path segment
   for (const userPath of userPaths) {
-    if (typeof userPath !== 'string') {
-      throw new Error('SECURITY: All path segments must be strings');
+    if (typeof userPath !== "string") {
+      throw new Error("SECURITY: All path segments must be strings");
     }
     // Check for obvious traversal attempts using absolute paths
     // Allow relative paths like '../src' but block absolute traversal
-    if (userPath.startsWith('/') && userPath.includes('..')) {
-      throw new Error(`SECURITY: Potential path traversal detected in "${userPath}"`);
+    if (userPath.startsWith("/") && userPath.includes("..")) {
+      throw new Error(
+        `SECURITY: Potential path traversal detected in "${userPath}"`
+      );
     }
   }
-  
+
   // Ensure base path is absolute
   const absoluteBase = path.resolve(basePath);
 
   // Join all user paths and resolve relative to base
-  const joinedUserPath = userPaths.length > 0 ? path.join(...userPaths) : '';
+  const joinedUserPath = userPaths.length > 0 ? path.join(...userPaths) : "";
   const resolvedPath = path.resolve(absoluteBase, joinedUserPath);
 
   // Normalize both paths for comparison
@@ -50,7 +52,7 @@ function safeResolve(basePath, ...userPaths) {
   if (!normalizedResolved.startsWith(normalizedBase)) {
     throw new Error(
       `SECURITY: Path traversal attempt detected. ` +
-      `Path "${joinedUserPath}" would escape base directory "${basePath}"`
+        `Path "${joinedUserPath}" would escape base directory "${basePath}"`
     );
   }
 
@@ -68,16 +70,18 @@ function safeResolve(basePath, ...userPaths) {
 function safeJoin(basePath, ...pathSegments) {
   // Validate all path segments before joining
   for (const segment of pathSegments) {
-    if (typeof segment !== 'string') {
-      throw new Error('SECURITY: All path segments must be strings');
+    if (typeof segment !== "string") {
+      throw new Error("SECURITY: All path segments must be strings");
     }
     // Check for obvious traversal attempts using absolute paths
     // Allow relative paths like '../src' but block absolute traversal
-    if (segment.startsWith('/') && segment.includes('..')) {
-      throw new Error(`SECURITY: Potential path traversal in segment "${segment}"`);
+    if (segment.startsWith("/") && segment.includes("..")) {
+      throw new Error(
+        `SECURITY: Potential path traversal in segment "${segment}"`
+      );
     }
   }
-  
+
   return safeResolve(basePath, ...pathSegments);
 }
 
@@ -100,5 +104,5 @@ function isPathSafe(basePath, targetPath) {
 module.exports = {
   safeResolve,
   safeJoin,
-  isPathSafe
+  isPathSafe,
 };

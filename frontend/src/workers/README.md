@@ -9,12 +9,14 @@
 ### 1. **Particle Generator Worker** (`particle-generator.worker.ts`)
 
 يتعامل مع:
+
 - توليد مواقع الجسيمات باستخدام Signed Distance Functions (SDF)
 - Rejection sampling لإنشاء أشكال النص
 - معالجة دفعات (batch processing) للحفاظ على استجابة الواجهة
 - تقارير التقدم (progress reporting)
 
 **الفوائد:**
+
 - تحرير الخيط الرئيسي أثناء التوليد
 - تحميل صفحة أسرع
 - لا يوجد تجميد للواجهة
@@ -22,12 +24,14 @@
 ### 2. **Particle Physics Worker** (`particle-physics.worker.ts`)
 
 يتعامل مع:
+
 - حسابات الفيزياء لكل جسيم
 - تطبيق التأثيرات (spark, wave, vortex)
 - حساب الألوان الديناميكية
 - تحديث السرعات والمواقع
 
 **الفوائد:**
+
 - أداء أفضل في الإطارات العالية (high FPS)
 - حسابات موازية (parallel calculations)
 - انخفاض الضغط على الخيط الرئيسي
@@ -35,6 +39,7 @@
 ### 3. **Worker Manager** (`worker-manager.ts`)
 
 يدير:
+
 - دورة حياة Workers (initialization, termination)
 - التواصل بين الخيط الرئيسي والـ Workers
 - معالجة الأخطاء
@@ -54,7 +59,7 @@ import WorkerParticleAnimation from '@/components/particle-background-worker';
 ### استخدام Worker Manager مباشرة
 
 ```typescript
-import { ParticleWorkerManager } from '@/workers/worker-manager';
+import { ParticleWorkerManager } from "@/workers/worker-manager";
 
 const manager = new ParticleWorkerManager();
 
@@ -62,36 +67,39 @@ const manager = new ParticleWorkerManager();
 await manager.initializeWorkers();
 
 // توليد الجسيمات
-const particles = await manager.generateParticles({
-  numParticles: 8000,
-  thickness: 0.15,
-  minX: -2.1,
-  maxX: 5.6,
-  minY: -0.4,
-  maxY: 0.85,
-  maxAttempts: 3000000,
-  batchSize: 600
-}, (progress, count) => {
-  console.log(`Progress: ${progress}%, Count: ${count}`);
-});
+const particles = await manager.generateParticles(
+  {
+    numParticles: 8000,
+    thickness: 0.15,
+    minX: -2.1,
+    maxX: 5.6,
+    minY: -0.4,
+    maxY: 0.85,
+    maxAttempts: 3000000,
+    batchSize: 600,
+  },
+  (progress, count) => {
+    console.log(`Progress: ${progress}%, Count: ${count}`);
+  }
+);
 
 // تحديث الجسيمات
 const updated = await manager.updateParticles({
-  type: 'update',
+  type: "update",
   positions: particlePositions,
   velocities: particleVelocities,
   originalPositions: originalPos,
   colors: particleColors,
   particleCount: count,
   config: {
-    effect: 'spark',
+    effect: "spark",
     effectRadius: 0.5,
     repelStrength: 0.08,
     attractStrength: 0.15,
     damping: 0.92,
     intersectionPoint: { x: 0, y: 0, z: 0 },
-    time: Date.now() * 0.001
-  }
+    time: Date.now() * 0.001,
+  },
 });
 
 // تنظيف
@@ -112,11 +120,13 @@ workers/
 ## الأداء
 
 ### قبل Web Workers:
+
 - ❌ تجميد الواجهة أثناء التوليد (2-5 ثواني)
 - ❌ انخفاض FPS أثناء التفاعلات (< 30 FPS)
 - ❌ استهلاك عالي للـ CPU في الخيط الرئيسي
 
 ### بعد Web Workers:
+
 - ✅ واجهة مستجيبة دائماً
 - ✅ FPS عالي ومستقر (> 60 FPS)
 - ✅ توزيع الحمل على عدة خيوط
@@ -130,33 +140,29 @@ workers/
 
 ```typescript
 // CSP Headers
-"worker-src 'self' blob:",
-"child-src 'self' blob:",
-
-// Webpack config
-config.module.rules.push({
-  test: /\.worker\.(ts|js)$/,
-  use: {
-    loader: 'worker-loader',
-    options: {
-      filename: 'static/[hash].worker.js',
-      publicPath: '/_next/',
+("worker-src 'self' blob:",
+  "child-src 'self' blob:",
+  // Webpack config
+  config.module.rules.push({
+    test: /\.worker\.(ts|js)$/,
+    use: {
+      loader: "worker-loader",
+      options: {
+        filename: "static/[hash].worker.js",
+        publicPath: "/_next/",
+      },
     },
-  },
-});
+  }));
 ```
 
 ## مثال على تقارير التقدم
 
 ```typescript
-const particles = await manager.generateParticles(
-  config,
-  (progress, count) => {
-    // تحديث شريط التقدم
-    setProgress(progress);
-    console.log(`Generated ${count} particles (${progress}%)`);
-  }
-);
+const particles = await manager.generateParticles(config, (progress, count) => {
+  // تحديث شريط التقدم
+  setProgress(progress);
+  console.log(`Generated ${count} particles (${progress}%)`);
+});
 ```
 
 ## معالجة الأخطاء
@@ -166,7 +172,7 @@ try {
   await manager.initializeWorkers();
   const particles = await manager.generateParticles(config);
 } catch (error) {
-  console.error('Worker error:', error);
+  console.error("Worker error:", error);
   // استخدام fallback للتوليد في الخيط الرئيسي
 }
 ```
@@ -180,7 +186,7 @@ try {
 worker.postMessage(data, [
   data.positions.buffer,
   data.velocities.buffer,
-  data.colors.buffer
+  data.colors.buffer,
 ]);
 ```
 
@@ -199,7 +205,7 @@ worker.postMessage(data, [
 const PARTICLE_CONFIG = {
   DESKTOP: { count: 8000, batchSize: 600 },
   MOBILE: { count: 3000, batchSize: 400 },
-  TABLET: { count: 5000, batchSize: 500 }
+  TABLET: { count: 5000, batchSize: 500 },
 };
 ```
 

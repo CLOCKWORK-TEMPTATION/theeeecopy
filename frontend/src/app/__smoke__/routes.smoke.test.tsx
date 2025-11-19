@@ -1,12 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { Suspense } from "react";
+import "@testing-library/jest-dom";
+import React, { Suspense } from "react";
 
 // Helper component for wrapping pages with Suspense
-const PageWrapper = ({ children }: { children: React.ReactNode }) => (
-  <Suspense fallback={<div>Loading...</div>}>
-    {children}
-  </Suspense>
+const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
 );
 
 // Define critical routes for testing
@@ -70,45 +69,61 @@ describe("الاختبارات الحرجة للصفحات الرئيسية", ()
         try {
           // Import page component dynamically based on path
           let PageComponent;
-          
+
           try {
             switch (route.path) {
               case "/":
                 PageComponent = (await import("../page")).default;
                 break;
               case "/arabic-creative-writing-studio":
-                PageComponent = (await import("../(main)/arabic-creative-writing-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/arabic-creative-writing-studio/page")
+                ).default;
                 break;
               case "/directors-studio":
-                PageComponent = (await import("../(main)/directors-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/directors-studio/page")
+                ).default;
                 break;
               case "/cinematography-studio":
-                PageComponent = (await import("../(main)/cinematography-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/cinematography-studio/page")
+                ).default;
                 break;
               case "/actorai-arabic":
-                PageComponent = (await import("../(main)/actorai-arabic/page")).default;
+                PageComponent = (await import("../(main)/actorai-arabic/page"))
+                  .default;
                 break;
               case "/brainstorm":
-                PageComponent = (await import("../(main)/brainstorm/page")).default;
+                PageComponent = (await import("../(main)/brainstorm/page"))
+                  .default;
                 break;
               case "/analysis/seven-stations":
-                PageComponent = (await import("../(main)/analysis/seven-stations")).default;
+                PageComponent = (
+                  await import("../(main)/analysis/seven-stations")
+                ).default;
                 break;
               case "/development":
-                PageComponent = (await import("../(main)/development/page")).default;
+                PageComponent = (await import("../(main)/development/page"))
+                  .default;
                 break;
               case "/editor":
                 PageComponent = (await import("../(main)/editor/page")).default;
                 break;
               case "/breakdown":
-                PageComponent = (await import("../(main)/breakdown/page")).default;
+                PageComponent = (await import("../(main)/breakdown/page"))
+                  .default;
                 break;
               default:
                 // For pages without specific imports, try generic import
-                PageComponent = (await import(`../(main)${route.path}/page`)).default;
+                PageComponent = (await import(`../(main)${route.path}/page`))
+                  .default;
             }
           } catch (importError) {
-            console.warn(`Failed to import page for ${route.path}:`, importError);
+            console.warn(
+              `Failed to import page for ${route.path}:`,
+              importError
+            );
             // Skip this test if page doesn't exist or can't be imported
             return;
           }
@@ -134,7 +149,6 @@ describe("الاختبارات الحرجة للصفحات الرئيسية", ()
           expect(hasContent).toBe(true);
 
           console.log(`✅ الصفحة ${route.name} (${route.path}) تعمل بنجاح`);
-
         } catch (error) {
           console.error(`❌ خطأ في صفحة ${route.name} (${route.path}):`, error);
           throw error;
@@ -144,44 +158,60 @@ describe("الاختبارات الحرجة للصفحات الرئيسية", ()
       it(`يجب أن تحتوي الصفحة ${route.name} على عناصر HTML صحيحة`, async () => {
         try {
           let PageComponent;
-          
+
           try {
             switch (route.path) {
               case "/":
                 PageComponent = (await import("../page")).default;
                 break;
               case "/arabic-creative-writing-studio":
-                PageComponent = (await import("../(main)/arabic-creative-writing-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/arabic-creative-writing-studio/page")
+                ).default;
                 break;
               case "/directors-studio":
-                PageComponent = (await import("../(main)/directors-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/directors-studio/page")
+                ).default;
                 break;
               case "/cinematography-studio":
-                PageComponent = (await import("../(main)/cinematography-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/cinematography-studio/page")
+                ).default;
                 break;
               case "/actorai-arabic":
-                PageComponent = (await import("../(main)/actorai-arabic/page")).default;
+                PageComponent = (await import("../(main)/actorai-arabic/page"))
+                  .default;
                 break;
               case "/brainstorm":
-                PageComponent = (await import("../(main)/brainstorm/page")).default;
+                PageComponent = (await import("../(main)/brainstorm/page"))
+                  .default;
                 break;
               case "/analysis/seven-stations":
-                PageComponent = (await import("../(main)/analysis/seven-stations")).default;
+                PageComponent = (
+                  await import("../(main)/analysis/seven-stations")
+                ).default;
                 break;
               case "/development":
-                PageComponent = (await import("../(main)/development/page")).default;
+                PageComponent = (await import("../(main)/development/page"))
+                  .default;
                 break;
               case "/editor":
                 PageComponent = (await import("../(main)/editor/page")).default;
                 break;
               case "/breakdown":
-                PageComponent = (await import("../(main)/breakdown/page")).default;
+                PageComponent = (await import("../(main)/breakdown/page"))
+                  .default;
                 break;
               default:
-                PageComponent = (await import(`../(main)${route.path}/page`)).default;
+                PageComponent = (await import(`../(main)${route.path}/page`))
+                  .default;
             }
           } catch (importError) {
-            console.warn(`Failed to import page for ${route.path}:`, importError);
+            console.warn(
+              `Failed to import page for ${route.path}:`,
+              importError
+            );
             return;
           }
 
@@ -199,21 +229,23 @@ describe("الاختبارات الحرجة للصفحات الرئيسية", ()
           // Check for basic HTML structure
           const htmlElement = document.querySelector("html");
           const bodyElement = document.querySelector("body");
-          
+
           expect(htmlElement).toBeInTheDocument();
           expect(bodyElement).toBeInTheDocument();
 
           // Check for common page elements
           const mainElement = document.querySelector("main");
           const headerElement = document.querySelector("header");
-          
+
           // At least one of these should exist
           expect(mainElement || headerElement).toBeTruthy();
 
           console.log(`✅ الصفحة ${route.name} تحتوي على عناصر HTML صحيحة`);
-
         } catch (error) {
-          console.error(`❌ خطأ في فحص عناصر HTML في صفحة ${route.name} (${route.path}):`, error);
+          console.error(
+            `❌ خطأ في فحص عناصر HTML في صفحة ${route.name} (${route.path}):`,
+            error
+          );
           throw error;
         }
       });
@@ -225,44 +257,60 @@ describe("الاختبارات الحرجة للصفحات الرئيسية", ()
       it(`الصفحة ${route.name} لا تسبب خطأ 500`, async () => {
         try {
           let PageComponent;
-          
+
           try {
             switch (route.path) {
               case "/":
                 PageComponent = (await import("../page")).default;
                 break;
               case "/arabic-creative-writing-studio":
-                PageComponent = (await import("../(main)/arabic-creative-writing-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/arabic-creative-writing-studio/page")
+                ).default;
                 break;
               case "/directors-studio":
-                PageComponent = (await import("../(main)/directors-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/directors-studio/page")
+                ).default;
                 break;
               case "/cinematography-studio":
-                PageComponent = (await import("../(main)/cinematography-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/cinematography-studio/page")
+                ).default;
                 break;
               case "/actorai-arabic":
-                PageComponent = (await import("../(main)/actorai-arabic/page")).default;
+                PageComponent = (await import("../(main)/actorai-arabic/page"))
+                  .default;
                 break;
               case "/brainstorm":
-                PageComponent = (await import("../(main)/brainstorm/page")).default;
+                PageComponent = (await import("../(main)/brainstorm/page"))
+                  .default;
                 break;
               case "/analysis/seven-stations":
-                PageComponent = (await import("../(main)/analysis/seven-stations")).default;
+                PageComponent = (
+                  await import("../(main)/analysis/seven-stations")
+                ).default;
                 break;
               case "/development":
-                PageComponent = (await import("../(main)/development/page")).default;
+                PageComponent = (await import("../(main)/development/page"))
+                  .default;
                 break;
               case "/editor":
                 PageComponent = (await import("../(main)/editor/page")).default;
                 break;
               case "/breakdown":
-                PageComponent = (await import("../(main)/breakdown/page")).default;
+                PageComponent = (await import("../(main)/breakdown/page"))
+                  .default;
                 break;
               default:
-                PageComponent = (await import(`../(main)${route.path}/page`)).default;
+                PageComponent = (await import(`../(main)${route.path}/page`))
+                  .default;
             }
           } catch (importError) {
-            console.warn(`Failed to import page for ${route.path}:`, importError);
+            console.warn(
+              `Failed to import page for ${route.path}:`,
+              importError
+            );
             return;
           }
 
@@ -274,10 +322,14 @@ describe("الاختبارات الحرجة للصفحات الرئيسية", ()
           // Capture console errors
           const originalError = console.error;
           const consoleErrors: string[] = [];
-          
+
           console.error = (...args) => {
             const message = args.join(" ");
-            if (message.includes("500") || message.includes("error") || message.includes("Error")) {
+            if (
+              message.includes("500") ||
+              message.includes("error") ||
+              message.includes("Error")
+            ) {
               consoleErrors.push(message);
             }
             originalError(...args);
@@ -294,23 +346,26 @@ describe("الاختبارات الحرجة للصفحات الرئيسية", ()
           }
 
           // Check for 500 errors or critical errors
-          const has500Error = consoleErrors.some(error => 
-            error.includes("500") || 
-            error.includes("Internal Server Error") ||
-            error.includes("Failed to fetch") ||
-            error.includes("Network Error")
+          const has500Error = consoleErrors.some(
+            (error) =>
+              error.includes("500") ||
+              error.includes("Internal Server Error") ||
+              error.includes("Failed to fetch") ||
+              error.includes("Network Error")
           );
 
           expect(has500Error).toBe(false);
 
           console.log(`✅ الصفحة ${route.name} لا تسبب أخطاء 500`);
-
         } catch (error) {
-          if (error instanceof Error && (
-            error.message.includes("500") ||
-            error.message.includes("Internal Server Error")
-          )) {
-            throw new Error(`الصفحة ${route.name} تسبب خطأ 500: ${error.message}`);
+          if (
+            error instanceof Error &&
+            (error.message.includes("500") ||
+              error.message.includes("Internal Server Error"))
+          ) {
+            throw new Error(
+              `الصفحة ${route.name} تسبب خطأ 500: ${error.message}`
+            );
           }
           console.log(`✅ الصفحة ${route.name} تعمل بدون أخطاء 500`);
         }
@@ -322,47 +377,63 @@ describe("الاختبارات الحرجة للصفحات الرئيسية", ()
     CRITICAL_ROUTES.forEach((route) => {
       it(`الصفحة ${route.name} تحمل بسرعة مقبولة`, async () => {
         const startTime = performance.now();
-        
+
         try {
           let PageComponent;
-          
+
           try {
             switch (route.path) {
               case "/":
                 PageComponent = (await import("../page")).default;
                 break;
               case "/arabic-creative-writing-studio":
-                PageComponent = (await import("../(main)/arabic-creative-writing-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/arabic-creative-writing-studio/page")
+                ).default;
                 break;
               case "/directors-studio":
-                PageComponent = (await import("../(main)/directors-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/directors-studio/page")
+                ).default;
                 break;
               case "/cinematography-studio":
-                PageComponent = (await import("../(main)/cinematography-studio/page")).default;
+                PageComponent = (
+                  await import("../(main)/cinematography-studio/page")
+                ).default;
                 break;
               case "/actorai-arabic":
-                PageComponent = (await import("../(main)/actorai-arabic/page")).default;
+                PageComponent = (await import("../(main)/actorai-arabic/page"))
+                  .default;
                 break;
               case "/brainstorm":
-                PageComponent = (await import("../(main)/brainstorm/page")).default;
+                PageComponent = (await import("../(main)/brainstorm/page"))
+                  .default;
                 break;
               case "/analysis/seven-stations":
-                PageComponent = (await import("../(main)/analysis/seven-stations")).default;
+                PageComponent = (
+                  await import("../(main)/analysis/seven-stations")
+                ).default;
                 break;
               case "/development":
-                PageComponent = (await import("../(main)/development/page")).default;
+                PageComponent = (await import("../(main)/development/page"))
+                  .default;
                 break;
               case "/editor":
                 PageComponent = (await import("../(main)/editor/page")).default;
                 break;
               case "/breakdown":
-                PageComponent = (await import("../(main)/breakdown/page")).default;
+                PageComponent = (await import("../(main)/breakdown/page"))
+                  .default;
                 break;
               default:
-                PageComponent = (await import(`../(main)${route.path}/page`)).default;
+                PageComponent = (await import(`../(main)${route.path}/page`))
+                  .default;
             }
           } catch (importError) {
-            console.warn(`Failed to import page for ${route.path}:`, importError);
+            console.warn(
+              `Failed to import page for ${route.path}:`,
+              importError
+            );
             return;
           }
 
@@ -383,10 +454,14 @@ describe("الاختبارات الحرجة للصفحات الرئيسية", ()
           // الصفحة يجب أن تحمل في أقل من 5 ثواني في بيئة الاختبار
           expect(renderTime).toBeLessThan(5000);
 
-          console.log(`✅ الصفحة ${route.name} تحمل في ${Math.round(renderTime)}ms`);
-
+          console.log(
+            `✅ الصفحة ${route.name} تحمل في ${Math.round(renderTime)}ms`
+          );
         } catch (error) {
-          console.error(`❌ خطأ في قياس أداء صفحة ${route.name} (${route.path}):`, error);
+          console.error(
+            `❌ خطأ في قياس أداء صفحة ${route.name} (${route.path}):`,
+            error
+          );
           throw error;
         }
       });

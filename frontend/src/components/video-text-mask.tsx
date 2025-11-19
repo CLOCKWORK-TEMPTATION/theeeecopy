@@ -41,7 +41,8 @@ export const VideoTextMask = forwardRef<HTMLDivElement, VideoTextMaskProps>(
                 fontSize: "clamp(8rem, 28vw, 40rem)",
                 fontWeight: 900,
                 color: "black",
-                fontFamily: "'Tajawal', 'Cairo', 'Noto Kufi Arabic', 'system-ui', '-apple-system', 'Segoe UI', 'Arial Black', sans-serif",
+                fontFamily:
+                  "'Tajawal', 'Cairo', 'Noto Kufi Arabic', 'system-ui', '-apple-system', 'Segoe UI', 'Arial Black', sans-serif",
                 letterSpacing: "-0.08em",
                 fontStretch: "ultra-expanded",
               }}

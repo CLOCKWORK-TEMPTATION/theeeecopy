@@ -24,7 +24,7 @@ export type PipelineInput = ValidatedPipelineInput;
 export type PipelineRunResult = ValidatedPipelineRunResult;
 export type StationStatus = ValidatedStationStatus;
 
-export type { PipelineInputSchema }
+export type { PipelineInputSchema };
 export { validateAndNormalizePipelineInput };
 
 export interface AnalysisPipelineConfig {
@@ -73,7 +73,9 @@ export class AnalysisPipeline {
     this.orchestrator = this.createOrchestrator(config);
   }
 
-  private initializeGeminiService(config: AnalysisPipelineConfig): GeminiService {
+  private initializeGeminiService(
+    config: AnalysisPipelineConfig
+  ): GeminiService {
     if (config.geminiService) {
       return config.geminiService;
     }
@@ -109,7 +111,9 @@ export class AnalysisPipeline {
     return outputDirectory;
   }
 
-  private createOrchestrator(config: AnalysisPipelineConfig): StationsOrchestrator {
+  private createOrchestrator(
+    config: AnalysisPipelineConfig
+  ): StationsOrchestrator {
     return new StationsOrchestrator({
       geminiService: this.geminiService,
       outputDirectory: this.outputDirectory,

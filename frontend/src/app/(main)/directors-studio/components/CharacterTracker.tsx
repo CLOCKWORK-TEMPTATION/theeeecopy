@@ -19,13 +19,19 @@ interface CharacterTrackerProps {
   characters: Character[];
 }
 
-export default function CharacterTracker({ characters }: CharacterTrackerProps) {
+export default function CharacterTracker({
+  characters,
+}: CharacterTrackerProps) {
   const getStatusIcon = (status: Character["consistencyStatus"]) => {
     switch (status) {
       case "good":
-        return <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />;
+        return (
+          <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
+        );
       case "warning":
-        return <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
+        return (
+          <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+        );
       case "issue":
         return <AlertCircle className="w-4 h-4 text-destructive" />;
     }
@@ -55,7 +61,11 @@ export default function CharacterTracker({ characters }: CharacterTrackerProps) 
               className="flex items-center gap-4 p-4 rounded-md border hover-elevate active-elevate-2"
               data-testid={`character-${character.id}`}
             >
-              <Button size="icon" variant="ghost" data-testid={`button-view-${character.id}`}>
+              <Button
+                size="icon"
+                variant="ghost"
+                data-testid={`button-view-${character.id}`}
+              >
                 <Eye className="w-4 h-4" />
               </Button>
 
@@ -69,7 +79,7 @@ export default function CharacterTracker({ characters }: CharacterTrackerProps) 
                   </div>
                   <h4 className="font-semibold">{character.name}</h4>
                 </div>
-                
+
                 <div className="flex items-center justify-end gap-4 text-sm text-muted-foreground">
                   <span>{character.lastSeen}</span>
                   <span>•</span>

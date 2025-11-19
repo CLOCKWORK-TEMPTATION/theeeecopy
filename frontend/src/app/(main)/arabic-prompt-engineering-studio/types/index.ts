@@ -23,36 +23,36 @@ export interface PromptAnalysis {
   weaknesses: string[];
   suggestions: string[];
   estimatedTokens: number;
-  complexity: 'low' | 'medium' | 'high';
+  complexity: "low" | "medium" | "high";
   category: PromptCategory;
-  language: 'ar' | 'en' | 'mixed';
+  language: "ar" | "en" | "mixed";
 }
 
 /**
  * Prompt categories
  */
 export type PromptCategory =
-  | 'creative_writing'
-  | 'analysis'
-  | 'translation'
-  | 'summarization'
-  | 'question_answering'
-  | 'code_generation'
-  | 'data_extraction'
-  | 'conversation'
-  | 'other';
+  | "creative_writing"
+  | "analysis"
+  | "translation"
+  | "summarization"
+  | "question_answering"
+  | "code_generation"
+  | "data_extraction"
+  | "conversation"
+  | "other";
 
 /**
  * Prompt enhancement options
  */
 export interface PromptEnhancementOptions {
-  targetLanguage?: 'ar' | 'en';
+  targetLanguage?: "ar" | "en";
   addContext?: boolean;
   addExamples?: boolean;
   improveClarity?: boolean;
   optimizeTokens?: boolean;
-  targetAudience?: 'beginner' | 'intermediate' | 'expert';
-  desiredLength?: 'short' | 'medium' | 'long';
+  targetAudience?: "beginner" | "intermediate" | "expert";
+  desiredLength?: "short" | "medium" | "long";
 }
 
 /**
@@ -80,7 +80,7 @@ export interface PromptTemplate {
   variables: TemplateVariable[];
   examples: string[];
   tags: string[];
-  language: 'ar' | 'en';
+  language: "ar" | "en";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -93,7 +93,7 @@ export interface TemplateVariable {
   description: string;
   required: boolean;
   defaultValue?: string;
-  type: 'string' | 'number' | 'boolean' | 'array';
+  type: "string" | "number" | "boolean" | "array";
 }
 
 /**
@@ -154,9 +154,8 @@ export interface PromptSession {
 export interface PromptHistoryEntry {
   id: string;
   prompt: string;
-  action: 'created' | 'edited' | 'enhanced' | 'analyzed' | 'tested';
+  action: "created" | "edited" | "enhanced" | "analyzed" | "tested";
   timestamp: Date;
   metrics?: PromptMetrics;
   notes?: string;
 }
-

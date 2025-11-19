@@ -20,26 +20,26 @@ LOD is a technique that adapts rendering quality based on device capabilities to
 
 يتم تصنيف الأجهزة إلى ثلاثة مستويات:
 
-| المستوى | المعايير | عدد الجزيئات | معدل التحديث |
-|---------|----------|---------------|--------------|
-| **High** | Desktop (8+ cores, 8GB+ RAM) | 2000-3000 | 60 FPS |
-| **Medium** | Desktop/Tablet (4+ cores) | 800-1500 | 30 FPS |
-| **Low** | Mobile/Old devices | 500 | 20 FPS |
+| المستوى    | المعايير                     | عدد الجزيئات | معدل التحديث |
+| ---------- | ---------------------------- | ------------ | ------------ |
+| **High**   | Desktop (8+ cores, 8GB+ RAM) | 2000-3000    | 60 FPS       |
+| **Medium** | Desktop/Tablet (4+ cores)    | 800-1500     | 30 FPS       |
+| **Low**    | Mobile/Old devices           | 500          | 20 FPS       |
 
 ### كشف قدرات الجهاز | Device Capability Detection
 
 ```typescript
 // في device-detection.ts
 export interface DeviceCapabilities {
-  deviceType: 'mobile' | 'tablet' | 'desktop';
-  performanceTier: 'low' | 'medium' | 'high';
+  deviceType: "mobile" | "tablet" | "desktop";
+  performanceTier: "low" | "medium" | "high";
   supportsWebGL: boolean;
   pixelRatio: number;
   maxTextureSize: number;
   isTouchDevice: boolean;
   isLowPowerMode: boolean;
   hardwareConcurrency: number; // CPU cores
-  memoryGB: number | null;     // RAM
+  memoryGB: number | null; // RAM
 }
 ```
 
@@ -103,7 +103,7 @@ const lodConfig = getParticleLODConfig(capabilities);
 
 ```typescript
 // استخدام PerformanceMonitor
-import { performanceMonitor } from './particle-effects';
+import { performanceMonitor } from "./particle-effects";
 
 // في animation loop:
 const animate = () => {
@@ -127,12 +127,12 @@ const animate = () => {
 
 ### معايير الأداء | Performance Metrics
 
-| المقياس | Mobile | Tablet | Desktop |
-|---------|--------|--------|---------|
-| Target FPS | 20-30 | 30-45 | 45-60 |
+| المقياس        | Mobile  | Tablet   | Desktop   |
+| -------------- | ------- | -------- | --------- |
+| Target FPS     | 20-30   | 30-45    | 45-60     |
 | Particle Count | 500-800 | 800-1500 | 1500-3000 |
-| Effect Radius | 100px | 150px | 200px |
-| Update Rate | 50ms | 33ms | 16ms |
+| Effect Radius  | 100px   | 150px    | 200px     |
+| Update Rate    | 50ms    | 33ms     | 16ms      |
 
 ---
 
@@ -147,6 +147,7 @@ const animate = () => {
 ### 1. Particle System Optimizations
 
 #### أ. Batch Processing
+
 ```typescript
 // معالجة الجزيئات على دفعات بدلاً من دفعة واحدة
 const processBatch = () => {
@@ -157,24 +158,31 @@ const processBatch = () => {
 ```
 
 **الفوائد:**
+
 - تقليل الحمل على main thread
 - تحسين استجابة UI
 - تجنب frame drops
 
 #### ب. requestIdleCallback للتوليد
+
 ```typescript
 // توليد الجزيئات عندما يكون المتصفح خاملاً
-requestIdle(() => {
-  generateParticleBatch();
-}, { timeout: 100 });
+requestIdle(
+  () => {
+    generateParticleBatch();
+  },
+  { timeout: 100 }
+);
 ```
 
 **الفوائد:**
+
 - لا يعيق التفاعل مع المستخدم
 - استغلال أوقات الخمول
 - تحميل تدريجي
 
 #### ج. Object Pooling
+
 ```typescript
 // إعادة استخدام الكائنات بدلاً من إنشاء جديدة
 const velocities = new Float32Array(particleCount * 3);
@@ -182,6 +190,7 @@ const velocities = new Float32Array(particleCount * 3);
 ```
 
 **الفوائد:**
+
 - تقليل Garbage Collection
 - تحسين استخدام الذاكرة
 - أداء أفضل
@@ -189,33 +198,37 @@ const velocities = new Float32Array(particleCount * 3);
 ### 2. Three.js Optimizations
 
 #### أ. Geometry Reuse
+
 ```typescript
 // استخدام BufferGeometry بدلاً من Geometry
 const geometry = new THREE.BufferGeometry();
-geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 ```
 
 #### ب. Material Optimizations
+
 ```typescript
 const material = new THREE.PointsMaterial({
   size: 0.008,
   sizeAttenuation: true,
-  vertexColors: true,      // ألوان منفصلة لكل جزيء
+  vertexColors: true, // ألوان منفصلة لكل جزيء
   transparent: true,
   opacity: 0.95,
 });
 ```
 
 #### ج. Selective Updates
+
 ```typescript
 // تحديث فقط ما تغير
-positionAttribute.needsUpdate = true;  // فقط عند التغيير
-colorAttribute.needsUpdate = true;     // فقط عند التغيير
+positionAttribute.needsUpdate = true; // فقط عند التغيير
+colorAttribute.needsUpdate = true; // فقط عند التغيير
 ```
 
 ### 3. Memory Management
 
 #### أ. Automatic Cleanup
+
 ```typescript
 // تنظيف تلقائي بعد 5 دقائق
 const cleanupTimeout = setTimeout(cleanup, 300000);
@@ -229,11 +242,12 @@ const cleanup = () => {
 ```
 
 #### ب. Event Listener Cleanup
+
 ```typescript
 // إزالة جميع event listeners عند unmount
 return () => {
-  canvas.removeEventListener('mousemove', handler);
-  window.removeEventListener('resize', handler);
+  canvas.removeEventListener("mousemove", handler);
+  window.removeEventListener("resize", handler);
   // ...
 };
 ```
@@ -241,10 +255,11 @@ return () => {
 ### 4. Accessibility
 
 #### أ. Prefers Reduced Motion
+
 ```typescript
 // احترام تفضيلات المستخدم
 const prefersReducedMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
+  "(prefers-reduced-motion: reduce)"
 ).matches;
 
 if (prefersReducedMotion) {
@@ -254,8 +269,9 @@ if (prefersReducedMotion) {
 ```
 
 #### ب. Touch Device Detection
+
 ```typescript
-const isTouchDevice = 'ontouchstart' in window;
+const isTouchDevice = "ontouchstart" in window;
 // تكييف التفاعلات بناءً على نوع الجهاز
 ```
 
@@ -266,7 +282,7 @@ const isTouchDevice = 'ontouchstart' in window;
 ### Console Logging في Development
 
 ```typescript
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   // عرض قدرات الجهاز
   logDeviceCapabilities();
 
@@ -276,7 +292,7 @@ if (process.env.NODE_ENV === 'development') {
   }
 
   // عرض تكوين LOD
-  console.log('🎨 Particle LOD Applied:', {
+  console.log("🎨 Particle LOD Applied:", {
     particles: count,
     effectRadius: lodConfig.effectRadius,
     updateFrequency: `${1000 / lodConfig.updateFrequency}fps`,
@@ -309,19 +325,19 @@ if (process.env.NODE_ENV === 'development') {
 
 ### Before Optimizations (قبل التحسينات)
 
-| الجهاز | FPS | Particle Count | Memory Usage |
-|--------|-----|----------------|--------------|
-| High-end Desktop | 45-55 | 8000 | ~150MB |
-| Mid-range Desktop | 25-35 | 5000 | ~100MB |
-| Mobile | 10-15 | 2000 | ~50MB |
+| الجهاز            | FPS   | Particle Count | Memory Usage |
+| ----------------- | ----- | -------------- | ------------ |
+| High-end Desktop  | 45-55 | 8000           | ~150MB       |
+| Mid-range Desktop | 25-35 | 5000           | ~100MB       |
+| Mobile            | 10-15 | 2000           | ~50MB        |
 
 ### After Optimizations (بعد التحسينات)
 
-| الجهاز | FPS | Particle Count | Memory Usage |
-|--------|-----|----------------|--------------|
-| High-end Desktop | 55-60 | 3000 | ~80MB |
-| Mid-range Desktop | 45-55 | 1500 | ~50MB |
-| Mobile | 25-30 | 800 | ~30MB |
+| الجهاز            | FPS   | Particle Count | Memory Usage |
+| ----------------- | ----- | -------------- | ------------ |
+| High-end Desktop  | 55-60 | 3000           | ~80MB        |
+| Mid-range Desktop | 45-55 | 1500           | ~50MB        |
+| Mobile            | 25-30 | 800            | ~30MB        |
 
 ### التحسينات المحققة | Improvements Achieved
 
@@ -337,6 +353,7 @@ if (process.env.NODE_ENV === 'development') {
 ### المشكلة: FPS منخفض على Desktop
 
 **الحلول:**
+
 1. تحقق من `performanceTier` - قد يكون Low خطأً
 2. أغلق التطبيقات الأخرى
 3. تحقق من GPU usage في Task Manager
@@ -345,6 +362,7 @@ if (process.env.NODE_ENV === 'development') {
 ### المشكلة: الجزيئات لا تظهر
 
 **الحلول:**
+
 1. تحقق من WebGL support: `supportsWebGL()`
 2. افحص Console للأخطاء
 3. تحقق من `prefers-reduced-motion`
@@ -353,6 +371,7 @@ if (process.env.NODE_ENV === 'development') {
 ### المشكلة: Memory Leak
 
 **الحلول:**
+
 1. تأكد من تنفيذ cleanup function
 2. تحقق من إزالة event listeners
 3. استخدم Memory Profiler لتحديد المصدر
@@ -362,12 +381,14 @@ if (process.env.NODE_ENV === 'development') {
 ## 📚 المراجع | References
 
 ### Internal Files
+
 - `/src/components/device-detection.ts` - نظام كشف الأجهزة
 - `/src/components/particle-effects.ts` - تأثيرات الجزيئات
 - `/src/components/particle-background-optimized.tsx` - المكون الرئيسي
 - `/docs/CDN_CONFIGURATION.md` - توثيق CDN
 
 ### External Resources
+
 - [Three.js Performance Tips](https://threejs.org/docs/#manual/en/introduction/Performance-tips)
 - [Web Performance Best Practices](https://web.dev/performance/)
 - [requestIdleCallback API](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback)
@@ -382,12 +403,12 @@ if (process.env.NODE_ENV === 'development') {
 ```typescript
 // في particle-background-optimized.tsx
 const customConfig = {
-  particleCount: 2000,      // عدد مخصص
-  effectRadius: 150,        // نصف قطر مخصص
-  updateFrequency: 20,      // معدل تحديث مخصص (ms)
+  particleCount: 2000, // عدد مخصص
+  effectRadius: 150, // نصف قطر مخصص
+  updateFrequency: 20, // معدل تحديث مخصص (ms)
   enableAdvancedEffects: true,
   enableShadows: false,
-  textureQuality: 'medium',
+  textureQuality: "medium",
 };
 
 // استخدم التكوين المخصص بدلاً من التلقائي
@@ -407,16 +428,19 @@ NEXT_PUBLIC_PARTICLE_COUNT=1500       # عدد محدد
 ## 📝 ملاحظات مهمة | Important Notes
 
 ⚠️ **Performance:**
+
 - LOD يعمل تلقائياً - لا حاجة للتكوين اليدوي
 - Performance monitoring يعمل فقط في development
 - Automatic cleanup بعد 5 دقائق لتجنب memory leaks
 
 ✅ **Best Practices:**
+
 - اختبر على أجهزة حقيقية، ليس فقط DevTools emulation
 - راقب FPS باستمرار أثناء التطوير
 - استخدم Production build للاختبار النهائي
 
 🔒 **Accessibility:**
+
 - احترم `prefers-reduced-motion` دائماً
 - وفّر fallback للأجهزة القديمة
 - اختبر مع screen readers

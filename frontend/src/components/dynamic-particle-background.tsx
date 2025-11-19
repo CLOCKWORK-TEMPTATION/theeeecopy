@@ -20,7 +20,7 @@
  * ```
  */
 
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 // Loading component shown while particle background is loading
 const ParticleLoading = () => (
@@ -31,10 +31,10 @@ const ParticleLoading = () => (
 
 // Dynamically import particle background with loading state
 const DynamicParticleBackground = dynamic(
-  () => import('./particle-background'),
+  () => import("./particle-background"),
   {
     loading: ParticleLoading,
-    ssr: false // Three.js doesn't work with SSR
+    ssr: false, // Three.js doesn't work with SSR
   }
 );
 

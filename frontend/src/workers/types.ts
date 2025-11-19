@@ -24,7 +24,7 @@ export type Effect = "default" | "spark" | "wave" | "vortex";
 // ====== Particle Generator Worker Types ======
 
 export interface GenerateParticlesMessage {
-  type: 'generate';
+  type: "generate";
   config: {
     numParticles: number;
     thickness: number;
@@ -38,13 +38,13 @@ export interface GenerateParticlesMessage {
 }
 
 export interface ParticleGenerationProgressResult {
-  type: 'progress';
+  type: "progress";
   progress: number;
   count: number;
 }
 
 export interface ParticleGenerationCompleteResult {
-  type: 'complete';
+  type: "complete";
   positions: Float32Array;
   colors: Float32Array;
   count: number;
@@ -54,7 +54,7 @@ export interface ParticleGenerationCompleteResult {
 }
 
 export interface ParticleGenerationErrorResult {
-  type: 'error';
+  type: "error";
   error: string;
 }
 
@@ -66,7 +66,7 @@ export type ParticleGenerationResult =
 // ====== Particle Physics Worker Types ======
 
 export interface UpdateParticlesMessage {
-  type: 'update';
+  type: "update";
   positions: Float32Array;
   velocities: Float32Array;
   originalPositions: Float32Array;
@@ -84,14 +84,14 @@ export interface UpdateParticlesMessage {
 }
 
 export interface UpdateParticlesSuccessResult {
-  type: 'updated';
+  type: "updated";
   positions: Float32Array;
   velocities: Float32Array;
   colors: Float32Array;
 }
 
 export interface UpdateParticlesErrorResult {
-  type: 'error';
+  type: "error";
   error: string;
 }
 

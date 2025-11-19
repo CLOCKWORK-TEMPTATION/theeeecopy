@@ -11,7 +11,7 @@
  */
 
 // Development flag - set to true and implement Redis client for production
-const REDIS_ENABLED = process.env.REDIS_ENABLED === 'true';
+const REDIS_ENABLED = process.env.REDIS_ENABLED === "true";
 
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
@@ -25,9 +25,9 @@ export function generateGeminiCacheKey(
   model: string,
   options?: Record<string, any>
 ): string {
-  const hash = Buffer.from(
-    JSON.stringify({ prompt, model, options })
-  ).toString("base64");
+  const hash = Buffer.from(JSON.stringify({ prompt, model, options })).toString(
+    "base64"
+  );
   return `gemini:${model}:${hash}`;
 }
 

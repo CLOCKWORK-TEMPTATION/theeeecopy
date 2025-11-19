@@ -13,48 +13,48 @@
  *   1 - One or more budgets exceeded
  */
 
-const fs = require('fs');
-const path = require('path');
-const { promisify } = require('util');
-const { execSync } = require('child_process');
+const fs = require("fs");
+const path = require("path");
+const { promisify } = require("util");
+const { execSync } = require("child_process");
 
 // Load performance budget configuration
-const budgetConfig = require('../performance-budget.config.js');
+const budgetConfig = require("../performance-budget.config.js");
 
 // Colors for terminal output
 const colors = {
-  reset: '\x1b[0m',
-  bright: '\x1b[1m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
+  reset: "\x1b[0m",
+  bright: "\x1b[1m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
 };
 
-function log(message, color = 'reset') {
+function log(message, color = "reset") {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
 function logHeader(title) {
-  console.log('\n' + '='.repeat(60));
-  log(title, 'bright');
-  console.log('='.repeat(60) + '\n');
+  console.log("\n" + "=".repeat(60));
+  log(title, "bright");
+  console.log("=".repeat(60) + "\n");
 }
 
 function logResult(passed, message) {
   if (passed) {
-    log(`✅ ${message}`, 'green');
+    log(`✅ ${message}`, "green");
   } else {
-    log(`❌ ${message}`, 'red');
+    log(`❌ ${message}`, "red");
   }
 }
 
 function logWarning(message) {
-  log(`⚠️  ${message}`, 'yellow');
+  log(`⚠️  ${message}`, "yellow");
 }
 
 function logInfo(message) {
-  log(`ℹ️  ${message}`, 'blue');
+  log(`ℹ️  ${message}`, "blue");
 }
 
 // Calculate directory size recursively
@@ -99,13 +99,13 @@ function estimateCompressedSize(bytes) {
 
 // Check JavaScript bundle size
 function checkJavaScriptBudget(buildDir) {
-  logHeader('📦 Checking JavaScript Bundle Budget');
+  logHeader("📦 Checking JavaScript Bundle Budget");
 
-  const chunksDir = path.join(buildDir, 'static', 'chunks');
-  const pagesDir = path.join(buildDir, 'static', 'chunks', 'pages');
+  const chunksDir = path.join(buildDir, "static", "chunks");
+  const pagesDir = path.join(buildDir, "static", "chunks", "pages");
 
   if (!fs.existsSync(chunksDir)) {
-    logWarning('Chunks directory not found');
+    logWarning("Chunks directory not found");
     return { passed: true, warnings: [] };
   }
 
@@ -120,12 +120,15 @@ function checkJavaScriptBudget(buildDir) {
   logInfo(`Estimated compressed: ${compressedJsKB} KB`);
   logInfo(`Budget: ${budget.total} KB`);
 
-  logResult(passed, `JavaScript bundle ${passed ? 'within' : 'exceeds'} budget`);
+  logResult(
+    passed,
+    `JavaScript bundle ${passed ? "within" : "exceeds"} budget`
+  );
 
   // Check main bundle size
   const mainChunks = fs
     .readdirSync(chunksDir)
-    .filter((file) => file.endsWith('.js') && file.includes('main'));
+    .filter((file) => file.endsWith(".js") && file.includes("main"));
 
   if (mainChunks.length > 0) {
     const mainSize = mainChunks.reduce((total, file) => {
@@ -136,7 +139,10 @@ function checkJavaScriptBudget(buildDir) {
     const mainPassed = mainKB <= budget.mainBundle;
 
     logInfo(`Main bundle: ${mainKB} KB (compressed)`);
-    logResult(mainPassed, `Main bundle ${mainPassed ? 'within' : 'exceeds'} budget`);
+    logResult(
+      mainPassed,
+      `Main bundle ${mainPassed ? "within" : "exceeds"} budget`
+    );
   }
 
   return {
@@ -148,9 +154,9 @@ function checkJavaScriptBudget(buildDir) {
 
 // Check CSS bundle size
 function checkCSSBudget(buildDir) {
-  logHeader('🎨 Checking CSS Bundle Budget');
+  logHeader("🎨 Checking CSS Bundle Budget");
 
-  const staticDir = path.join(buildDir, 'static');
+  const staticDir = path.join(buildDir, "static");
   const cssFiles = [];
 
   function findCSSFiles(dir) {
@@ -163,7 +169,7 @@ function checkCSSBudget(buildDir) {
 
       if (stats.isDirectory()) {
         findCSSFiles(filePath);
-      } else if (file.endsWith('.css')) {
+      } else if (file.endsWith(".css")) {
         cssFiles.push(filePath);
       }
     });
@@ -185,7 +191,7 @@ function checkCSSBudget(buildDir) {
   logInfo(`Estimated compressed: ${compressedCssKB} KB`);
   logInfo(`Budget: ${budget.total} KB`);
 
-  logResult(passed, `CSS bundle ${passed ? 'within' : 'exceeds'} budget`);
+  logResult(passed, `CSS bundle ${passed ? "within" : "exceeds"} budget`);
 
   return {
     passed,
@@ -196,9 +202,9 @@ function checkCSSBudget(buildDir) {
 
 // Check total page weight
 function checkPageWeightBudget(buildDir) {
-  logHeader('⚖️  Checking Total Page Weight Budget');
+  logHeader("⚖️  Checking Total Page Weight Budget");
 
-  const staticDir = path.join(buildDir, 'static');
+  const staticDir = path.join(buildDir, "static");
   const totalSize = getDirectorySize(staticDir);
   const totalKB = bytesToKB(totalSize);
   const compressedKB = bytesToKB(estimateCompressedSize(totalSize));
@@ -210,7 +216,10 @@ function checkPageWeightBudget(buildDir) {
   logInfo(`Estimated compressed: ${compressedKB} KB`);
   logInfo(`Budget: ${budget.firstLoad} KB`);
 
-  logResult(passed, `Total page weight ${passed ? 'within' : 'exceeds'} budget`);
+  logResult(
+    passed,
+    `Total page weight ${passed ? "within" : "exceeds"} budget`
+  );
 
   return {
     passed,
@@ -221,16 +230,16 @@ function checkPageWeightBudget(buildDir) {
 
 // Check build manifest for chunk analysis
 function checkBuildManifest(buildDir) {
-  logHeader('📋 Analyzing Build Manifest');
+  logHeader("📋 Analyzing Build Manifest");
 
-  const manifestPath = path.join(buildDir, 'build-manifest.json');
+  const manifestPath = path.join(buildDir, "build-manifest.json");
 
   if (!fs.existsSync(manifestPath)) {
-    logWarning('Build manifest not found');
+    logWarning("Build manifest not found");
     return { passed: true };
   }
 
-  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
   const pages = Object.keys(manifest.pages || {});
 
   logInfo(`Total pages: ${pages.length}`);
@@ -248,7 +257,9 @@ function checkBuildManifest(buildDir) {
   logInfo(`Unique chunks: ${uniqueChunks.size}`);
 
   if (duplicateCount > 0) {
-    logWarning(`Found ${duplicateCount} duplicate chunk references (may be intentional)`);
+    logWarning(
+      `Found ${duplicateCount} duplicate chunk references (may be intentional)`
+    );
   }
 
   return { passed: true };
@@ -256,9 +267,9 @@ function checkBuildManifest(buildDir) {
 
 // Check for large individual files
 function checkLargeFiles(buildDir) {
-  logHeader('📊 Checking for Large Files');
+  logHeader("📊 Checking for Large Files");
 
-  const staticDir = path.join(buildDir, 'static');
+  const staticDir = path.join(buildDir, "static");
   const largeFiles = [];
   const maxChunkSizeKB = budgetConfig.bundleAnalysis.maxChunkSize;
 
@@ -272,7 +283,7 @@ function checkLargeFiles(buildDir) {
 
       if (stats.isDirectory()) {
         findLargeFiles(filePath);
-      } else if (file.endsWith('.js') || file.endsWith('.css')) {
+      } else if (file.endsWith(".js") || file.endsWith(".css")) {
         const sizeKB = bytesToKB(stats.size);
         const compressedKB = bytesToKB(estimateCompressedSize(stats.size));
 
@@ -291,7 +302,9 @@ function checkLargeFiles(buildDir) {
   findLargeFiles(staticDir);
 
   if (largeFiles.length > 0) {
-    logWarning(`Found ${largeFiles.length} files exceeding ${maxChunkSizeKB} KB (compressed):`);
+    logWarning(
+      `Found ${largeFiles.length} files exceeding ${maxChunkSizeKB} KB (compressed):`
+    );
     largeFiles.forEach((file) => {
       logInfo(`  ${file.name}: ${file.compressed} KB (compressed)`);
     });
@@ -304,48 +317,48 @@ function checkLargeFiles(buildDir) {
 
 // Generate performance report
 function generateReport(results) {
-  logHeader('📊 Performance Budget Summary');
+  logHeader("📊 Performance Budget Summary");
 
   const allPassed = results.every((r) => r.passed);
 
-  console.log('');
+  console.log("");
   results.forEach((result) => {
-    const status = result.passed ? '✅' : '❌';
+    const status = result.passed ? "✅" : "❌";
     console.log(`${status} ${result.name}`);
     if (result.details) {
       console.log(`   ${result.details}`);
     }
   });
 
-  console.log('\n' + '='.repeat(60));
+  console.log("\n" + "=".repeat(60));
 
   if (allPassed) {
-    log('🎉 All performance budgets are met!', 'green');
+    log("🎉 All performance budgets are met!", "green");
   } else {
-    log('⚠️  Some performance budgets exceeded!', 'red');
-    console.log('\nRecommendations:');
-    console.log('- Use code splitting to reduce bundle size');
-    console.log('- Implement dynamic imports for heavy components');
-    console.log('- Optimize and compress images');
-    console.log('- Remove unused dependencies');
-    console.log('- Use tree shaking to eliminate dead code');
+    log("⚠️  Some performance budgets exceeded!", "red");
+    console.log("\nRecommendations:");
+    console.log("- Use code splitting to reduce bundle size");
+    console.log("- Implement dynamic imports for heavy components");
+    console.log("- Optimize and compress images");
+    console.log("- Remove unused dependencies");
+    console.log("- Use tree shaking to eliminate dead code");
   }
 
-  console.log('='.repeat(60) + '\n');
+  console.log("=".repeat(60) + "\n");
 
   return allPassed;
 }
 
 // Main execution
 function main() {
-  const buildDir = path.join(process.cwd(), '.next');
+  const buildDir = path.join(process.cwd(), ".next");
 
   if (!fs.existsSync(buildDir)) {
-    log('❌ Build directory not found. Run `npm run build` first.', 'red');
+    log("❌ Build directory not found. Run `npm run build` first.", "red");
     process.exit(1);
   }
 
-  log('🔍 Checking Performance Budget...', 'bright');
+  log("🔍 Checking Performance Budget...", "bright");
 
   const results = [];
 
@@ -353,44 +366,44 @@ function main() {
   try {
     const jsCheck = checkJavaScriptBudget(buildDir);
     results.push({
-      name: 'JavaScript Bundle Size',
+      name: "JavaScript Bundle Size",
       passed: jsCheck.passed,
       details: jsCheck.totalJsKB
         ? `${jsCheck.totalJsKB} KB / ${jsCheck.budget} KB`
-        : '',
+        : "",
     });
 
     const cssCheck = checkCSSBudget(buildDir);
     results.push({
-      name: 'CSS Bundle Size',
+      name: "CSS Bundle Size",
       passed: cssCheck.passed,
       details: cssCheck.totalCssKB
         ? `${cssCheck.totalCssKB} KB / ${cssCheck.budget} KB`
-        : '',
+        : "",
     });
 
     const pageWeightCheck = checkPageWeightBudget(buildDir);
     results.push({
-      name: 'Total Page Weight',
+      name: "Total Page Weight",
       passed: pageWeightCheck.passed,
       details: pageWeightCheck.totalKB
         ? `${pageWeightCheck.totalKB} KB / ${pageWeightCheck.budget} KB`
-        : '',
+        : "",
     });
 
     const manifestCheck = checkBuildManifest(buildDir);
     results.push({
-      name: 'Build Manifest Analysis',
+      name: "Build Manifest Analysis",
       passed: manifestCheck.passed,
     });
 
     const largeFilesCheck = checkLargeFiles(buildDir);
     results.push({
-      name: 'Large Files Check',
+      name: "Large Files Check",
       passed: largeFilesCheck.passed,
       details: largeFilesCheck.largeFiles?.length
         ? `${largeFilesCheck.largeFiles.length} files exceed budget`
-        : '',
+        : "",
     });
 
     // Generate final report
@@ -399,7 +412,7 @@ function main() {
     // Exit with appropriate code
     process.exit(allPassed ? 0 : 1);
   } catch (error) {
-    log(`❌ Error checking performance budget: ${error.message}`, 'red');
+    log(`❌ Error checking performance budget: ${error.message}`, "red");
     console.error(error);
     process.exit(1);
   }

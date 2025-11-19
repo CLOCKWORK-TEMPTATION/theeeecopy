@@ -1,6 +1,9 @@
 // lib/ai/core/base-station.ts
 
-import { getGeminiService, type GeminiService } from "../stations/gemini-service";
+import {
+  getGeminiService,
+  type GeminiService,
+} from "../stations/gemini-service";
 import { SystemMetadata } from "./models/base-entities";
 import { AnalysisContext } from "./contexts";
 import { checkConstitutionalCompliance } from "../constitutional/principles";
@@ -336,19 +339,21 @@ export abstract class BaseSystem {
   /**
    * استخراج النصوص التي تحتاج إلى فحص دستوري (يمكن تجاوزه في الأنظمة الفرعية)
    */
-  protected extractTextsForConstitutionalCheck(result: StationResult): string[] {
+  protected extractTextsForConstitutionalCheck(
+    result: StationResult
+  ): string[] {
     const texts: string[] = [];
 
     // استخراج النصوص الرئيسية من نتيجة النظام
-    if (
-      typeof result === "object" &&
-      result !== null
-    ) {
+    if (typeof result === "object" && result !== null) {
       const resultObj = result as Record<string, unknown>;
       if (typeof resultObj.logline === "string") texts.push(resultObj.logline);
-      if (typeof resultObj.storyStatement === "string") texts.push(resultObj.storyStatement);
-      if (typeof resultObj.elevatorPitch === "string") texts.push(resultObj.elevatorPitch);
-      if (typeof resultObj.executiveSummary === "string") texts.push(resultObj.executiveSummary);
+      if (typeof resultObj.storyStatement === "string")
+        texts.push(resultObj.storyStatement);
+      if (typeof resultObj.elevatorPitch === "string")
+        texts.push(resultObj.elevatorPitch);
+      if (typeof resultObj.executiveSummary === "string")
+        texts.push(resultObj.executiveSummary);
     }
 
     // استخراج النصوص من التحليلات الفرعية
@@ -359,23 +364,32 @@ export abstract class BaseSystem {
     ) {
       const characterAnalysis = result.characterAnalysis;
       if (typeof characterAnalysis === "object" && characterAnalysis !== null) {
-        for (const [_character, analysis] of Object.entries(characterAnalysis)) {
+        for (const [_character, analysis] of Object.entries(
+          characterAnalysis
+        )) {
           if (typeof analysis === "string") texts.push(analysis);
         }
       }
     }
 
-    if (
-      typeof result === "object" &&
-      result !== null &&
-      "themes" in result
-    ) {
+    if (typeof result === "object" && result !== null && "themes" in result) {
       const themes = result.themes;
-      if (typeof themes === "object" && themes !== null && "primary" in themes) {
-        const primaryThemes = (themes as { primary?: Array<{ description?: string }> }).primary;
+      if (
+        typeof themes === "object" &&
+        themes !== null &&
+        "primary" in themes
+      ) {
+        const primaryThemes = (
+          themes as { primary?: Array<{ description?: string }> }
+        ).primary;
         if (Array.isArray(primaryThemes)) {
           for (const theme of primaryThemes) {
-            if (theme && typeof theme === "object" && "description" in theme && typeof theme.description === "string") {
+            if (
+              theme &&
+              typeof theme === "object" &&
+              "description" in theme &&
+              typeof theme.description === "string"
+            ) {
               texts.push(theme.description);
             }
           }
@@ -389,7 +403,9 @@ export abstract class BaseSystem {
   /**
    * استخراج النصوص التي تحتاج إلى قياس عدم اليقين (يمكن تجاوزه في الأنظمة الفرعية)
    */
-  protected extractTextsForUncertaintyQuantification(result: StationResult): string[] {
+  protected extractTextsForUncertaintyQuantification(
+    result: StationResult
+  ): string[] {
     // للتبسيط، نستخدم نفس النصوص المستخدمة في الفحص الدستوري
     return this.extractTextsForConstitutionalCheck(result);
   }
@@ -410,7 +426,7 @@ export abstract class BaseSystem {
       if (typeof obj !== "object" || obj === null) {
         return;
       }
-      
+
       for (const key in obj) {
         const value = (obj as Record<string, unknown>)[key];
         if (typeof value === "string" && value === oldText) {

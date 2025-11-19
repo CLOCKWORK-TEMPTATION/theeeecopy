@@ -5,8 +5,11 @@
  * based on device capabilities, battery status, and network conditions.
  */
 
-import * as THREE from 'three';
-import type { DeviceCapabilities, ParticleConfig } from './performance-detection';
+import * as THREE from "three";
+import type {
+  DeviceCapabilities,
+  ParticleConfig,
+} from "./performance-detection";
 
 export interface ParticleSystemOptions {
   canvas: HTMLCanvasElement;
@@ -55,10 +58,10 @@ export class OptimizedParticleSystem {
 
       const rendererOptions: THREE.WebGLRendererParameters = {
         canvas: this.canvas,
-        antialias: this.config.textureQuality !== 'low',
+        antialias: this.config.textureQuality !== "low",
         alpha: true,
         preserveDrawingBuffer: false,
-        powerPreference: 'low-power',
+        powerPreference: "low-power",
       };
 
       this.renderer = new THREE.WebGLRenderer(rendererOptions);
@@ -67,14 +70,14 @@ export class OptimizedParticleSystem {
 
       // Set pixel ratio based on quality
       const pixelRatio =
-        this.config.textureQuality === 'high' ? window.devicePixelRatio : 1;
+        this.config.textureQuality === "high" ? window.devicePixelRatio : 1;
       this.renderer.setPixelRatio(Math.min(pixelRatio, 2));
 
       this.createParticles();
       this.startAnimation();
     } catch (error) {
-      console.error('Failed to initialize particle system:', error);
-      options.onPerformanceWarning?.('WebGL not available, particles disabled');
+      console.error("Failed to initialize particle system:", error);
+      options.onPerformanceWarning?.("WebGL not available, particles disabled");
       this.isDestroyed = true;
     }
   }
@@ -86,29 +89,29 @@ export class OptimizedParticleSystem {
     const sizes = new Float32Array(this.particleCount);
 
     // Create particle texture
-    const textureCanvas = document.createElement('canvas');
+    const textureCanvas = document.createElement("canvas");
     textureCanvas.width = 100;
     textureCanvas.height = 100;
-    const ctx = textureCanvas.getContext('2d');
+    const ctx = textureCanvas.getContext("2d");
     if (!ctx) return;
 
     // Draw particle texture based on quality
     const hue = 217;
     const gradient = ctx.createRadialGradient(50, 50, 0, 50, 50, 50);
 
-    if (this.config.textureQuality === 'high') {
-      gradient.addColorStop(0.025, '#fff');
+    if (this.config.textureQuality === "high") {
+      gradient.addColorStop(0.025, "#fff");
       gradient.addColorStop(0.1, `hsl(${hue}, 61%, 33%)`);
       gradient.addColorStop(0.25, `hsl(${hue}, 64%, 6%)`);
-      gradient.addColorStop(1, 'transparent');
-    } else if (this.config.textureQuality === 'medium') {
+      gradient.addColorStop(1, "transparent");
+    } else if (this.config.textureQuality === "medium") {
       gradient.addColorStop(0.1, `hsl(${hue}, 61%, 33%)`);
       gradient.addColorStop(0.5, `hsl(${hue}, 64%, 6%)`);
-      gradient.addColorStop(1, 'transparent');
+      gradient.addColorStop(1, "transparent");
     } else {
       // Low quality: simpler gradient
       gradient.addColorStop(0.2, `hsl(${hue}, 61%, 33%)`);
-      gradient.addColorStop(1, 'transparent');
+      gradient.addColorStop(1, "transparent");
     }
 
     ctx.fillStyle = gradient;
@@ -138,10 +141,10 @@ export class OptimizedParticleSystem {
       this.alphas[i] = (Math.random() * 8 + 2) / 10;
     }
 
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-    geometry.setAttribute('alpha', new THREE.BufferAttribute(this.alphas, 1));
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute("alpha", new THREE.BufferAttribute(this.alphas, 1));
 
     // Create shader material
     const material = new THREE.ShaderMaterial({
@@ -173,7 +176,9 @@ export class OptimizedParticleSystem {
         }
       `,
       transparent: true,
-      blending: this.config.enableGlow ? THREE.AdditiveBlending : THREE.NormalBlending,
+      blending: this.config.enableGlow
+        ? THREE.AdditiveBlending
+        : THREE.NormalBlending,
       depthWrite: false,
       vertexColors: true,
     });
@@ -232,7 +237,10 @@ export class OptimizedParticleSystem {
       }
 
       const currentPosX = positions[i * 3];
-      if (currentPosX !== undefined && currentPosX > window.innerWidth / 2 + 100) {
+      if (
+        currentPosX !== undefined &&
+        currentPosX > window.innerWidth / 2 + 100
+      ) {
         positions[i * 3] = -window.innerWidth / 2 - 100;
         positions[i * 3 + 1] = (Math.random() - 0.5) * 250;
       }
@@ -243,7 +251,7 @@ export class OptimizedParticleSystem {
       }
 
       // Reduced twinkle on low quality
-      if (this.config.textureQuality === 'high') {
+      if (this.config.textureQuality === "high") {
         const twinkle = Math.floor(Math.random() * 10);
         const currentAlpha = alphas[i];
 

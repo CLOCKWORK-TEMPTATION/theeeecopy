@@ -23,7 +23,7 @@ interface EffectConfig {
 type Effect = "default" | "spark" | "wave" | "vortex";
 
 interface UpdateParticlesMessage {
-  type: 'update';
+  type: "update";
   positions: Float32Array;
   velocities: Float32Array;
   originalPositions: Float32Array;
@@ -41,7 +41,7 @@ interface UpdateParticlesMessage {
 }
 
 interface UpdateParticlesResult {
-  type: 'updated' | 'error';
+  type: "updated" | "error";
   positions?: Float32Array;
   velocities?: Float32Array;
   colors?: Float32Array;
@@ -90,7 +90,8 @@ function applyWaveEffect(
     const dist = Math.sqrt(distSq);
     const wavePhase = time * 8 - dist * 12;
     const waveStrength = 0.12;
-    const waveForce = Math.sin(wavePhase) * waveStrength * (1 - dist / config.effectRadius);
+    const waveForce =
+      Math.sin(wavePhase) * waveStrength * (1 - dist / config.effectRadius);
     if (dist > 0.001) {
       return {
         vx: velocity.vx + (dx / dist) * waveForce,
@@ -202,7 +203,10 @@ function applyAttraction(
   };
 }
 
-function applyDamping(velocity: ParticleVelocity, damping: number): ParticleVelocity {
+function applyDamping(
+  velocity: ParticleVelocity,
+  damping: number
+): ParticleVelocity {
   return {
     vx: velocity.vx * damping,
     vy: velocity.vy * damping,
@@ -210,7 +214,10 @@ function applyDamping(velocity: ParticleVelocity, damping: number): ParticleVelo
   };
 }
 
-function updatePosition(position: ParticlePosition, velocity: ParticleVelocity): ParticlePosition {
+function updatePosition(
+  position: ParticlePosition,
+  velocity: ParticleVelocity
+): ParticlePosition {
   return {
     px: position.px + velocity.vx,
     py: position.py + velocity.vy,
@@ -234,7 +241,8 @@ function calculateWaveColor(
 
   if (distSq < effectRadius * effectRadius) {
     const wavePhase = time * 8 - dist * 15;
-    const intensity = Math.abs(Math.sin(wavePhase)) * (1 - dist / effectRadius) + 1;
+    const intensity =
+      Math.abs(Math.sin(wavePhase)) * (1 - dist / effectRadius) + 1;
     return {
       r: intensity * 0.5 + 0.8,
       g: intensity * 0.8 + 0.6,
@@ -300,7 +308,7 @@ function updateParticles(message: UpdateParticlesMessage) {
     originalPositions,
     colors,
     particleCount,
-    config
+    config,
   } = message;
 
   const {
@@ -310,12 +318,12 @@ function updateParticles(message: UpdateParticlesMessage) {
     attractStrength,
     damping,
     intersectionPoint,
-    time
+    time,
   } = config;
 
   const effectConfig: EffectConfig = {
     effectRadius,
-    repelStrength
+    repelStrength,
   };
 
   // Process all particles
@@ -386,34 +394,40 @@ function updateParticles(message: UpdateParticlesMessage) {
   return {
     positions,
     velocities,
-    colors
+    colors,
   };
 }
 
 // ====== Worker Message Handler ======
 
-self.addEventListener('message', (event: MessageEvent<UpdateParticlesMessage>) => {
-  const { type } = event.data;
+self.addEventListener(
+  "message",
+  (event: MessageEvent<UpdateParticlesMessage>) => {
+    const { type } = event.data;
 
-  if (type === 'update') {
-    try {
-      const result = updateParticles(event.data);
+    if (type === "update") {
+      try {
+        const result = updateParticles(event.data);
 
-      self.postMessage({
-        type: 'updated',
-        ...result
-      } as UpdateParticlesResult, [
-        result.positions.buffer,
-        result.velocities.buffer,
-        result.colors.buffer
-      ]);
-    } catch (error) {
-      self.postMessage({
-        type: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error'
-      } as UpdateParticlesResult);
+        self.postMessage(
+          {
+            type: "updated",
+            ...result,
+          } as UpdateParticlesResult,
+          [
+            result.positions.buffer,
+            result.velocities.buffer,
+            result.colors.buffer,
+          ]
+        );
+      } catch (error) {
+        self.postMessage({
+          type: "error",
+          error: error instanceof Error ? error.message : "Unknown error",
+        } as UpdateParticlesResult);
+      }
     }
   }
-});
+);
 
 export {};

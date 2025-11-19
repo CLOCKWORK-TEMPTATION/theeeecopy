@@ -88,6 +88,7 @@ export function Providers({ children }: { children: ReactNode }) {
 ```
 
 **ملاحظة مهمة:** ترتيب الـ providers مهم!
+
 - Providers الخارجي يغلف الداخلي
 - الـ children يجب أن يكون في النهاية دائماً
 
@@ -273,25 +274,25 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 ```typescript
 // استعلام بطيء (API خارجي):
 useQuery({
-  queryKey: ['external-api'],
-  queryFn: () => fetch('https://api.example.com/data'),
-  staleTime: 1000 * 60 * 30,  // 30 دقيقة (لا يتغير كثيراً)
+  queryKey: ["external-api"],
+  queryFn: () => fetch("https://api.example.com/data"),
+  staleTime: 1000 * 60 * 30, // 30 دقيقة (لا يتغير كثيراً)
 });
 
 // استعلام سريع (API محلي):
 useQuery({
-  queryKey: ['local-data'],
+  queryKey: ["local-data"],
   queryFn: () => apiClient.getData(),
-  staleTime: 0,               // دائماً جلب جديد
-  refetchInterval: 5000,      // أعد كل 5 ثوان
+  staleTime: 0, // دائماً جلب جديد
+  refetchInterval: 5000, // أعد كل 5 ثوان
 });
 
 // استعلام حساس:
 useQuery({
-  queryKey: ['user-profile'],
+  queryKey: ["user-profile"],
   queryFn: () => apiClient.getProfile(),
-  staleTime: 1000 * 60 * 60,  // 1 ساعة
-  retry: 3,                   // حاول 3 مرات
+  staleTime: 1000 * 60 * 60, // 1 ساعة
+  retry: 3, // حاول 3 مرات
 });
 ```
 
@@ -415,7 +416,7 @@ export function Providers({ children }) {
 // ❌ خطأ - QueryClient جديد في كل render
 export function Providers({ children }) {
   const queryClient = new QueryClient();  // ❌ يعيد الإنشاء في كل مرة
-  
+
   return (
     <QueryClientProvider client={queryClient}>
       {children}
@@ -491,15 +492,19 @@ export function Providers({ children }) {
 ## 📞 أسئلة متكررة
 
 ### س: هل يمكن استخدام Providers متعددة؟
+
 **ج:** نعم! كل ما تحتاجه يمكن إضافته إلى ملف واحد أو تقسيمه إلى عدة ملفات.
 
 ### س: هل يؤثر ترتيب Providers على الأداء؟
+
 **ج:** قليلاً. الـ providers الخارجية تُقيّم أولاً، لكن التأثير عادة ضئيل.
 
 ### س: هل يمكن استخدام Providers في صفحات فردية فقط؟
+
 **ج:** نعم، لكن إذا كنت تحتاج في كل مكان فمن الأفضل في Root Layout.
 
 ### س: كيف أختبر أن Provider يعمل؟
+
 **ج:** استخدم اختبار بسيط يتحقق من أن hooks الـ Provider تعمل بدون أخطاء.
 
 ---

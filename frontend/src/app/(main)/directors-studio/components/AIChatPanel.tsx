@@ -21,9 +21,10 @@ export default function AIChatPanel() {
     {
       id: "1",
       role: "assistant",
-      content: "مرحباً! أنا مساعدك الذكي للإخراج السينمائي. كيف يمكنني مساعدتك اليوم؟",
-      timestamp: "الآن"
-    }
+      content:
+        "مرحباً! أنا مساعدك الذكي للإخراج السينمائي. كيف يمكنني مساعدتك اليوم؟",
+      timestamp: "الآن",
+    },
   ]);
   const [input, setInput] = useState("");
   const chatMutation = useChatWithAI();
@@ -31,7 +32,7 @@ export default function AIChatPanel() {
   const suggestions = [
     "اقترح زوايا تصوير للمشهد الأول",
     "كيف أحسن الإضاءة في مشهد ليلي؟",
-    "ما هي أفضل طريقة لتصوير مشهد مطاردة؟"
+    "ما هي أفضل طريقة لتصوير مشهد مطاردة؟",
   ];
 
   const handleSend = async () => {
@@ -41,10 +42,10 @@ export default function AIChatPanel() {
       id: Date.now().toString(),
       role: "user",
       content: input,
-      timestamp: "الآن"
+      timestamp: "الآن",
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     const currentInput = input;
     setInput("");
 
@@ -54,25 +55,26 @@ export default function AIChatPanel() {
       id: streamingMessageId,
       role: "assistant",
       content: "",
-      timestamp: "الآن"
+      timestamp: "الآن",
     };
-    setMessages(prev => [...prev, streamingMessage]);
+    setMessages((prev) => [...prev, streamingMessage]);
 
     try {
-      const history = messages.map(m => ({ role: m.role, content: m.content }));
+      const history = messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
 
       // Use the mutation
-      await chatMutation.mutateAsync(
-        {
-          message: currentInput,
-          history,
-        }
-      );
+      await chatMutation.mutateAsync({
+        message: currentInput,
+        history,
+      });
     } catch (error) {
       console.error("Chat error:", error);
       // Update the streaming message with error
-      setMessages(prev =>
-        prev.map(msg =>
+      setMessages((prev) =>
+        prev.map((msg) =>
           msg.id === streamingMessageId
             ? { ...msg, content: "عذراً، حدث خطأ. الرجاء المحاولة مرة أخرى." }
             : msg
@@ -93,7 +95,7 @@ export default function AIChatPanel() {
           <Sparkles className="w-5 h-5 text-primary" />
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-1 flex flex-col p-0">
         <ScrollArea className="flex-1 p-6">
           <div className="space-y-4">
@@ -103,31 +105,41 @@ export default function AIChatPanel() {
                 className={`flex gap-3 ${message.role === "user" ? "justify-start flex-row-reverse" : "justify-end"}`}
                 data-testid={`message-${message.id}`}
               >
-                <div className={`flex items-start gap-3 max-w-[80%] ${message.role === "user" ? "flex-row-reverse" : ""}`}>
-                  <div className={`p-2 rounded-full ${message.role === "user" ? "bg-primary" : "bg-muted"}`}>
+                <div
+                  className={`flex items-start gap-3 max-w-[80%] ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                >
+                  <div
+                    className={`p-2 rounded-full ${message.role === "user" ? "bg-primary" : "bg-muted"}`}
+                  >
                     {message.role === "user" ? (
                       <User className="w-4 h-4 text-primary-foreground" />
                     ) : (
                       <Bot className="w-4 h-4 text-muted-foreground" />
                     )}
                   </div>
-                  
-                  <div className={`flex flex-col gap-1 ${message.role === "user" ? "items-end" : "items-start"}`}>
-                    <div 
+
+                  <div
+                    className={`flex flex-col gap-1 ${message.role === "user" ? "items-end" : "items-start"}`}
+                  >
+                    <div
                       className={`p-4 rounded-md ${
-                        message.role === "user" 
-                          ? "bg-primary text-primary-foreground" 
+                        message.role === "user"
+                          ? "bg-primary text-primary-foreground"
                           : "bg-muted text-muted-foreground"
                       }`}
                     >
-                      <p className="text-sm leading-relaxed">{message.content}</p>
+                      <p className="text-sm leading-relaxed">
+                        {message.content}
+                      </p>
                     </div>
-                    <span className="text-xs text-muted-foreground px-2">{message.timestamp}</span>
+                    <span className="text-xs text-muted-foreground px-2">
+                      {message.timestamp}
+                    </span>
                   </div>
                 </div>
               </div>
             ))}
-            
+
             {chatMutation.isPending && (
               <div className="flex gap-3 justify-end">
                 <div className="flex items-start gap-3 max-w-[80%]">
@@ -149,7 +161,9 @@ export default function AIChatPanel() {
 
         {messages.length === 1 && (
           <div className="px-6 pb-4">
-            <p className="text-sm text-muted-foreground mb-3 text-right">اقتراحات:</p>
+            <p className="text-sm text-muted-foreground mb-3 text-right">
+              اقتراحات:
+            </p>
             <div className="flex flex-wrap gap-2 justify-end">
               {suggestions.map((suggestion, idx) => (
                 <Badge
@@ -168,7 +182,7 @@ export default function AIChatPanel() {
 
         <div className="p-6 border-t">
           <div className="flex gap-2">
-            <Button 
+            <Button
               size="icon"
               onClick={handleSend}
               disabled={!input.trim()}

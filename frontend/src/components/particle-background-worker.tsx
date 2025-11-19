@@ -14,8 +14,12 @@ import {
 /**
  * Get optimal particle configuration using comprehensive LOD system
  */
-function getOptimalParticleConfig(): { count: number; batchSize: number; config: ParticleLODConfig } {
-  if (typeof window === 'undefined') {
+function getOptimalParticleConfig(): {
+  count: number;
+  batchSize: number;
+  config: ParticleLODConfig;
+} {
+  if (typeof window === "undefined") {
     return {
       count: 3000,
       batchSize: 400,
@@ -25,8 +29,8 @@ function getOptimalParticleConfig(): { count: number; batchSize: number; config:
         updateFrequency: 33,
         enableAdvancedEffects: false,
         enableShadows: false,
-        textureQuality: 'medium',
-      }
+        textureQuality: "medium",
+      },
     };
   }
 
@@ -38,7 +42,7 @@ function getOptimalParticleConfig(): { count: number; batchSize: number; config:
   const batchSize = Math.floor(lodConfig.particleCount * 0.22);
 
   // Log device capabilities in development
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     logDeviceCapabilities();
   }
 
@@ -84,7 +88,11 @@ export default function WorkerParticleAnimation() {
   /**
    * Update camera position based on rotation
    */
-  const updateCameraPosition = (camera: THREE.PerspectiveCamera, rotationX: number, rotationY: number): void => {
+  const updateCameraPosition = (
+    camera: THREE.PerspectiveCamera,
+    rotationX: number,
+    rotationY: number
+  ): void => {
     camera.position.x = Math.sin(rotationY) * 3.5;
     camera.position.z = Math.cos(rotationY) * 3.5;
     camera.position.y = rotationX * 0.5;
@@ -92,7 +100,7 @@ export default function WorkerParticleAnimation() {
   };
 
   useEffect(() => {
-    if (!canvasRef.current || typeof window === 'undefined') return;
+    if (!canvasRef.current || typeof window === "undefined") return;
 
     // Skip animation if user prefers reduced motion
     if (prefersReducedMotion) return;
@@ -101,7 +109,12 @@ export default function WorkerParticleAnimation() {
 
     // Initialize Three.js scene
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -133,7 +146,7 @@ export default function WorkerParticleAnimation() {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
     };
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Initialize scene reference
     sceneRef.current = {
@@ -185,7 +198,7 @@ export default function WorkerParticleAnimation() {
             minY,
             maxY,
             maxAttempts: 3000000,
-            batchSize: particleConfig.batchSize
+            batchSize: particleConfig.batchSize,
           },
           (progress, count) => {
             setGenerationProgress(progress);
@@ -194,11 +207,24 @@ export default function WorkerParticleAnimation() {
 
         if (!sceneRef.current) return;
 
-        const { positions, colors, count, originalPositions, phases, velocities } = result;
+        const {
+          positions,
+          colors,
+          count,
+          originalPositions,
+          phases,
+          velocities,
+        } = result;
 
         // Update geometry
-        sceneRef.current.geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-        sceneRef.current.geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+        sceneRef.current.geometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3)
+        );
+        sceneRef.current.geometry.setAttribute(
+          "color",
+          new THREE.BufferAttribute(colors, 3)
+        );
 
         // Update scene reference
         sceneRef.current.originalPositions = originalPositions;
@@ -210,13 +236,13 @@ export default function WorkerParticleAnimation() {
         setIsGenerating(false);
         setGenerationProgress(100);
       } catch (error) {
-        console.error('Failed to generate particles:', error);
+        console.error("Failed to generate particles:", error);
         setIsGenerating(false);
       }
     };
 
     // Use requestIdleCallback for initialization to avoid blocking main thread
-    if ('requestIdleCallback' in window) {
+    if ("requestIdleCallback" in window) {
       requestIdleCallback(() => initializeAndGenerate(), { timeout: 2000 });
     } else {
       setTimeout(initializeAndGenerate, 100);
@@ -227,12 +253,16 @@ export default function WorkerParticleAnimation() {
       if (document.hidden && animationRef.current) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
-      } else if (!document.hidden && sceneRef.current && !animationRef.current) {
+      } else if (
+        !document.hidden &&
+        sceneRef.current &&
+        !animationRef.current
+      ) {
         animationRef.current = requestAnimationFrame(animate);
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Mouse interaction handlers
     const handleCanvasMouseMove = (event: MouseEvent) => {
@@ -277,8 +307,12 @@ export default function WorkerParticleAnimation() {
         particleCount,
       } = sceneRef.current;
 
-      const positionAttribute = geometry.getAttribute("position") as THREE.BufferAttribute;
-      const colorAttribute = geometry.getAttribute("color") as THREE.BufferAttribute;
+      const positionAttribute = geometry.getAttribute(
+        "position"
+      ) as THREE.BufferAttribute;
+      const colorAttribute = geometry.getAttribute(
+        "color"
+      ) as THREE.BufferAttribute;
 
       // Apply rotation
       updateCameraPosition(camera, rotationX, rotationY);
@@ -290,9 +324,12 @@ export default function WorkerParticleAnimation() {
 
       try {
         // Update particles using worker
-        if (workerManagerRef.current && workerManagerRef.current.isInitialized()) {
+        if (
+          workerManagerRef.current &&
+          workerManagerRef.current.isInitialized()
+        ) {
           const result = await workerManagerRef.current.updateParticles({
-            type: 'update',
+            type: "update",
             positions,
             velocities: vels,
             originalPositions,
@@ -304,13 +341,15 @@ export default function WorkerParticleAnimation() {
               repelStrength: 0.08,
               attractStrength: 0.15,
               damping: 0.92,
-              intersectionPoint: intersectionPoint ? {
-                x: intersectionPoint.x,
-                y: intersectionPoint.y,
-                z: intersectionPoint.z
-              } : null,
-              time
-            }
+              intersectionPoint: intersectionPoint
+                ? {
+                    x: intersectionPoint.x,
+                    y: intersectionPoint.y,
+                    z: intersectionPoint.z,
+                  }
+                : null,
+              time,
+            },
           });
 
           // Update geometry with new data
@@ -322,7 +361,7 @@ export default function WorkerParticleAnimation() {
           colorAttribute.needsUpdate = true;
         }
       } catch (error) {
-        console.warn('Worker update failed, skipping frame:', error);
+        console.warn("Worker update failed, skipping frame:", error);
       }
 
       renderer.render(scene, camera);
@@ -368,7 +407,8 @@ export default function WorkerParticleAnimation() {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!sceneRef.current || !sceneRef.current.isDragging || !e.touches[0]) return;
+      if (!sceneRef.current || !sceneRef.current.isDragging || !e.touches[0])
+        return;
 
       const deltaX = e.touches[0].clientX - sceneRef.current.previousMouseX;
       const deltaY = e.touches[0].clientY - sceneRef.current.previousMouseY;
@@ -410,13 +450,16 @@ export default function WorkerParticleAnimation() {
         canvas.removeEventListener("touchmove", handleTouchMove);
         canvas.removeEventListener("touchend", handleTouchEnd);
 
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        document.removeEventListener(
+          "visibilitychange",
+          handleVisibilityChange
+        );
 
         if (geometry) geometry.dispose();
         if (material) material.dispose();
         if (renderer) renderer.dispose();
 
-        window.removeEventListener('resize', handleResize);
+        window.removeEventListener("resize", handleResize);
 
         // Terminate workers
         if (workerManagerRef.current) {
@@ -428,7 +471,7 @@ export default function WorkerParticleAnimation() {
           sceneRef.current = null;
         }
       } catch (error) {
-        console.error('Cleanup error:', error);
+        console.error("Cleanup error:", error);
       }
     };
 
@@ -442,13 +485,15 @@ export default function WorkerParticleAnimation() {
         width={1400}
         height={600}
         className="block"
-        style={{ touchAction: 'none', pointerEvents: 'auto' }}
+        style={{ touchAction: "none", pointerEvents: "auto" }}
       />
 
       {/* Progress indicator during generation */}
       {isGenerating && (
         <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-lg">
-          <div className="text-sm">توليد الجسيمات: {Math.round(generationProgress)}%</div>
+          <div className="text-sm">
+            توليد الجسيمات: {Math.round(generationProgress)}%
+          </div>
           <div className="w-48 h-2 bg-gray-700 rounded-full mt-2">
             <div
               className="h-full bg-blue-500 rounded-full transition-all duration-300"

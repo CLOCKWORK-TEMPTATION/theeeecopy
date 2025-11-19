@@ -90,7 +90,12 @@ export function applyContextChecks(
   }
 
   // Check action context
-  const actionResult = isActionContextWithColon(context, line, characterRe, hasColon);
+  const actionResult = isActionContextWithColon(
+    context,
+    line,
+    characterRe,
+    hasColon
+  );
   if (actionResult) {
     return true;
   }

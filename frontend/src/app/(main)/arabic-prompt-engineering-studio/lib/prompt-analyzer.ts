@@ -7,19 +7,19 @@ import type {
   PromptCategory,
   EnhancedPrompt,
   PromptEnhancementOptions,
-} from '@/app/(main)/arabic-prompt-engineering-studio/types';
+} from "@/app/(main)/arabic-prompt-engineering-studio/types";
 import {
   estimateTokenCount,
   estimatePromptCost,
   validatePrompt,
-} from '@/app/(main)/arabic-prompt-engineering-studio/lib/gemini-service';
+} from "@/app/(main)/arabic-prompt-engineering-studio/lib/gemini-service";
 
 /**
  * Analyze a prompt and return detailed metrics
  */
 export function analyzePrompt(prompt: string): PromptAnalysis {
   if (!prompt || prompt.trim().length === 0) {
-    throw new Error('Prompt cannot be empty');
+    throw new Error("Prompt cannot be empty");
   }
 
   const metrics = calculatePromptMetrics(prompt);
@@ -58,15 +58,19 @@ function calculatePromptMetrics(prompt: string): PromptMetrics {
     avgWordsPerSentence > 5 && avgWordsPerSentence < 25
       ? 80
       : avgWordsPerSentence > 25
-      ? 60
-      : 50;
+        ? 60
+        : 50;
 
   // Specificity: Check for specific details, numbers, examples
   const hasNumbers = /\d+/.test(prompt);
   const hasExamples = /مثال|example|مثل|for example/i.test(prompt);
-  const hasSpecificDetails =
-    /الذي|التي|where|when|what|who|which/i.test(prompt);
-  const specificity = (hasNumbers ? 20 : 0) + (hasExamples ? 30 : 0) + (hasSpecificDetails ? 50 : 0);
+  const hasSpecificDetails = /الذي|التي|where|when|what|who|which/i.test(
+    prompt
+  );
+  const specificity =
+    (hasNumbers ? 20 : 0) +
+    (hasExamples ? 30 : 0) +
+    (hasSpecificDetails ? 50 : 0);
 
   // Completeness: Check for clear instructions and context
   const hasInstructions = /اكتب|حلل|اشرح|translate|analyze|write/i.test(prompt);
@@ -78,7 +82,7 @@ function calculatePromptMetrics(prompt: string): PromptMetrics {
     (hasOutputFormat ? 30 : 0);
 
   // Effectiveness: Combination of other metrics
-  const effectiveness = (clarity * 0.3 + specificity * 0.3 + completeness * 0.4);
+  const effectiveness = clarity * 0.3 + specificity * 0.3 + completeness * 0.4;
 
   // Token efficiency: Optimal token usage
   const tokenCount = estimateTokenCount(prompt);
@@ -86,17 +90,17 @@ function calculatePromptMetrics(prompt: string): PromptMetrics {
     tokenCount > 0 && tokenCount < 2000
       ? 90
       : tokenCount < 4000
-      ? 70
-      : tokenCount < 8000
-      ? 50
-      : 30;
+        ? 70
+        : tokenCount < 8000
+          ? 50
+          : 30;
 
   const overallScore =
-    (clarity * 0.25 +
-      specificity * 0.25 +
-      completeness * 0.25 +
-      effectiveness * 0.15 +
-      tokenEfficiency * 0.1);
+    clarity * 0.25 +
+    specificity * 0.25 +
+    completeness * 0.25 +
+    effectiveness * 0.15 +
+    tokenEfficiency * 0.1;
 
   return {
     clarity: Math.round(clarity),
@@ -117,48 +121,48 @@ function detectPromptCategory(prompt: string): PromptCategory {
   if (
     /كتابة|كتابة إبداعية|creative writing|story|قصة|شعر|poem/i.test(lowerPrompt)
   ) {
-    return 'creative_writing';
+    return "creative_writing";
   }
   if (/تحليل|analyze|analysis|نقد|review/i.test(lowerPrompt)) {
-    return 'analysis';
+    return "analysis";
   }
   if (/ترجمة|translate|translation/i.test(lowerPrompt)) {
-    return 'translation';
+    return "translation";
   }
   if (/تلخيص|summarize|summary|ملخص/i.test(lowerPrompt)) {
-    return 'summarization';
+    return "summarization";
   }
   if (/سؤال|question|answer|إجابة/i.test(lowerPrompt)) {
-    return 'question_answering';
+    return "question_answering";
   }
   if (/كود|code|برمجة|programming/i.test(lowerPrompt)) {
-    return 'code_generation';
+    return "code_generation";
   }
   if (/استخراج|extract|data|بيانات/i.test(lowerPrompt)) {
-    return 'data_extraction';
+    return "data_extraction";
   }
   if (/محادثة|conversation|chat|دردشة/i.test(lowerPrompt)) {
-    return 'conversation';
+    return "conversation";
   }
 
-  return 'other';
+  return "other";
 }
 
 /**
  * Detect language of prompt
  */
-function detectLanguage(prompt: string): 'ar' | 'en' | 'mixed' {
+function detectLanguage(prompt: string): "ar" | "en" | "mixed" {
   const arabicChars = (prompt.match(/[\u0600-\u06FF]/g) || []).length;
   const englishChars = (prompt.match(/[a-zA-Z]/g) || []).length;
   const totalChars = arabicChars + englishChars;
 
-  if (totalChars === 0) return 'ar'; // Default to Arabic
+  if (totalChars === 0) return "ar"; // Default to Arabic
 
   const arabicRatio = arabicChars / totalChars;
 
-  if (arabicRatio > 0.7) return 'ar';
-  if (arabicRatio < 0.3) return 'en';
-  return 'mixed';
+  if (arabicRatio > 0.7) return "ar";
+  if (arabicRatio < 0.3) return "en";
+  return "mixed";
 }
 
 /**
@@ -167,41 +171,38 @@ function detectLanguage(prompt: string): 'ar' | 'en' | 'mixed' {
 function calculateComplexity(
   prompt: string,
   metrics: PromptMetrics
-): 'low' | 'medium' | 'high' {
+): "low" | "medium" | "high" {
   const tokenCount = estimateTokenCount(prompt);
   const score = metrics.overallScore;
 
-  if (tokenCount < 500 && score > 70) return 'low';
-  if (tokenCount > 2000 || score < 50) return 'high';
-  return 'medium';
+  if (tokenCount < 500 && score > 70) return "low";
+  if (tokenCount > 2000 || score < 50) return "high";
+  return "medium";
 }
 
 /**
  * Identify prompt strengths
  */
-function identifyStrengths(
-  prompt: string,
-  metrics: PromptMetrics
-): string[] {
+function identifyStrengths(prompt: string, metrics: PromptMetrics): string[] {
   const strengths: string[] = [];
 
   if (metrics.clarity >= 75) {
-    strengths.push('وضوح عالي في الصياغة');
+    strengths.push("وضوح عالي في الصياغة");
   }
   if (metrics.specificity >= 70) {
-    strengths.push('تفاصيل محددة ومفيدة');
+    strengths.push("تفاصيل محددة ومفيدة");
   }
   if (metrics.completeness >= 75) {
-    strengths.push('تعليمات شاملة ومكتملة');
+    strengths.push("تعليمات شاملة ومكتملة");
   }
   if (metrics.tokenEfficiency >= 80) {
-    strengths.push('استخدام فعال للـ tokens');
+    strengths.push("استخدام فعال للـ tokens");
   }
   if (prompt.length > 100 && prompt.length < 2000) {
-    strengths.push('طول مناسب للـ prompt');
+    strengths.push("طول مناسب للـ prompt");
   }
   if (/مثال|example|مثل/i.test(prompt)) {
-    strengths.push('يحتوي على أمثلة توضيحية');
+    strengths.push("يحتوي على أمثلة توضيحية");
   }
 
   return strengths;
@@ -210,32 +211,29 @@ function identifyStrengths(
 /**
  * Identify prompt weaknesses
  */
-function identifyWeaknesses(
-  prompt: string,
-  metrics: PromptMetrics
-): string[] {
+function identifyWeaknesses(prompt: string, metrics: PromptMetrics): string[] {
   const weaknesses: string[] = [];
 
   if (metrics.clarity < 60) {
-    weaknesses.push('الوضوح يحتاج تحسين');
+    weaknesses.push("الوضوح يحتاج تحسين");
   }
   if (metrics.specificity < 50) {
-    weaknesses.push('نقص في التفاصيل المحددة');
+    weaknesses.push("نقص في التفاصيل المحددة");
   }
   if (metrics.completeness < 60) {
-    weaknesses.push('التعليمات غير مكتملة');
+    weaknesses.push("التعليمات غير مكتملة");
   }
   if (metrics.tokenEfficiency < 60) {
-    weaknesses.push('استخدام غير فعال للـ tokens');
+    weaknesses.push("استخدام غير فعال للـ tokens");
   }
   if (prompt.length < 50) {
-    weaknesses.push('الـ prompt قصير جداً');
+    weaknesses.push("الـ prompt قصير جداً");
   }
   if (prompt.length > 5000) {
-    weaknesses.push('الـ prompt طويل جداً');
+    weaknesses.push("الـ prompt طويل جداً");
   }
   if (!/اكتب|حلل|اشرح|translate|analyze|write|create/i.test(prompt)) {
-    weaknesses.push('لا يحتوي على فعل إجراء واضح');
+    weaknesses.push("لا يحتوي على فعل إجراء واضح");
   }
 
   return weaknesses;
@@ -252,30 +250,30 @@ function generateSuggestions(
   const suggestions: string[] = [];
 
   if (metrics.clarity < 70) {
-    suggestions.push('حسّن الوضوح باستخدام جمل أقصر وأبسط');
+    suggestions.push("حسّن الوضوح باستخدام جمل أقصر وأبسط");
   }
   if (metrics.specificity < 60) {
-    suggestions.push('أضف تفاصيل محددة ومقاييس قابلة للقياس');
+    suggestions.push("أضف تفاصيل محددة ومقاييس قابلة للقياس");
   }
   if (metrics.completeness < 70) {
-    suggestions.push('أضف تعليمات واضحة عن المخرجات المطلوبة');
+    suggestions.push("أضف تعليمات واضحة عن المخرجات المطلوبة");
   }
   if (metrics.tokenEfficiency < 70) {
-    suggestions.push('قلل من الكلمات غير الضرورية لتحسين الكفاءة');
+    suggestions.push("قلل من الكلمات غير الضرورية لتحسين الكفاءة");
   }
   if (!/مثال|example/i.test(prompt)) {
-    suggestions.push('فكر في إضافة مثال توضيحي');
+    suggestions.push("فكر في إضافة مثال توضيحي");
   }
   if (!/التنسيق|format|output format/i.test(prompt)) {
-    suggestions.push('حدد تنسيق المخرجات المطلوبة');
+    suggestions.push("حدد تنسيق المخرجات المطلوبة");
   }
 
   // Add specific suggestions based on weaknesses
-  if (weaknesses.includes('الـ prompt قصير جداً')) {
-    suggestions.push('وسّع الـ prompt بإضافة المزيد من السياق');
+  if (weaknesses.includes("الـ prompt قصير جداً")) {
+    suggestions.push("وسّع الـ prompt بإضافة المزيد من السياق");
   }
-  if (weaknesses.includes('الـ prompt طويل جداً')) {
-    suggestions.push('قلل من طول الـ prompt مع الحفاظ على المعلومات الأساسية');
+  if (weaknesses.includes("الـ prompt طويل جداً")) {
+    suggestions.push("قلل من طول الـ prompt مع الحفاظ على المعلومات الأساسية");
   }
 
   return suggestions;
@@ -290,23 +288,21 @@ export function comparePrompts(
 ): {
   prompt1: PromptAnalysis;
   prompt2: PromptAnalysis;
-  winner: 1 | 2 | 'tie';
+  winner: 1 | 2 | "tie";
   differences: string[];
 } {
   const analysis1 = analyzePrompt(prompt1);
   const analysis2 = analyzePrompt(prompt2);
 
   const differences: string[] = [];
-  let winner: 1 | 2 | 'tie' = 'tie';
+  let winner: 1 | 2 | "tie" = "tie";
 
   if (analysis1.metrics.overallScore > analysis2.metrics.overallScore) {
     winner = 1;
     differences.push(
       `الـ prompt الأول أفضل بشكل عام (${analysis1.metrics.overallScore} مقابل ${analysis2.metrics.overallScore})`
     );
-  } else if (
-    analysis2.metrics.overallScore > analysis1.metrics.overallScore
-  ) {
+  } else if (analysis2.metrics.overallScore > analysis1.metrics.overallScore) {
     winner = 2;
     differences.push(
       `الـ prompt الثاني أفضل بشكل عام (${analysis2.metrics.overallScore} مقابل ${analysis1.metrics.overallScore})`
@@ -327,9 +323,7 @@ export function comparePrompts(
 
   if (analysis1.estimatedTokens !== analysis2.estimatedTokens) {
     const diff = analysis1.estimatedTokens - analysis2.estimatedTokens;
-    differences.push(
-      `عدد الـ tokens: ${diff > 0 ? '+' : ''}${diff} tokens`
-    );
+    differences.push(`عدد الـ tokens: ${diff > 0 ? "+" : ""}${diff} tokens`);
   }
 
   return {
@@ -357,30 +351,29 @@ export function generateEnhancementSuggestions(
   // Add language-specific suggestions
   if (options.targetLanguage && analysis.language !== options.targetLanguage) {
     suggestions.push(
-      `فكر في تحسين الـ prompt للغة ${options.targetLanguage === 'ar' ? 'العربية' : 'الإنجليزية'}`
+      `فكر في تحسين الـ prompt للغة ${options.targetLanguage === "ar" ? "العربية" : "الإنجليزية"}`
     );
   }
 
   // Add context suggestions
   if (options.addContext) {
-    suggestions.push('أضف المزيد من السياق لتوضيح الهدف من الـ prompt');
+    suggestions.push("أضف المزيد من السياق لتوضيح الهدف من الـ prompt");
   }
 
   // Add examples suggestions
   if (options.addExamples) {
-    suggestions.push('أضف أمثلة توضيحية لتحسين الفهم');
+    suggestions.push("أضف أمثلة توضيحية لتحسين الفهم");
   }
 
   // Add clarity suggestions
   if (options.improveClarity) {
-    suggestions.push('استخدم جمل أقصر وأبسط لتحسين الوضوح');
+    suggestions.push("استخدم جمل أقصر وأبسط لتحسين الوضوح");
   }
 
   // Add token optimization suggestions
   if (options.optimizeTokens) {
-    suggestions.push('احذف الكلمات غير الضرورية لتحسين كفاءة الـ tokens');
+    suggestions.push("احذف الكلمات غير الضرورية لتحسين كفاءة الـ tokens");
   }
 
   return suggestions;
 }
-

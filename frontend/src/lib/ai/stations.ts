@@ -1,4 +1,4 @@
 /**
  * Re-export stations from main location
  */
-export * from '@/lib/stations';
+export * from "@/lib/stations";

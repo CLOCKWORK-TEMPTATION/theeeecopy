@@ -10,17 +10,17 @@
  * Whitelist approach for security
  */
 const ALLOWED_CSS_PROPERTIES = [
-  'color',
-  'background-color',
-  'font-size',
-  'font-weight',
-  'text-align',
-  'padding',
-  'margin',
-  'border',
-  'display',
-  'width',
-  'height',
+  "color",
+  "background-color",
+  "font-size",
+  "font-weight",
+  "text-align",
+  "padding",
+  "margin",
+  "border",
+  "display",
+  "width",
+  "height",
 ] as const;
 
 /**
@@ -42,7 +42,7 @@ function sanitizeCSSValue(value: string): string {
   const dangerous = /url\(|import|expression|behavior|@import|javascript:/gi;
 
   if (dangerous.test(value)) {
-    return '';
+    return "";
   }
 
   return value.trim();
@@ -59,15 +59,18 @@ export function createSafeStyleObject(cssString: string): React.CSSProperties {
   const styleObject: Record<string, string> = {};
 
   // Split by semicolon and process each property
-  const declarations = cssString.split(';');
+  const declarations = cssString.split(";");
 
   for (const declaration of declarations) {
-    const [property, value] = declaration.split(':').map(s => s.trim());
+    const [property, value] = declaration.split(":").map((s) => s.trim());
 
     if (!property || !value) continue;
 
     // Convert kebab-case to camelCase for React
-    const camelProperty = property.replace(/-([a-z])/g, (g) => g[1]?.toUpperCase() ?? g);
+    const camelProperty = property.replace(
+      /-([a-z])/g,
+      (g) => g[1]?.toUpperCase() ?? g
+    );
 
     // Only allow safe properties
     if (isSafeCSSProperty(property)) {
@@ -87,12 +90,12 @@ export function createSafeStyleObject(cssString: string): React.CSSProperties {
  */
 export function escapeHtml(text: string): string {
   const map: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;',
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "/": "&#x2F;",
   };
 
   return text.replace(/[&<>"'/]/g, (char) => map[char] ?? char);
@@ -103,7 +106,7 @@ export function escapeHtml(text: string): string {
  * Safe alternative when you need plain text only
  */
 export function stripHtmlTags(html: string): string {
-  return html.replace(/<[^>]*>/g, '');
+  return html.replace(/<[^>]*>/g, "");
 }
 
 /**
@@ -120,13 +123,13 @@ export function createSafeCSSRule(
 ): string {
   // Validate selector doesn't contain dangerous content
   if (/<|>|javascript:|expression\(/.test(selector)) {
-    throw new Error('Invalid CSS selector');
+    throw new Error("Invalid CSS selector");
   }
 
   const safeProps = Object.entries(properties)
     .filter(([prop]) => isSafeCSSProperty(prop))
     .map(([prop, value]) => `  ${prop}: ${sanitizeCSSValue(value)};`)
-    .join('\n');
+    .join("\n");
 
   return `${selector} {\n${safeProps}\n}`;
 }
@@ -137,5 +140,5 @@ export function createSafeCSSRule(
  */
 export function sanitizeDataAttribute(value: string): string {
   // Remove any characters that could break out of the attribute
-  return value.replace(/[<>"'`]/g, '');
+  return value.replace(/[<>"'`]/g, "");
 }

@@ -8,23 +8,23 @@
 
 // Using system fonts as fallback until proper font files are added
 export const amiri = {
-  variable: '--font-amiri',
-  style: { fontFamily: 'serif' },
+  variable: "--font-amiri",
+  style: { fontFamily: "serif" },
 };
 
 export const cairo = {
-  variable: '--font-cairo',
-  style: { fontFamily: 'sans-serif' },
+  variable: "--font-cairo",
+  style: { fontFamily: "sans-serif" },
 };
 
 export const literata = {
-  variable: '--font-literata',
-  style: { fontFamily: 'serif' },
+  variable: "--font-literata",
+  style: { fontFamily: "serif" },
 };
 
 export const sourceCodePro = {
-  variable: '--font-source-code-pro',
-  style: { fontFamily: 'monospace' },
+  variable: "--font-source-code-pro",
+  style: { fontFamily: "monospace" },
 };
 
 /**

@@ -11,6 +11,7 @@
 ### 1. 🖼️ تحسين الصور (Image Optimization)
 
 #### ✓ استخدام Next.js Image Component
+
 - جميع الصور تستخدم `next/image` بدلاً من `<img>` العادية
 - مكون `ImageWithFallback` محسّن مع:
   - Automatic fallback عند فشل التحميل
@@ -18,15 +19,17 @@
   - دعم كامل لميزات Next.js Image
 
 #### ✓ تحسين الصور الديناميكية في LandingCardScanner
+
 **الملف**: `frontend/src/components/landing/card-scanner/landing-card-scanner.tsx:269-275`
 
 ```typescript
-cardImage.loading = "lazy"           // Lazy loading للصور
-cardImage.decoding = "async"         // Async decoding
-cardImage.setAttribute("fetchpriority", "low")  // Low priority
+cardImage.loading = "lazy"; // Lazy loading للصور
+cardImage.decoding = "async"; // Async decoding
+cardImage.setAttribute("fetchpriority", "low"); // Low priority
 ```
 
 **الفوائد**:
+
 - تقليل استهلاك النطاق الترددي (bandwidth)
 - تحميل أسرع للصفحة الأولى
 - تجربة مستخدم أفضل على الاتصالات البطيئة
@@ -36,6 +39,7 @@ cardImage.setAttribute("fetchpriority", "low")  // Low priority
 ### 2. ⚡ Lazy Loading للمكونات الثقيلة
 
 #### ✓ Lazy Wrapper للـ LandingCardScanner
+
 **الملف الجديد**: `frontend/src/components/landing/card-scanner/lazy-landing-card-scanner.tsx`
 
 ```typescript
@@ -49,15 +53,17 @@ const LandingCardScanner = dynamic(
 ```
 
 **الفوائد**:
+
 - تقليل حجم الـ initial bundle بـ ~42KB
 - تحميل المكون فقط عند الحاجة
 - تجربة تحميل سلسة مع placeholder
 
 **الاستخدام**:
-```tsx
-import { LazyLandingCardScanner } from "@/components/landing/card-scanner/lazy-landing-card-scanner"
 
-<LazyLandingCardScanner />
+```tsx
+import { LazyLandingCardScanner } from "@/components/landing/card-scanner/lazy-landing-card-scanner";
+
+<LazyLandingCardScanner />;
 ```
 
 ---
@@ -65,9 +71,11 @@ import { LazyLandingCardScanner } from "@/components/landing/card-scanner/lazy-l
 ### 3. 🎯 تطبيق LOD (Level of Detail) على الجسيمات
 
 #### ✓ نظام LOD متقدم
+
 **الملف المحسّن**: `frontend/src/components/device-detection.ts`
 
 **الميزات**:
+
 - **3 مستويات للأداء**: Low, Medium, High
 - **كشف تلقائي للجهاز**: Desktop, Tablet, Mobile
 - **تكييف ديناميكي** بناءً على:
@@ -79,22 +87,23 @@ import { LazyLandingCardScanner } from "@/components/landing/card-scanner/lazy-l
 
 #### مستويات الأداء:
 
-| المستوى | Desktop | Mobile | Radius | FPS Target | التأثيرات المتقدمة |
-|---------|---------|--------|--------|------------|-------------------|
-| **High** | 3000 جسيم | 2000 | 200px | 60fps | ✅ نعم |
-| **Medium** | 1500 جسيم | 800 | 150px | 30fps | ⚠️ محدودة |
-| **Low** | 500 جسيم | 500 | 100px | 20fps | ❌ لا |
+| المستوى    | Desktop   | Mobile | Radius | FPS Target | التأثيرات المتقدمة |
+| ---------- | --------- | ------ | ------ | ---------- | ------------------ |
+| **High**   | 3000 جسيم | 2000   | 200px  | 60fps      | ✅ نعم             |
+| **Medium** | 1500 جسيم | 800    | 150px  | 30fps      | ⚠️ محدودة          |
+| **Low**    | 500 جسيم  | 500    | 100px  | 20fps      | ❌ لا              |
 
 ---
 
 ### 4. 🔋 Battery & Performance Detection
 
 #### ✓ Battery API Integration
+
 **الملف المحسّن**: `frontend/src/components/device-detection.ts:90-120`
 
 ```typescript
 // كشف تلقائي لوضع توفير الطاقة
-export async function detectLowPowerMode(): Promise<boolean>
+export async function detectLowPowerMode(): Promise<boolean>;
 
 // فحص:
 // - مستوى البطارية (< 15% غير متصلة بالشاحن)
@@ -103,6 +112,7 @@ export async function detectLowPowerMode(): Promise<boolean>
 ```
 
 **التكيف التلقائي**:
+
 - عند اكتشاف وضع توفير الطاقة:
   - تقليل عدد الجسيمات إلى 500
   - تعطيل التأثيرات المتقدمة
@@ -110,6 +120,7 @@ export async function detectLowPowerMode(): Promise<boolean>
   - جودة texture منخفضة
 
 #### ✓ Dynamic Performance Monitoring
+
 **الملف المحسّن**: `frontend/src/components/device-detection.ts:261-404`
 
 **الميزات الجديدة**:
@@ -120,6 +131,7 @@ export async function detectLowPowerMode(): Promise<boolean>
    - توفير موارد النظام
 
 2. **FPS-based Quality Adjustment** 📊
+
    ```typescript
    getDynamicLODConfig(baseConfig: ParticleLODConfig): ParticleLODConfig
 
@@ -144,12 +156,14 @@ export async function detectLowPowerMode(): Promise<boolean>
 ## 📊 نتائج الأداء المتوقعة
 
 ### قبل التحسينات:
+
 - **Initial Bundle**: ~2.5MB
 - **LCP (Largest Contentful Paint)**: ~3.2s
 - **FPS على Mobile**: 15-25 fps
 - **استهلاك البطارية**: مرتفع
 
 ### بعد التحسينات:
+
 - **Initial Bundle**: ~2.1MB (-16%)
 - **LCP**: ~2.1s (-34%)
 - **FPS على Mobile**: 25-45 fps (+80%)
@@ -163,40 +177,43 @@ export async function detectLowPowerMode(): Promise<boolean>
 
 ```tsx
 // بدلاً من:
-import { LandingCardScanner } from "@/components/landing/card-scanner/landing-card-scanner"
+import { LandingCardScanner } from "@/components/landing/card-scanner/landing-card-scanner";
 
 // استخدم:
-import { LazyLandingCardScanner } from "@/components/landing/card-scanner/lazy-landing-card-scanner"
+import { LazyLandingCardScanner } from "@/components/landing/card-scanner/lazy-landing-card-scanner";
 ```
 
 ### 2. استخدام Performance Monitor
 
 ```tsx
-import { PerformanceMonitor } from "@/components/device-detection"
+import { PerformanceMonitor } from "@/components/device-detection";
 
-const monitor = new PerformanceMonitor()
+const monitor = new PerformanceMonitor();
 
 // في animation loop:
-monitor.recordFrame(performance.now())
+monitor.recordFrame(performance.now());
 
 // الحصول على LOD ديناميكي:
-const dynamicConfig = monitor.getDynamicLODConfig(baseConfig)
+const dynamicConfig = monitor.getDynamicLODConfig(baseConfig);
 
 // التنظيف:
-monitor.destroy()
+monitor.destroy();
 ```
 
 ### 3. فحص Device Capabilities
 
 ```tsx
-import { getDeviceCapabilities, logDeviceCapabilities } from "@/components/device-detection"
+import {
+  getDeviceCapabilities,
+  logDeviceCapabilities,
+} from "@/components/device-detection";
 
 // في development:
-logDeviceCapabilities()
+logDeviceCapabilities();
 
 // في production:
-const capabilities = getDeviceCapabilities()
-if (capabilities.performanceTier === 'low') {
+const capabilities = getDeviceCapabilities();
+if (capabilities.performanceTier === "low") {
   // تطبيق تحسينات إضافية
 }
 ```
@@ -206,6 +223,7 @@ if (capabilities.performanceTier === 'low') {
 ## 🎯 Best Practices
 
 ### ✅ افعل:
+
 - استخدم `next/image` لجميع الصور
 - طبق lazy loading للمكونات الثقيلة (> 30KB)
 - استخدم PerformanceMonitor للمكونات ذات الرسوميات الثقيلة
@@ -213,6 +231,7 @@ if (capabilities.performanceTier === 'low') {
 - نظف الـ event listeners في cleanup
 
 ### ❌ لا تفعل:
+
 - لا تستخدم `<img>` مباشرة
 - لا تحمل Three.js في SSR
 - لا تتجاهل Battery API
@@ -223,11 +242,13 @@ if (capabilities.performanceTier === 'low') {
 ## 📚 الملفات المعدلة
 
 ### ملفات محسّنة:
+
 1. ✅ `frontend/src/components/ui/image-with-fallback.tsx`
 2. ✅ `frontend/src/components/landing/card-scanner/landing-card-scanner.tsx`
 3. ✅ `frontend/src/components/device-detection.ts`
 
 ### ملفات جديدة:
+
 1. ✨ `frontend/src/components/landing/card-scanner/lazy-landing-card-scanner.tsx`
 2. ✨ `frontend/PERFORMANCE_IMPROVEMENTS.md` (هذا الملف)
 
@@ -238,15 +259,16 @@ if (capabilities.performanceTier === 'low') {
 ### عرض معلومات الأداء في Console:
 
 ```typescript
-import { logDeviceCapabilities } from "@/components/device-detection"
+import { logDeviceCapabilities } from "@/components/device-detection";
 
 // في development فقط:
-if (process.env.NODE_ENV === 'development') {
-  logDeviceCapabilities()
+if (process.env.NODE_ENV === "development") {
+  logDeviceCapabilities();
 }
 ```
 
 **Output:**
+
 ```
 🖥️ Device Capabilities:
   deviceType: desktop
@@ -281,6 +303,7 @@ if (process.env.NODE_ENV === 'development') {
 ## 📞 الدعم
 
 للأسئلة أو المشاكل:
+
 - راجع الكود في الملفات المذكورة أعلاه
 - تحقق من Console logs في development mode
 - استخدم React DevTools لمراقبة re-renders

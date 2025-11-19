@@ -53,21 +53,23 @@ export interface EnhancedPipelineRunResult extends PipelineRunResult {
 }
 
 export enum StationStatus {
-  PENDING = 'pending',
-  RUNNING = 'running',
-  COMPLETED = 'completed',
-  FAILED = 'failed'
+  PENDING = "pending",
+  RUNNING = "running",
+  COMPLETED = "completed",
+  FAILED = "failed",
 }
 
 // Validation function
-export function validateAndNormalizePipelineInput(input: unknown): PipelineInput {
-  if (typeof input === 'string') {
+export function validateAndNormalizePipelineInput(
+  input: unknown
+): PipelineInput {
+  if (typeof input === "string") {
     return { text: input };
   }
-  
-  if (typeof input === 'object' && input !== null && 'text' in input) {
+
+  if (typeof input === "object" && input !== null && "text" in input) {
     return input as PipelineInput;
   }
-  
-  throw new Error('Invalid pipeline input');
+
+  throw new Error("Invalid pipeline input");
 }

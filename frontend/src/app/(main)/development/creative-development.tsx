@@ -313,14 +313,15 @@ const DramaAnalystApp: React.FC = () => {
       // Pass advanced settings to executor
       const result = await submitTask(request);
 
-      if (result && typeof result === 'object' && 'text' in result) {
+      if (result && typeof result === "object" && "text" in result) {
         setAiResponse(result as AIResponse);
         toast({
           title: "تم التحليل بنجاح",
           description: "تم إكمال المهمة بنجاح",
         });
       } else {
-        const errorMsg = typeof result === 'string' ? result : 'حدث خطأ غير متوقع';
+        const errorMsg =
+          typeof result === "string" ? result : "حدث خطأ غير متوقع";
         setError(errorMsg);
         toast({
           variant: "destructive",

@@ -29,26 +29,26 @@ export interface KeyboardShortcutHandler {
  * Map of keyboard shortcuts to their actions
  */
 const shortcutMap: Record<string, KeyboardAction> = {
-  "b": "bold",
-  "B": "bold",
-  "i": "italic",
-  "I": "italic",
-  "u": "underline",
-  "U": "underline",
-  "z": "undo",
-  "Z": "undo",
-  "y": "redo",
-  "Y": "redo",
-  "s": "save",
-  "S": "save",
-  "f": "find",
-  "F": "find",
-  "h": "replace",
-  "H": "replace",
-  "a": "selectAll",
-  "A": "selectAll",
-  "p": "print",
-  "P": "print",
+  b: "bold",
+  B: "bold",
+  i: "italic",
+  I: "italic",
+  u: "underline",
+  U: "underline",
+  z: "undo",
+  Z: "undo",
+  y: "redo",
+  Y: "redo",
+  s: "save",
+  S: "save",
+  f: "find",
+  F: "find",
+  h: "replace",
+  H: "replace",
+  a: "selectAll",
+  A: "selectAll",
+  p: "print",
+  P: "print",
   "1": "scene-header",
   "2": "character",
   "3": "dialogue",
@@ -87,7 +87,17 @@ export function handleKeyboardShortcut(
   if (!action) return false;
 
   // Handle formatting actions
-  if (["bold", "italic", "underline", "undo", "redo", "selectAll", "print"].includes(action)) {
+  if (
+    [
+      "bold",
+      "italic",
+      "underline",
+      "undo",
+      "redo",
+      "selectAll",
+      "print",
+    ].includes(action)
+  ) {
     handlers.formatText(action);
     return true;
   }
@@ -117,10 +127,10 @@ export function handleKeyboardShortcut(
   // Handle format type actions
   const formatMap: Record<string, string> = {
     "scene-header": "scene-header-top-line",
-    "character": "character",
-    "dialogue": "dialogue",
-    "action": "action",
-    "transition": "transition",
+    character: "character",
+    dialogue: "dialogue",
+    action: "action",
+    transition: "transition",
   };
 
   if (action in formatMap) {

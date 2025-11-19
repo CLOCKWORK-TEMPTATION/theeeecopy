@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { GeminiService } from '@/ai/gemini-service';
+import { NextRequest, NextResponse } from "next/server";
+import { GeminiService } from "@/ai/gemini-service";
 
 /**
  * POST /api/cineai/color-grading
@@ -11,15 +11,16 @@ export async function POST(request: NextRequest) {
 
     if (!sceneType) {
       return NextResponse.json(
-        { error: 'Scene type is required' },
+        { error: "Scene type is required" },
         { status: 400 }
       );
     }
 
     // Check for API key
-    const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
+    const apiKey =
+      process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      console.warn('No Gemini API key found, using fallback mock data');
+      console.warn("No Gemini API key found, using fallback mock data");
       return generateMockPalette(sceneType, mood, temperature);
     }
 
@@ -44,8 +45,8 @@ Return the response as a JSON object with the following structure:
 
 Provide 5 harmonious colors that work well together for the specified scene.`;
 
-    const moodInfo = mood ? ` with ${mood} mood` : '';
-    const tempInfo = temperature ? ` (color temperature: ${temperature}K)` : '';
+    const moodInfo = mood ? ` with ${mood} mood` : "";
+    const tempInfo = temperature ? ` (color temperature: ${temperature}K)` : "";
 
     const prompt = `${systemInstruction}
 
@@ -54,7 +55,7 @@ Provide 5 harmonious colors that work well together for the specified scene.`;
 قم بإنشاء لوحة ألوان احترافية للتدريج اللوني لهذا النوع من المشاهد، مع اقتراحات عملية للتطبيق.
 Generate a professional color grading palette for this scene type, with practical suggestions for implementation.`;
 
-    const model = geminiService.getModel('gemini-1.5-flash', 'analysis');
+    const model = geminiService.getModel("gemini-1.5-flash", "analysis");
     const result = await model.generateContent(prompt);
     const response = result.response.text();
 
@@ -67,11 +68,11 @@ Generate a professional color grading palette for this scene type, with practica
         aiData = JSON.parse(jsonMatch[0]);
       } else {
         // If no JSON found, fallback to mock data
-        console.warn('Could not parse AI response, using fallback');
+        console.warn("Could not parse AI response, using fallback");
         return generateMockPalette(sceneType, mood, temperature);
       }
     } catch (parseError) {
-      console.error('Error parsing AI response:', parseError);
+      console.error("Error parsing AI response:", parseError);
       return generateMockPalette(sceneType, mood, temperature);
     }
 
@@ -82,18 +83,18 @@ Generate a professional color grading palette for this scene type, with practica
       secondaryColor: aiData.secondaryColor,
       accentColor: aiData.accentColor,
       sceneType,
-      mood: mood || 'neutral',
+      mood: mood || "neutral",
       temperature: temperature || 5500,
       suggestions: aiData.suggestions || [],
       lutRecommendation: aiData.lutRecommendation,
       cinematicReferences: aiData.cinematicReferences || [],
       generatedAt: new Date().toISOString(),
-      source: 'ai',
+      source: "ai",
     });
   } catch (error) {
-    console.error('Error generating color palette:', error);
+    console.error("Error generating color palette:", error);
     return NextResponse.json(
-      { error: 'Failed to generate color palette' },
+      { error: "Failed to generate color palette" },
       { status: 500 }
     );
   }
@@ -102,35 +103,40 @@ Generate a professional color grading palette for this scene type, with practica
 /**
  * Fallback function to generate mock palette when AI is unavailable
  */
-function generateMockPalette(sceneType: string, mood?: string, temperature?: number) {
+function generateMockPalette(
+  sceneType: string,
+  mood?: string,
+  temperature?: number
+) {
   const palettes: Record<string, string[]> = {
-    morning: ['#FFE5B4', '#FFD700', '#FFA500', '#FF8C00', '#E67E22'],
-    night: ['#0F1624', '#1a2332', '#2c3e50', '#34495e', '#4a5c7a'],
-    indoor: ['#8B7355', '#A0826D', '#C19A6B', '#D4A574', '#E8C89c'],
-    outdoor: ['#87CEEB', '#6CA6CD', '#4682B4', '#5F9EA0', '#708090'],
-    happy: ['#FFD700', '#FFA500', '#FF6B6B', '#FFC0CB', '#FFE4E1'],
-    sad: ['#2C3E50', '#34495E', '#7F8C8D', '#95A5A6', '#BDC3C7'],
+    morning: ["#FFE5B4", "#FFD700", "#FFA500", "#FF8C00", "#E67E22"],
+    night: ["#0F1624", "#1a2332", "#2c3e50", "#34495e", "#4a5c7a"],
+    indoor: ["#8B7355", "#A0826D", "#C19A6B", "#D4A574", "#E8C89c"],
+    outdoor: ["#87CEEB", "#6CA6CD", "#4682B4", "#5F9EA0", "#708090"],
+    happy: ["#FFD700", "#FFA500", "#FF6B6B", "#FFC0CB", "#FFE4E1"],
+    sad: ["#2C3E50", "#34495E", "#7F8C8D", "#95A5A6", "#BDC3C7"],
   };
 
-  const selectedPalette = palettes[sceneType.toLowerCase()] || palettes.indoor || [];
+  const selectedPalette =
+    palettes[sceneType.toLowerCase()] || palettes.indoor || [];
 
   return NextResponse.json({
     success: true,
     palette: selectedPalette,
-    primaryColor: selectedPalette[0] || '#000000',
-    secondaryColor: selectedPalette[2] || '#000000',
-    accentColor: selectedPalette[4] || '#000000',
+    primaryColor: selectedPalette[0] || "#000000",
+    secondaryColor: selectedPalette[2] || "#000000",
+    accentColor: selectedPalette[4] || "#000000",
     sceneType,
-    mood: mood || 'neutral',
+    mood: mood || "neutral",
     temperature: temperature || 5500,
     suggestions: [
-      'استخدم هذه الألوان كنقطة بداية للـ LUT',
-      'قم بتعديل درجة الحرارة حسب وقت اليوم',
-      'تأكد من التناسق عبر كل المشاهد',
+      "استخدم هذه الألوان كنقطة بداية للـ LUT",
+      "قم بتعديل درجة الحرارة حسب وقت اليوم",
+      "تأكد من التناسق عبر كل المشاهد",
     ],
-    lutRecommendation: 'استخدم LUT دافئ للمشاهد النهارية وبارد للمشاهد الليلية',
+    lutRecommendation: "استخدم LUT دافئ للمشاهد النهارية وبارد للمشاهد الليلية",
     cinematicReferences: [],
     generatedAt: new Date().toISOString(),
-    source: 'mock',
+    source: "mock",
   });
 }

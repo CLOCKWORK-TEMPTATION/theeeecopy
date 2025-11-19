@@ -1,6 +1,6 @@
 /**
  * Shared constants for particle letter rendering
- * 
+ *
  * These constants define the typography and positioning for both
  * particle-background.tsx and particle-background-optimized.tsx
  * to ensure visual parity between the two implementations.
@@ -24,10 +24,10 @@ export const LETTER_POSITIONS = {
   O: 0.5,
   P: 1.0,
   Y: 1.9,
-  
+
   // Separator
   DASH: 2.4,
-  
+
   // Arabic letters
   ALEF: 2.9,
   LAM: 3.3,
@@ -50,4 +50,3 @@ export const PARTICLE_THRESHOLDS = {
   english: 0.01,
   arabic: 0.015, // Higher threshold for Arabic letters to improve density
 } as const;
-

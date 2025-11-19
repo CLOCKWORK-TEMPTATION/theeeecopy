@@ -18,7 +18,7 @@ export async function fetchProjects(): Promise<ApiResponse<Project[]>> {
 }
 
 export async function fetchProject(id: string): Promise<ApiResponse<Project>> {
-  return { success: true, data: { id, name: 'Project' } };
+  return { success: true, data: { id, name: "Project" } };
 }
 
 export default {

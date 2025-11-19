@@ -79,10 +79,12 @@
   --color-info-rgb: 98, 108, 113;
 
   /* Typography */
-  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
-    Monaco, Consolas, monospace;
+  --font-family-base:
+    "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-family-mono:
+    "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
   --font-size-xs: 11px;
   --font-size-sm: 12px;
   --font-size-base: 14px;
@@ -124,12 +126,12 @@
   /* Shadows */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
-    0 2px 4px -1px rgba(0, 0, 0, 0.02);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04),
-    0 4px 6px -2px rgba(0, 0, 0, 0.02);
-  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 10%),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-inset-sm:
+    inset 0 1px 0 rgba(255, 255, 255, 10%), inset 0 -1px 0 rgba(0, 0, 0, 0.03);
 
   /* Animation */
   --duration-fast: 150ms;
@@ -154,11 +156,23 @@
 
     /* Background color tokens (Dark Mode) */
     --color-bg-1: color-mix(in srgb, #1d4ed8 15%, transparent); /* Dark blue */
-    --color-bg-2: color-mix(in srgb, #b45309 15%, transparent); /* Dark yellow */
+    --color-bg-2: color-mix(
+      in srgb,
+      #b45309 15%,
+      transparent
+    ); /* Dark yellow */
     --color-bg-3: color-mix(in srgb, #15803d 15%, transparent); /* Dark green */
     --color-bg-4: color-mix(in srgb, #b91c1c 15%, transparent); /* Dark red */
-    --color-bg-5: color-mix(in srgb, #6b21a8 15%, transparent); /* Dark purple */
-    --color-bg-6: color-mix(in srgb, #c2410c 15%, transparent); /* Dark orange */
+    --color-bg-5: color-mix(
+      in srgb,
+      #6b21a8 15%,
+      transparent
+    ); /* Dark purple */
+    --color-bg-6: color-mix(
+      in srgb,
+      #c2410c 15%,
+      transparent
+    ); /* Dark orange */
     --color-bg-7: color-mix(in srgb, #be185d 15%, transparent); /* Dark pink */
     --color-bg-8: color-mix(in srgb, #0891b2 15%, transparent); /* Dark cyan */
 
@@ -182,8 +196,8 @@
     --color-btn-primary-text: var(--color-slate-900);
     --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
     --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
-    --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    --shadow-inset-sm:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
     --button-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
     --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
     --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
@@ -242,8 +256,8 @@
   --color-btn-primary-text: var(--color-slate-900);
   --color-card-border: rgba(var(--color-gray-400-rgb), 0.15);
   --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
-  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  --shadow-inset-sm:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
   --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
   --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
 
@@ -484,7 +498,8 @@ pre code {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-base);
-  transition: border-color var(--duration-fast) var(--ease-standard),
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
     box-shadow var(--duration-fast) var(--ease-standard);
 }
 
@@ -747,9 +762,9 @@ select.form-control {
 }
 
 @font-face {
-  font-family: 'FKGroteskNeue';
-  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
-    format('woff2');
+  font-family: "FKGroteskNeue";
+  src: url("https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2")
+    format("woff2");
 }
 
 /* END PERPLEXITY DESIGN SYSTEM */
@@ -785,7 +800,7 @@ select.form-control {
   --secondary-hover: #d97706;
   --ai-color: #14b8a6;
   --ai-hover: #0d9488;
-  
+
   /* Light Mode */
   --background: var(--color-cream-50);
   --surface: var(--color-cream-100);
@@ -793,10 +808,14 @@ select.form-control {
   --text-secondary: var(--color-slate-500);
   --border: rgba(139, 92, 246, 0.2);
   --shadow: rgba(0, 0, 0, 0.1);
-  
+
   /* Typography */
-  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-family-base:
+    "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-family-mono:
+    "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
   --font-size-xs: 11px;
   --font-size-sm: 12px;
   --font-size-base: 14px;
@@ -813,7 +832,7 @@ select.form-control {
   --font-weight-bold: 600;
   --line-height-tight: 1.2;
   --line-height-normal: 1.5;
-  
+
   /* Spacing */
   --space-1: 4px;
   --space-2: 8px;
@@ -827,7 +846,7 @@ select.form-control {
   --space-16: 64px;
   --space-20: 80px;
   --space-24: 96px;
-  
+
   /* Border Radius */
   --radius-sm: 6px;
   --radius-base: 8px;
@@ -836,13 +855,16 @@ select.form-control {
   --radius-xl: 16px;
   --radius-2xl: 24px;
   --radius-full: 9999px;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
   /* Animation */
   --duration-fast: 150ms;
   --duration-normal: 300ms;
@@ -891,18 +913,35 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   color: var(--text);
 }
 
-h1 { font-size: var(--font-size-6xl); }
-h2 { font-size: var(--font-size-5xl); }
-h3 { font-size: var(--font-size-4xl); }
-h4 { font-size: var(--font-size-3xl); }
-h5 { font-size: var(--font-size-2xl); }
-h6 { font-size: var(--font-size-xl); }
+h1 {
+  font-size: var(--font-size-6xl);
+}
+h2 {
+  font-size: var(--font-size-5xl);
+}
+h3 {
+  font-size: var(--font-size-4xl);
+}
+h4 {
+  font-size: var(--font-size-3xl);
+}
+h5 {
+  font-size: var(--font-size-2xl);
+}
+h6 {
+  font-size: var(--font-size-xl);
+}
 
 /* Gradient Background */
 .gradient-bg {
@@ -1320,8 +1359,12 @@ h6 { font-size: var(--font-size-xl); }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
@@ -1347,13 +1390,22 @@ h6 { font-size: var(--font-size-xl); }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .fade-in {
@@ -1434,39 +1486,89 @@ h6 { font-size: var(--font-size-xl); }
   justify-content: space-between;
 }
 
-.gap-2 { gap: var(--space-2); }
-.gap-4 { gap: var(--space-4); }
-.gap-6 { gap: var(--space-6); }
-.gap-8 { gap: var(--space-8); }
+.gap-2 {
+  gap: var(--space-2);
+}
+.gap-4 {
+  gap: var(--space-4);
+}
+.gap-6 {
+  gap: var(--space-6);
+}
+.gap-8 {
+  gap: var(--space-8);
+}
 
 /* Utility Classes */
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
 
-.text-primary { color: var(--primary); }
-.text-secondary { color: var(--text-secondary); }
-.text-ai { color: var(--ai-color); }
+.text-primary {
+  color: var(--primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-ai {
+  color: var(--ai-color);
+}
 
-.font-bold { font-weight: var(--font-weight-bold); }
-.font-medium { font-weight: var(--font-weight-medium); }
+.font-bold {
+  font-weight: var(--font-weight-bold);
+}
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
 
-.mt-2 { margin-top: var(--space-2); }
-.mt-4 { margin-top: var(--space-4); }
-.mt-6 { margin-top: var(--space-6); }
-.mt-8 { margin-top: var(--space-8); }
+.mt-2 {
+  margin-top: var(--space-2);
+}
+.mt-4 {
+  margin-top: var(--space-4);
+}
+.mt-6 {
+  margin-top: var(--space-6);
+}
+.mt-8 {
+  margin-top: var(--space-8);
+}
 
-.mb-2 { margin-bottom: var(--space-2); }
-.mb-4 { margin-bottom: var(--space-4); }
-.mb-6 { margin-bottom: var(--space-6); }
-.mb-8 { margin-bottom: var(--space-8); }
+.mb-2 {
+  margin-bottom: var(--space-2);
+}
+.mb-4 {
+  margin-bottom: var(--space-4);
+}
+.mb-6 {
+  margin-bottom: var(--space-6);
+}
+.mb-8 {
+  margin-bottom: var(--space-8);
+}
 
-.p-4 { padding: var(--space-4); }
-.p-6 { padding: var(--space-6); }
-.p-8 { padding: var(--space-8); }
+.p-4 {
+  padding: var(--space-4);
+}
+.p-6 {
+  padding: var(--space-6);
+}
+.p-8 {
+  padding: var(--space-8);
+}
 
-.w-full { width: 100%; }
-.h-full { height: 100%; }
+.w-full {
+  width: 100%;
+}
+.h-full {
+  height: 100%;
+}
 
 /* Dashboard Layout */
 .dashboard-layout {
@@ -1608,22 +1710,28 @@ h6 { font-size: var(--font-size-xl); }
   .navbar-menu {
     display: none;
   }
-  
+
   .sidebar {
     transform: translateX(-100%);
   }
-  
+
   .sidebar.open {
     transform: translateX(0);
   }
-  
+
   .dashboard-main {
     margin-left: 0;
   }
-  
-  h1 { font-size: var(--font-size-4xl); }
-  h2 { font-size: var(--font-size-3xl); }
-  h3 { font-size: var(--font-size-2xl); }
+
+  h1 {
+    font-size: var(--font-size-4xl);
+  }
+  h2 {
+    font-size: var(--font-size-3xl);
+  }
+  h3 {
+    font-size: var(--font-size-2xl);
+  }
 }
 
 /* Loading State */
@@ -1638,15 +1746,24 @@ h6 { font-size: var(--font-size-xl); }
 }
 
 .skeleton {
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.05) 25%, rgba(139, 92, 246, 0.1) 50%, rgba(139, 92, 246, 0.05) 75%);
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.05) 25%,
+    rgba(139, 92, 246, 0.1) 50%,
+    rgba(139, 92, 246, 0.05) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: var(--radius-base);
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Chart Container */
@@ -1710,7 +1827,11 @@ h6 { font-size: var(--font-size-xl); }
 .video-placeholder {
   width: 100%;
   aspect-ratio: 16/9;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(20, 184, 166, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.1),
+    rgba(20, 184, 166, 0.1)
+  );
   border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
@@ -1739,6 +1860,7 @@ h6 { font-size: var(--font-size-xl); }
 }
 
 @font-face {
-  font-family: 'FKGroteskNeue';
-  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2');
+  font-family: "FKGroteskNeue";
+  src: url("https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2")
+    format("woff2");
 }

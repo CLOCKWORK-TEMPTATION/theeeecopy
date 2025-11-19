@@ -22,8 +22,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useProjects, useUpdateProject, useDeleteProject } from "@/hooks/useProject";
-import { getCurrentProject, setCurrentProject, clearCurrentProject } from "@/lib/projectStore";
+import {
+  useProjects,
+  useUpdateProject,
+  useDeleteProject,
+} from "@/hooks/useProject";
+import {
+  getCurrentProject,
+  setCurrentProject,
+  clearCurrentProject,
+} from "@/lib/projectStore";
 import { FolderOpen, Trash2, Edit2, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -59,7 +67,8 @@ export default function ProjectManager() {
         description: "تم تحديث عنوان المشروع بنجاح",
       });
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "فشل تحديث المشروع";
+      const message =
+        error instanceof Error ? error.message : "فشل تحديث المشروع";
       toast({
         title: "حدث خطأ",
         description: message,
@@ -91,7 +100,8 @@ export default function ProjectManager() {
       setDeleteDialogOpen(false);
       setProjectToDelete(null);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "فشل حذف المشروع";
+      const message =
+        error instanceof Error ? error.message : "فشل حذف المشروع";
       toast({
         title: "حدث خطأ",
         description: message,
@@ -127,7 +137,11 @@ export default function ProjectManager() {
             {projectsList.map((project: any) => (
               <Card
                 key={project.id}
-                className={currentProjectId && currentProjectId.id === project.id ? "border-primary" : ""}
+                className={
+                  currentProjectId && currentProjectId.id === project.id
+                    ? "border-primary"
+                    : ""
+                }
                 data-testid={`card-project-${project.id}`}
               >
                 <CardContent className="p-4">
@@ -144,7 +158,9 @@ export default function ProjectManager() {
                       <div className="flex-1 text-right">
                         <h3 className="font-semibold">{project.title}</h3>
                         <p className="text-sm text-muted-foreground">
-                          {new Date(project.createdAt).toLocaleDateString('ar-SA')}
+                          {new Date(project.createdAt).toLocaleDateString(
+                            "ar-SA"
+                          )}
                         </p>
                       </div>
                     )}
@@ -165,7 +181,9 @@ export default function ProjectManager() {
                           <Button
                             size="icon"
                             variant="ghost"
-                            onClick={() => handleStartEdit(project.id, project.title)}
+                            onClick={() =>
+                              handleStartEdit(project.id, project.title)
+                            }
                             data-testid={`button-edit-${project.id}`}
                           >
                             <Edit2 className="w-4 h-4" />
@@ -178,7 +196,8 @@ export default function ProjectManager() {
                           >
                             <Trash2 className="w-4 h-4 text-destructive" />
                           </Button>
-                          {(!currentProjectId || currentProjectId.id !== project.id) && (
+                          {(!currentProjectId ||
+                            currentProjectId.id !== project.id) && (
                             <Button
                               variant="outline"
                               onClick={() => handleSelectProject(project)}
@@ -187,11 +206,16 @@ export default function ProjectManager() {
                               اختيار
                             </Button>
                           )}
-                          {currentProjectId && currentProjectId.id === project.id && (
-                            <Button variant="default" disabled data-testid="button-current-project">
-                              المشروع الحالي
-                            </Button>
-                          )}
+                          {currentProjectId &&
+                            currentProjectId.id === project.id && (
+                              <Button
+                                variant="default"
+                                disabled
+                                data-testid="button-current-project"
+                              >
+                                المشروع الحالي
+                              </Button>
+                            )}
                         </>
                       )}
                     </div>
@@ -206,9 +230,12 @@ export default function ProjectManager() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent dir="rtl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-right">تأكيد الحذف</AlertDialogTitle>
+            <AlertDialogTitle className="text-right">
+              تأكيد الحذف
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-right">
-              هل أنت متأكد من حذف هذا المشروع؟ سيتم حذف جميع المشاهد والشخصيات واللقطات المرتبطة به. هذا الإجراء لا يمكن التراجع عنه.
+              هل أنت متأكد من حذف هذا المشروع؟ سيتم حذف جميع المشاهد والشخصيات
+              واللقطات المرتبطة به. هذا الإجراء لا يمكن التراجع عنه.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-row-reverse gap-2">

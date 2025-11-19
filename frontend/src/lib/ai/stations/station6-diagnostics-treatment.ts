@@ -457,7 +457,10 @@ export class Station6Diagnostics {
         maxTokens: 6144,
       });
 
-      const result = typeof response.content === 'string' ? response.content : (response.content as any).raw || '';
+      const result =
+        typeof response.content === "string"
+          ? response.content
+          : (response.content as any).raw || "";
       const jsonMatch = result.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error("No valid JSON found in response");
@@ -685,7 +688,10 @@ export class Station6Diagnostics {
         maxTokens: 6144,
       });
 
-      const result = typeof response.content === 'string' ? response.content : (response.content as any).raw || '';
+      const result =
+        typeof response.content === "string"
+          ? response.content
+          : (response.content as any).raw || "";
       const jsonMatch = result.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error("No valid JSON found in response");
@@ -749,10 +755,27 @@ export class Station6Diagnostics {
     diagnosticsReport: DiagnosticsReport
   ): TreatmentPlan {
     // Map category to valid Recommendation category type
-    const mapCategory = (category: string): "character" | "plot" | "structure" | "dialogue" | "theme" | "pacing" => {
+    const mapCategory = (
+      category: string
+    ): "character" | "plot" | "structure" | "dialogue" | "theme" | "pacing" => {
       if (category === "continuity") return "structure";
-      if (["character", "plot", "structure", "dialogue", "theme", "pacing"].includes(category)) {
-        return category as "character" | "plot" | "structure" | "dialogue" | "theme" | "pacing";
+      if (
+        [
+          "character",
+          "plot",
+          "structure",
+          "dialogue",
+          "theme",
+          "pacing",
+        ].includes(category)
+      ) {
+        return category as
+          | "character"
+          | "plot"
+          | "structure"
+          | "dialogue"
+          | "theme"
+          | "pacing";
       }
       return "structure"; // default fallback
     };
@@ -909,7 +932,10 @@ export class Station6Diagnostics {
         maxTokens: 6144,
       });
 
-      const result = typeof response.content === 'string' ? response.content : (response.content as any).raw || '';
+      const result =
+        typeof response.content === "string"
+          ? response.content
+          : (response.content as any).raw || "";
       const jsonMatch = result.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error("No valid JSON found in response");
@@ -1052,7 +1078,7 @@ export class Station6Diagnostics {
       // Map UncertaintyMetrics to UncertaintyReport format
       return {
         overallConfidence: metrics.confidence,
-        uncertainties: metrics.sources.map(source => ({
+        uncertainties: metrics.sources.map((source) => ({
           type: metrics.type,
           aspect: source.aspect,
           note: source.reason,

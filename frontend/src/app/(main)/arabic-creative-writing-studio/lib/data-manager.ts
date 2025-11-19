@@ -1,16 +1,20 @@
 // dataManager.ts
 // مدير البيانات المحلية لاستوديو الكتابة الإبداعية
 
-import { CreativeProject, CreativePrompt, AppSettings } from '@/app/(main)/arabic-creative-writing-studio/types';
+import {
+  CreativeProject,
+  CreativePrompt,
+  AppSettings,
+} from "@/app/(main)/arabic-creative-writing-studio/types";
 
 export class DataManager {
   private static instance: DataManager;
   private storage: Map<string, any> = new Map();
   private readonly STORAGE_KEYS = {
-    PROJECTS: 'creative_projects',
-    SETTINGS: 'app_settings',
-    PROMPTS: 'custom_prompts',
-    HISTORY: 'writing_history'
+    PROJECTS: "creative_projects",
+    SETTINGS: "app_settings",
+    PROMPTS: "custom_prompts",
+    HISTORY: "writing_history",
   };
 
   private constructor() {
@@ -37,15 +41,15 @@ export class DataManager {
   // الحصول على الإعدادات الافتراضية
   private getDefaultSettings(): AppSettings {
     return {
-      language: 'ar',
-      theme: 'dark',
-      textDirection: 'rtl',
-      fontSize: 'medium',
+      language: "ar",
+      theme: "dark",
+      textDirection: "rtl",
+      fontSize: "medium",
       autoSave: true,
       autoSaveInterval: 30000,
-      geminiModel: 'gemini-2.5-pro',
+      geminiModel: "gemini-2.5-pro",
       geminiTemperature: 0.7,
-      geminiMaxTokens: 8192
+      geminiMaxTokens: 8192,
     };
   }
 
@@ -62,7 +66,7 @@ export class DataManager {
   // حفظ مشروع واحد
   saveProject(project: CreativeProject): void {
     const projects = this.getProjects();
-    const existingIndex = projects.findIndex(p => p.id === project.id);
+    const existingIndex = projects.findIndex((p) => p.id === project.id);
 
     if (existingIndex >= 0) {
       projects[existingIndex] = { ...project, updatedAt: new Date() };
@@ -76,7 +80,7 @@ export class DataManager {
   // حذف مشروع
   deleteProject(projectId: string): void {
     const projects = this.getProjects();
-    const filteredProjects = projects.filter(p => p.id !== projectId);
+    const filteredProjects = projects.filter((p) => p.id !== projectId);
     this.saveProjects(filteredProjects);
   }
 
@@ -87,7 +91,9 @@ export class DataManager {
 
   // استرجاع الإعدادات
   getSettings(): AppSettings {
-    return this.storage.get(this.STORAGE_KEYS.SETTINGS) || this.getDefaultSettings();
+    return (
+      this.storage.get(this.STORAGE_KEYS.SETTINGS) || this.getDefaultSettings()
+    );
   }
 
   // حفظ محفز مخصص
@@ -127,7 +133,7 @@ export class DataManager {
       settings: this.getSettings(),
       customPrompts: this.getCustomPrompts(),
       history: this.getHistory(),
-      exportDate: new Date().toISOString()
+      exportDate: new Date().toISOString(),
     };
 
     return JSON.stringify(data, null, 2);
@@ -156,7 +162,7 @@ export class DataManager {
 
       return true;
     } catch (error) {
-      console.error('خطأ في استيراد البيانات:', error);
+      console.error("خطأ في استيراد البيانات:", error);
       return false;
     }
   }
@@ -173,16 +179,21 @@ export class DataManager {
 
     return {
       totalProjects: projects.length,
-      completedProjects: projects.filter(p => p.isCompleted).length,
+      completedProjects: projects.filter((p) => p.isCompleted).length,
       totalWords: projects.reduce((sum, p) => sum + p.wordCount, 0),
-      averageWordsPerProject: projects.length > 0 
-        ? Math.round(projects.reduce((sum, p) => sum + p.wordCount, 0) / projects.length)
-        : 0,
+      averageWordsPerProject:
+        projects.length > 0
+          ? Math.round(
+              projects.reduce((sum, p) => sum + p.wordCount, 0) /
+                projects.length
+            )
+          : 0,
       mostUsedGenre: this.getMostUsedGenre(projects),
       writingSessions: history.length,
-      lastActivity: projects.length > 0 
-        ? Math.max(...projects.map(p => new Date(p.updatedAt).getTime()))
-        : null
+      lastActivity:
+        projects.length > 0
+          ? Math.max(...projects.map((p) => new Date(p.updatedAt).getTime()))
+          : null,
     };
   }
 
@@ -190,22 +201,23 @@ export class DataManager {
   private getMostUsedGenre(projects: CreativeProject[]): string {
     const genreCounts: { [key: string]: number } = {};
 
-    projects.forEach(project => {
+    projects.forEach((project) => {
       genreCounts[project.genre] = (genreCounts[project.genre] || 0) + 1;
     });
 
-    const mostUsed = Object.entries(genreCounts)
-      .sort(([,a], [,b]) => b - a)[0];
+    const mostUsed = Object.entries(genreCounts).sort(
+      ([, a], [, b]) => b - a
+    )[0];
 
-    return mostUsed ? mostUsed[0] : 'غير محدد';
+    return mostUsed ? mostUsed[0] : "غير محدد";
   }
 
   // نسخة احتياطية تلقائية
   createBackup(): string {
     const backup = {
-      version: '1.0',
+      version: "1.0",
       timestamp: new Date().toISOString(),
-      data: this.exportAllData()
+      data: this.exportAllData(),
     };
 
     return JSON.stringify(backup);
@@ -222,7 +234,7 @@ export class DataManager {
 
       return false;
     } catch (error) {
-      console.error('خطأ في استعادة النسخة الاحتياطية:', error);
+      console.error("خطأ في استعادة النسخة الاحتياطية:", error);
       return false;
     }
   }

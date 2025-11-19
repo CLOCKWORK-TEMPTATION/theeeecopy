@@ -4,10 +4,10 @@
  * Scans main app pages to build a manifest file
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 // SECURITY FIX: Import safe path utilities to prevent path traversal
-const { safeResolve } = require('./safe-path');
+const { safeResolve } = require("./safe-path");
 
 interface PageInfo {
   slug: string;
@@ -16,62 +16,72 @@ interface PageInfo {
 }
 
 // SECURITY FIX: Use safe path resolution to prevent traversal attacks
-const MAIN_PAGES_DIR = safeResolve(__dirname, '../src/app/(main)');
-const OUTPUT_FILE = safeResolve(__dirname, '../src/config/pages.manifest.json');
+const MAIN_PAGES_DIR = safeResolve(__dirname, "../src/app/(main)");
+const OUTPUT_FILE = safeResolve(__dirname, "../src/config/pages.manifest.json");
 
 // Map of slugs to Arabic titles and descriptions
 const PAGE_METADATA: Record<string, { title: string; description: string }> = {
-  'editor': {
-    title: 'كتابة',
-    description: 'محرر متخصص لكتابة سيناريوهات الأفلام والمسلسلات باللغة العربية، مع ميزات تنسيق متقدمة.'
+  editor: {
+    title: "كتابة",
+    description:
+      "محرر متخصص لكتابة سيناريوهات الأفلام والمسلسلات باللغة العربية، مع ميزات تنسيق متقدمة.",
   },
-  'analysis': {
-    title: 'تحليل',
-    description: 'نظام تحليل متقدم يمر بسبع محطات متخصصة لتحليل شامل ومتعمق للنص الدرامي.'
+  analysis: {
+    title: "تحليل",
+    description:
+      "نظام تحليل متقدم يمر بسبع محطات متخصصة لتحليل شامل ومتعمق للنص الدرامي.",
   },
-  'development': {
-    title: 'تطوير',
-    description: 'احصل على تحليل درامي آلي فوري لنصك، استنادًا إلى أشهر الهياكل القصصية والنماذج الأدبية.'
+  development: {
+    title: "تطوير",
+    description:
+      "احصل على تحليل درامي آلي فوري لنصك، استنادًا إلى أشهر الهياكل القصصية والنماذج الأدبية.",
   },
-  'brainstorm': {
-    title: 'الورشة',
-    description: 'فريق من وكلاء الذكاء الاصطناعي يتعاونون لتقديم وجهات نظر متنوعة وأفكار مبتكرة لتطوير كتاباتك.'
+  brainstorm: {
+    title: "الورشة",
+    description:
+      "فريق من وكلاء الذكاء الاصطناعي يتعاونون لتقديم وجهات نظر متنوعة وأفكار مبتكرة لتطوير كتاباتك.",
   },
-  'breakdown': {
-    title: 'تفكيك',
-    description: 'تحليل تفصيلي وتفكيك للنص الدرامي إلى عناصره الأساسية لفهم أعمق.'
+  breakdown: {
+    title: "تفكيك",
+    description:
+      "تحليل تفصيلي وتفكيك للنص الدرامي إلى عناصره الأساسية لفهم أعمق.",
   },
-  'new': {
-    title: 'جديد',
-    description: 'ابدأ مشروعًا جديدًا أو استكشف أحدث الأدوات والميزات المتاحة.'
+  new: {
+    title: "جديد",
+    description: "ابدأ مشروعًا جديدًا أو استكشف أحدث الأدوات والميزات المتاحة.",
   },
-  'actorai-arabic': {
-    title: 'الممثل الذكي',
-    description: 'أداة ذكاء اصطناعي متخصصة لتطوير الشخصيات الدرامية وتحليل الأداء التمثيلي.'
+  "actorai-arabic": {
+    title: "الممثل الذكي",
+    description:
+      "أداة ذكاء اصطناعي متخصصة لتطوير الشخصيات الدرامية وتحليل الأداء التمثيلي.",
   },
-  'arabic-creative-writing-studio': {
-    title: 'استوديو الكتابة الإبداعية',
-    description: 'بيئة متكاملة للكتابة الإبداعية باللغة العربية مع أدوات وموارد احترافية.'
+  "arabic-creative-writing-studio": {
+    title: "استوديو الكتابة الإبداعية",
+    description:
+      "بيئة متكاملة للكتابة الإبداعية باللغة العربية مع أدوات وموارد احترافية.",
   },
-  'arabic-prompt-engineering-studio': {
-    title: 'استوديو هندسة التوجيهات',
-    description: 'ورشة متخصصة لصياغة وتطوير توجيهات الذكاء الاصطناعي باللغة العربية.'
+  "arabic-prompt-engineering-studio": {
+    title: "استوديو هندسة التوجيهات",
+    description:
+      "ورشة متخصصة لصياغة وتطوير توجيهات الذكاء الاصطناعي باللغة العربية.",
   },
-  'cinematography-studio': {
-    title: 'استوديو التصوير السينمائي',
-    description: 'أدوات وتقنيات متقدمة لتخطيط المشاهد وتصميم اللقطات السينمائية.'
+  "cinematography-studio": {
+    title: "استوديو التصوير السينمائي",
+    description:
+      "أدوات وتقنيات متقدمة لتخطيط المشاهد وتصميم اللقطات السينمائية.",
   },
-  'directors-studio': {
-    title: 'استوديو المخرج',
-    description: 'منصة شاملة لإدارة المشاريع الدرامية من منظور المخرج السينمائي.'
-  }
+  "directors-studio": {
+    title: "استوديو المخرج",
+    description:
+      "منصة شاملة لإدارة المشاريع الدرامية من منظور المخرج السينمائي.",
+  },
 };
 
 function generateManifest(): void {
-  console.log('🔍 Scanning pages in:', MAIN_PAGES_DIR);
+  console.log("🔍 Scanning pages in:", MAIN_PAGES_DIR);
 
   if (!fs.existsSync(MAIN_PAGES_DIR)) {
-    console.error('❌ Main pages directory not found:', MAIN_PAGES_DIR);
+    console.error("❌ Main pages directory not found:", MAIN_PAGES_DIR);
     process.exit(1);
   }
 
@@ -85,7 +95,7 @@ function generateManifest(): void {
     // SECURITY FIX: Use safe path resolution for subdirectories
     let pagePath: string;
     try {
-      pagePath = safeResolve(MAIN_PAGES_DIR, path.join(slug, 'page.tsx'));
+      pagePath = safeResolve(MAIN_PAGES_DIR, path.join(slug, "page.tsx"));
     } catch (error) {
       console.warn(`Skipping invalid path for slug: ${slug}`);
       continue;
@@ -95,13 +105,13 @@ function generateManifest(): void {
     if (fs.existsSync(pagePath)) {
       const metadata = PAGE_METADATA[slug] || {
         title: slug,
-        description: `صفحة ${slug}`
+        description: `صفحة ${slug}`,
       };
 
       pages.push({
         slug,
         path: `/${slug}`,
-        title: metadata.title
+        title: metadata.title,
       });
 
       console.log(`✅ Found page: ${slug} → ${metadata.title}`);
@@ -132,6 +142,6 @@ function generateManifest(): void {
 try {
   generateManifest();
 } catch (error) {
-  console.error('❌ Error generating manifest:', error);
+  console.error("❌ Error generating manifest:", error);
   process.exit(1);
 }

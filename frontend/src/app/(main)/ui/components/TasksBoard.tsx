@@ -16,7 +16,12 @@ interface TasksBoardProps {
   onTaskAdd?: (column: string) => void;
 }
 
-export function TasksBoard({ tasks = [], onTaskMove, onTaskDelete, onTaskAdd }: TasksBoardProps) {
+export function TasksBoard({
+  tasks = [],
+  onTaskMove,
+  onTaskDelete,
+  onTaskAdd,
+}: TasksBoardProps) {
   return (
     <div className="space-y-3">
       <h3 className="text-lg font-semibold">لوحة المهام</h3>
@@ -27,12 +32,17 @@ export function TasksBoard({ tasks = [], onTaskMove, onTaskDelete, onTaskAdd }: 
       ) : (
         <div className="space-y-2">
           {tasks.map((task) => (
-            <Card key={task.id} className="p-3 flex items-center justify-between">
+            <Card
+              key={task.id}
+              className="p-3 flex items-center justify-between"
+            >
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
                 <span>{task.title}</span>
               </div>
-              <Badge variant={task.status === "completed" ? "default" : "secondary"}>
+              <Badge
+                variant={task.status === "completed" ? "default" : "secondary"}
+              >
                 {task.status}
               </Badge>
             </Card>

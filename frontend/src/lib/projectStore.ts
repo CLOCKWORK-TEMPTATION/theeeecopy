@@ -1,4 +1,4 @@
-import type { Project as ApiProject } from './api-types';
+import type { Project as ApiProject } from "./api-types";
 
 /**
  * Project store for managing current project state

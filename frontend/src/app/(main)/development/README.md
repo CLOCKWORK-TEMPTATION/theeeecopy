@@ -5,6 +5,7 @@
 ## Purpose
 
 This folder contains UI components and pages used for:
+
 - Testing new features during development
 - Prototyping and experimentation
 - UI mockups and design exploration
@@ -24,9 +25,7 @@ This folder is excluded from TypeScript compilation in production via:
 ```json
 // frontend/tsconfig.json
 {
-  "exclude": [
-    "src/app/(main)/development/**"
-  ]
+  "exclude": ["src/app/(main)/development/**"]
 }
 ```
 
@@ -45,6 +44,7 @@ This folder is excluded from TypeScript compilation in production via:
 ## Moving to Production
 
 When a feature is ready for production:
+
 1. Remove all stub implementations
 2. Replace mock data with real API calls
 3. Add comprehensive error handling

@@ -45,6 +45,7 @@ NEXT_PUBLIC_CDN_URL=https://cdn.yourdomain.com
 ```
 
 **خطوات الإعداد:**
+
 1. أضف CNAME record في DNS يشير إلى موقعك
 2. قم بتفعيل Auto Minify في Cloudflare
 3. ضبط Cache Level على "Standard"
@@ -58,6 +59,7 @@ NEXT_PUBLIC_CDN_URL=https://d111111abcdef8.cloudfront.net
 ```
 
 **خطوات الإعداد:**
+
 1. إنشاء CloudFront Distribution
 2. ضبط Origin على S3 bucket أو server
 3. تفعيل Compression
@@ -87,30 +89,37 @@ NEXT_PUBLIC_CDN_URL=https://yourdomain.global.ssl.fastly.net
 يتم تكوين headers الـ Cache تلقائياً في `next.config.ts`:
 
 ### الأصول الثابتة (Static Assets)
+
 ```
 Cache-Control: public, max-age=31536000, immutable
 ```
+
 - مدة التخزين: سنة واحدة
 - غير قابل للتغيير (immutable)
 - مناسب لـ: JS, CSS, Fonts, Images
 
 ### ملفات Next.js (`/_next/static/*`)
+
 ```
 Cache-Control: public, max-age=31536000, immutable
 ```
+
 - مدة التخزين: سنة واحدة
 - يتم إعادة التسمية تلقائياً عند التحديث (content hashing)
 
 ### الخطوط (Fonts)
+
 ```
 Cache-Control: public, max-age=31536000, immutable
 Cross-Origin-Resource-Policy: cross-origin
 ```
 
 ### API Responses
+
 ```
 Cache-Control: public, s-maxage=60, stale-while-revalidate=120
 ```
+
 - مدة التخزين: 60 ثانية
 - يسمح بـ stale content لمدة 120 ثانية إضافية
 
@@ -140,12 +149,12 @@ img-src 'self' ... ${cdnCsp}
 
 ### معايير الأداء المتوقعة
 
-| المقياس | بدون CDN | مع CDN |
-|---------|----------|--------|
-| TTFB | 200-500ms | 50-150ms |
-| FCP | 1-2s | 0.5-1s |
-| LCP | 2-4s | 1-2s |
-| Bandwidth | 100% | 70-80% |
+| المقياس   | بدون CDN  | مع CDN   |
+| --------- | --------- | -------- |
+| TTFB      | 200-500ms | 50-150ms |
+| FCP       | 1-2s      | 0.5-1s   |
+| LCP       | 2-4s      | 1-2s     |
+| Bandwidth | 100%      | 70-80%   |
 
 ### تحسينات إضافية
 
@@ -168,11 +177,13 @@ img-src 'self' ... ${cdnCsp}
 ### اختبار CDN محلياً
 
 1. قم بإضافة entry في `/etc/hosts`:
+
 ```bash
 127.0.0.1 cdn.local.test
 ```
 
 2. استخدم هذا التكوين:
+
 ```bash
 NEXT_PUBLIC_ENABLE_CDN=true
 NEXT_PUBLIC_CDN_URL=http://cdn.local.test:3000
@@ -205,6 +216,7 @@ curl -I https://cdn.yourdomain.com/_next/static/chunks/main.js | grep -i cache
 ### المشكلة: الأصول لا تُحمّل من CDN
 
 **الحل:**
+
 1. تأكد من أن `NEXT_PUBLIC_ENABLE_CDN=true`
 2. تحقق من صحة `NEXT_PUBLIC_CDN_URL`
 3. افتح DevTools → Console للبحث عن أخطاء CORS
@@ -213,6 +225,7 @@ curl -I https://cdn.yourdomain.com/_next/static/chunks/main.js | grep -i cache
 
 **الحل:**
 أضف هذه Headers في CDN:
+
 ```
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET, HEAD, OPTIONS
@@ -221,6 +234,7 @@ Access-Control-Allow-Methods: GET, HEAD, OPTIONS
 ### المشكلة: محتوى قديم (Stale Content)
 
 **الحل:**
+
 1. قم بـ cache purge/invalidation في CDN
 2. استخدم versioning في أسماء الملفات
 3. Next.js يستخدم content hashing تلقائياً
@@ -230,18 +244,21 @@ Access-Control-Allow-Methods: GET, HEAD, OPTIONS
 ## البيئات المختلفة | Different Environments
 
 ### Development
+
 ```bash
 # لا حاجة لـ CDN في التطوير
 NEXT_PUBLIC_ENABLE_CDN=false
 ```
 
 ### Staging
+
 ```bash
 NEXT_PUBLIC_ENABLE_CDN=true
 NEXT_PUBLIC_CDN_URL=https://cdn-staging.yourdomain.com
 ```
 
 ### Production
+
 ```bash
 NEXT_PUBLIC_ENABLE_CDN=true
 NEXT_PUBLIC_CDN_URL=https://cdn.yourdomain.com
@@ -260,17 +277,20 @@ NEXT_PUBLIC_CDN_URL=https://cdn.yourdomain.com
 ## ملاحظات مهمة | Important Notes
 
 ⚠️ **Security:**
+
 - لا تُعرّض متغيرات server-side في CDN configuration
 - استخدم HTTPS فقط للـ CDN URL
 - تأكد من CSP headers صحيحة
 
 ✅ **Best Practices:**
+
 - استخدم CDN قريب جغرافياً من مستخدميك
 - فعّل compression (Brotli/Gzip)
 - راقب استخدام Bandwidth
 - قم بإعداد monitoring/alerts للـ CDN
 
 📊 **Monitoring:**
+
 - راقب hit/miss ratio
 - تتبع TTFB من regions مختلفة
 - استخدم Real User Monitoring (RUM)

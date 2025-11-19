@@ -8,7 +8,11 @@ interface ExportHubProps {
   scope?: string;
 }
 
-export function ExportHub({ formats = ["PDF", "DOCX", "TXT"], onExport, scope }: ExportHubProps) {
+export function ExportHub({
+  formats = ["PDF", "DOCX", "TXT"],
+  onExport,
+  scope,
+}: ExportHubProps) {
   return (
     <div className="border rounded-lg p-4">
       <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">

@@ -316,15 +316,18 @@ ${
 
     // SECURITY FIX: Use safe string matching to prevent ReDoS
     const highCount = highIntensity.reduce((count, term) => {
-      const occurrences = text.toLowerCase().split(term.toLowerCase()).length - 1;
+      const occurrences =
+        text.toLowerCase().split(term.toLowerCase()).length - 1;
       return count + occurrences;
     }, 0);
     const mediumCount = mediumIntensity.reduce((count, term) => {
-      const occurrences = text.toLowerCase().split(term.toLowerCase()).length - 1;
+      const occurrences =
+        text.toLowerCase().split(term.toLowerCase()).length - 1;
       return count + occurrences;
     }, 0);
     const lowCount = lowIntensity.reduce((count, term) => {
-      const occurrences = text.toLowerCase().split(term.toLowerCase()).length - 1;
+      const occurrences =
+        text.toLowerCase().split(term.toLowerCase()).length - 1;
       return count + occurrences;
     }, 0);
 

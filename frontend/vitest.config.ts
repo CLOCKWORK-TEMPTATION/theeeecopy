@@ -63,11 +63,11 @@ export default defineConfig({
       "@services": path.resolve(__dirname, "src/lib/drama-analyst/services"),
       "@orchestration": path.resolve(
         __dirname,
-        "src/lib/drama-analyst/orchestration",
+        "src/lib/drama-analyst/orchestration"
       ),
       "@shared": path.resolve(
         __dirname,
-        "src/app/(main)/directors-studio/shared",
+        "src/app/(main)/directors-studio/shared"
       ),
       "@components": path.resolve(__dirname, "src/components"),
     },

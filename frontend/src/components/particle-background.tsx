@@ -62,7 +62,7 @@ function updateCameraPosition(
  * Get optimal particle configuration using LOD system
  */
 function getOptimalParticleCount(): number {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return 3000;
   }
 
@@ -71,7 +71,7 @@ function getOptimalParticleCount(): number {
   const lodConfig = getParticleLODConfig(capabilities);
 
   // Log device capabilities in development
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     logDeviceCapabilities();
   }
 
@@ -803,12 +803,19 @@ export default function V0ParticleAnimation() {
       const positions = new Float32Array(positionAttribute.array);
       const colors = new Float32Array(colorAttribute.array);
 
-      updateParticlePhysics(positions, velocities, originalPositions, colors, particleCount, {
-        intersectionPoint,
-        effect: currentEffect,
-        repelStrength: 0.08,
-        damping: 0.92,
-      });
+      updateParticlePhysics(
+        positions,
+        velocities,
+        originalPositions,
+        colors,
+        particleCount,
+        {
+          intersectionPoint,
+          effect: currentEffect,
+          repelStrength: 0.08,
+          damping: 0.92,
+        }
+      );
 
       if (positionAttribute instanceof THREE.BufferAttribute) {
         positionAttribute.set(positions);
@@ -1010,11 +1017,7 @@ export default function V0ParticleAnimation() {
   };
 
   const handleTouchMove = (event: React.TouchEvent) => {
-    if (
-      !sceneRef.current ||
-      !sceneRef.current.isDragging ||
-      !event.touches[0]
-    )
+    if (!sceneRef.current || !sceneRef.current.isDragging || !event.touches[0])
       return;
 
     const deltaX = event.touches[0].clientX - sceneRef.current.previousMouseX;
