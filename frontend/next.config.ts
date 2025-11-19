@@ -53,8 +53,6 @@ const nextConfig = {
   // CDN support for static assets
   assetPrefix,
 
-  allowedDevOrigins: ["*.replit.dev", "replit.dev"],
-
   // Performance optimizations
   typescript: {
     ignoreBuildErrors: false,
