@@ -1,8 +1,8 @@
 {
-  "buildCommand": "cd frontend && pnpm install && pnpm build",
-  "outputDirectory": "frontend/.next",
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "framework": null,
+  "buildCommand": "pnpm build",
+  "outputDirectory": ".next",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
   "crons": [],
   "headers": [
     {
